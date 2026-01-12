@@ -1,0 +1,11 @@
+# My Living Hope - robots.txt
+# https://mylivinghope.org.nz
+
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://mylivinghope.org.nz/sitemap.xml
+
+# Crawl-delay for politeness
+Crawl-delay: 1

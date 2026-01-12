@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en-NZ">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found | My Living Hope</title>
+    <meta name="robots" content="noindex, nofollow">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --charcoal: #212021;
+            --soft-blush: #F5D7CF;
+            --forest-green: #336F49;
+            --cream: #FDF8F5;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--cream);
+            color: var(--charcoal);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .error-container {
+            max-width: 500px;
+        }
+        
+        .error-logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 2rem;
+        }
+        
+        h1 {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 4rem;
+            color: var(--forest-green);
+            margin-bottom: 0.5rem;
+        }
+        
+        h2 {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 1.5rem;
+        }
+        
+        p {
+            color: #5a5758;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: var(--forest-green);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9375rem;
+            transition: all 0.25s ease;
+        }
+        
+        .btn:hover {
+            background: #265438;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(33, 32, 33, 0.15);
+        }
+        
+        .btn svg {
+            width: 18px;
+            height: 18px;
+        }
+        
+        .verse {
+            margin-top: 3rem;
+            padding: 1.5rem;
+            background: var(--soft-blush);
+            border-radius: 12px;
+            border-left: 4px solid var(--forest-green);
+        }
+        
+        .verse p {
+            font-family: 'Libre Baskerville', serif;
+            font-style: italic;
+            margin-bottom: 0.5rem;
+            color: var(--charcoal);
+        }
+        
+        .verse cite {
+            font-size: 0.875rem;
+            color: var(--forest-green);
+            font-style: normal;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <img src="https://mylivinghope.org.nz/cdn/shop/files/MyLivingHope_Lantern_Cream.png?height=80" alt="My Living Hope" class="error-logo">
+        
+        <h1>404</h1>
+        <h2>Page Not Found</h2>
+        
+        <p>
+            The page you're looking for seems to have wandered off. But don't worry—even when we feel lost, we're never truly alone.
+        </p>
+        
+        <a href="/" class="btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Return Home
+        </a>
+        
+        <div class="verse">
+            <p>"The Lord is my shepherd, I lack nothing."</p>
+            <cite>— Psalm 23:1</cite>
+        </div>
+    </div>
+</body>
+</html>
