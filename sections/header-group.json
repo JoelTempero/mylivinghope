@@ -1,11 +1,74 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "type": "header",
   "name": "Header group",
   "sections": {
     "header": {
       "type": "header",
-      "settings": {}
+      "settings": {
+        "menu": "main-menu"
+      }
+    },
+    "hero_mqwfgM": {
+      "type": "hero",
+      "name": "Hero",
+      "settings": {
+        "tagline": "Light in the Darkness",
+        "heading_line_1": "Go Deeper",
+        "heading_line_2_prefix": "With",
+        "heading_line_2_accent": "Jesus",
+        "description": "Prayer Portals are beautifully designed cards that help you bring both your joys and struggles to God. Connect your emotions with Scripture and discover new ways to pray.",
+        "button_1_text": "Explore Cards",
+        "button_1_link": "",
+        "button_2_text": "Learn More",
+        "button_2_link": ""
+      }
+    },
+    "about_7zNYPX": {
+      "type": "about",
+      "blocks": {
+        "text_Arqazc": {
+          "type": "text",
+          "settings": {
+            "text": "Prayer Portals were born from a simple observation: many of us want to connect with God but struggle to find the words. Whether you're feeling overwhelmed, grateful, confused, or hopeful—these cards meet you where you are."
+          }
+        },
+        "text_zKqiQC": {
+          "type": "text",
+          "settings": {
+            "text": "Each card connects an emotion or need with relevant Scripture and a prayer starter. They won't pray for you, but they'll help you begin. Created in Christchurch, New Zealand, for youth ministries, small groups, and anyone seeking a deeper prayer life."
+          }
+        },
+        "verse_rF9WzF": {
+          "type": "verse",
+          "settings": {
+            "verse_text": "\"Your word is a lamp for my feet, a light on my path.\"",
+            "verse_reference": "Psalm 119:105"
+          }
+        }
+      },
+      "block_order": [
+        "text_Arqazc",
+        "text_zKqiQC",
+        "verse_rF9WzF"
+      ],
+      "name": "About",
+      "settings": {
+        "heading": "Helping You <span>Pray</span> Without Shame or Confusion"
+      }
     }
   },
-  "order": ["header"]
+  "order": [
+    "header",
+    "hero_mqwfgM",
+    "about_7zNYPX"
+  ]
 }
