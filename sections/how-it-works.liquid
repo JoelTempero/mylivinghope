@@ -1,0 +1,98 @@
+{% comment %}
+  How It Works Section
+{% endcomment %}
+
+<section class="section section--blush" id="how-it-works">
+  <div class="container">
+    <header class="section-header reveal">
+      <span class="section-tag">{{ section.settings.tag | default: "Simple & Meaningful" }}</span>
+      <h2>{{ section.settings.heading | default: "How Prayer Portals Work" }}</h2>
+      <p>{{ section.settings.description | default: "Three simple steps to transform your prayer life" }}</p>
+    </header>
+
+    <div class="steps__grid">
+      {% for block in section.blocks %}
+        <article class="step reveal reveal--delay-{{ forloop.index }}">
+          <div class="step__number" aria-hidden="true">{{ forloop.index }}</div>
+          <h3>{{ block.settings.title }}</h3>
+          <p>{{ block.settings.description }}</p>
+        </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "How It Works",
+  "class": "steps-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "tag",
+      "label": "Section tag",
+      "default": "Simple & Meaningful"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "How Prayer Portals Work"
+    },
+    {
+      "type": "text",
+      "id": "description",
+      "label": "Description",
+      "default": "Three simple steps to transform your prayer life"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Step title"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Step description goes here."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "How It Works",
+      "blocks": [
+        {
+          "type": "step",
+          "settings": {
+            "title": "Identify Your Feeling",
+            "description": "Browse the cards until you find the emotion, need, or desire that resonates with what you're experiencing right now."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "title": "Discover Scripture",
+            "description": "Flip the card over to find Bible verses that speak directly to your situation, connecting God's Word to your heart."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "title": "Begin Your Prayer",
+            "description": "Use the prayer starter as a launching point. Let it guide you into honest, meaningful conversation with God."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

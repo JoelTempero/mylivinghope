@@ -1,0 +1,87 @@
+{% comment %}
+  Product Template
+{% endcomment %}
+
+<div class="product-page section">
+  <div class="container">
+    <div class="product-page__grid">
+      <div class="product-page__gallery">
+        {% if product.featured_image %}
+          <img 
+            src="{{ product.featured_image | image_url: width: 800 }}"
+            alt="{{ product.featured_image.alt | default: product.title }}"
+            class="product-page__image"
+            id="mainProductImage"
+            width="800"
+            height="600"
+          >
+        {% endif %}
+
+        {% if product.images.size > 1 %}
+          <div class="product-page__thumbnails">
+            {% for image in product.images %}
+              <button 
+                class="product-page__thumb{% if forloop.first %} product-page__thumb--active{% endif %}"
+                data-image-url="{{ image | image_url: width: 800 }}"
+                aria-label="View image {{ forloop.index }}"
+              >
+                <img 
+                  src="{{ image | image_url: width: 100 }}"
+                  alt="{{ image.alt | default: product.title }}"
+                  width="80"
+                  height="80"
+                  loading="lazy"
+                >
+              </button>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="product-page__info">
+        <h1>{{ product.title }}</h1>
+        
+        <p class="product-page__price">
+          {{ product.price | money }}
+          {% if product.compare_at_price > product.price %}
+            <span class="product-page__price-compare">{{ product.compare_at_price | money }}</span>
+          {% endif %}
+        </p>
+
+        <div class="product-page__description">
+          {{ product.description }}
+        </div>
+
+        {% form 'product', product, class: 'product-form' %}
+          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+          
+          <div class="product-form__quantity">
+            <label for="quantity">Quantity</label>
+            <input type="number" id="quantity" name="quantity" value="1" min="1" class="product-form__quantity-input">
+          </div>
+
+          <button type="submit" class="btn btn--primary btn--large product-form__submit"{% unless product.available %} disabled{% endunless %}>
+            {% if product.available %}
+              Add to Cart
+            {% else %}
+              Sold Out
+            {% endif %}
+          </button>
+        {% endform %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Image gallery functionality
+  document.querySelectorAll('.product-page__thumb').forEach(thumb => {
+    thumb.addEventListener('click', function() {
+      const mainImage = document.getElementById('mainProductImage');
+      mainImage.src = this.dataset.imageUrl;
+      
+      document.querySelectorAll('.product-page__thumb').forEach(t => t.classList.remove('product-page__thumb--active'));
+      this.classList.add('product-page__thumb--active');
+    });
+  });
+</script>
