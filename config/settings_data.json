@@ -1,8 +1,205 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "current": {
     "color_primary": "#336F49",
     "color_secondary": "#F5D7CF",
     "color_text": "#212021",
-    "color_background": "#FDF8F5"
+    "color_background": "#FDF8F5",
+    "sections": {
+      "header": {
+        "type": "header",
+        "settings": {
+          "menu": "main-menu"
+        }
+      },
+      "hero": {
+        "type": "hero",
+        "settings": {
+          "tagline": "Light in the Darkness",
+          "heading_line_1": "Go Deeper",
+          "heading_line_2_prefix": "With",
+          "heading_line_2_accent": "Jesus",
+          "description": "Prayer Portals are beautifully designed cards that help you bring both your joys and struggles to God. Connect your emotions with Scripture and discover new ways to pray.",
+          "button_1_text": "Explore Cards",
+          "button_1_link": "",
+          "button_2_text": "Learn More",
+          "button_2_link": "",
+          "main_image": "shopify://shop_images/MLH_Photoset_A-04.jpg",
+          "float_image_1": "shopify://shop_images/MLH_Photoset_A-06.jpg",
+          "float_image_2": "shopify://shop_images/MLH_Photoset_A-61.jpg"
+        }
+      },
+      "about": {
+        "type": "about",
+        "blocks": {
+          "text_a8BntC": {
+            "type": "text",
+            "settings": {
+              "text": "Prayer Portals were born from a simple observation: many of us want to connect with God but struggle to find the words. Whether you're feeling overwhelmed, grateful, confused, or hopeful—these cards meet you where you are.\n\nEach card connects an emotion or need with relevant Scripture and a prayer starter. They won't pray for you, but they'll help you begin. Created in Christchurch, New Zealand, for youth ministries, small groups, and anyone seeking a deeper prayer life."
+            }
+          },
+          "verse_wwcDKL": {
+            "type": "verse",
+            "settings": {
+              "verse_text": "\"Cast all your anxiety on him because he cares for you.\"",
+              "verse_reference": "1 Peter 5:7"
+            }
+          }
+        },
+        "block_order": [
+          "text_a8BntC",
+          "verse_wwcDKL"
+        ],
+        "settings": {
+          "heading": "Helping You <span>Pray</span> Without Shame or Confusion"
+        }
+      },
+      "how-it-works": {
+        "type": "how-it-works",
+        "blocks": {
+          "step_FxATrU": {
+            "type": "step",
+            "settings": {
+              "title": "Identify Your Feeling or Need",
+              "description": "Browse the cards until you find the emotion, need, or desire that resonates with what you're experiencing right now."
+            }
+          },
+          "step_neNLgE": {
+            "type": "step",
+            "settings": {
+              "title": "Discover Scripture",
+              "description": "Flip the card over to find Bible verses that speak directly to your situation, connecting God's Word to your heart."
+            }
+          },
+          "step_MkfwWA": {
+            "type": "step",
+            "settings": {
+              "title": "Begin Your Prayer",
+              "description": "Use the prayer starter as a launching point. Let it guide you into honest, meaningful conversation with God."
+            }
+          }
+        },
+        "block_order": [
+          "step_FxATrU",
+          "step_neNLgE",
+          "step_MkfwWA"
+        ],
+        "settings": {
+          "tag": "Simple & Meaningful",
+          "heading": "How Prayer Portals Work",
+          "description": "Three simple steps to transform your prayer life"
+        }
+      },
+      "featured-products": {
+        "type": "featured-products",
+        "settings": {
+          "tag": "Our Collection",
+          "heading": "Prayer Card Sets",
+          "description": "Beautiful, practical tools for your spiritual journey",
+          "collection": "frontpage",
+          "products_to_show": 3
+        }
+      },
+      "testimonials": {
+        "type": "testimonials",
+        "blocks": {
+          "testimonial_hDr4BD": {
+            "type": "testimonial",
+            "settings": {
+              "quote": "The Prayer Prompts were incredibly helpful. Our youth group now has a tangible way to engage with prayer that doesn't feel forced or awkward. The cards open up real conversations with God.",
+              "name": "",
+              "initials": "SM",
+              "role": "Youth Leader"
+            }
+          },
+          "testimonial_F3zff8": {
+            "type": "testimonial",
+            "settings": {
+              "quote": "I've always struggled to know what to pray. These cards meet me exactly where I am emotionally and help me find words when I have none. They've completely changed my quiet times.",
+              "name": "",
+              "initials": "JT",
+              "role": "Pastor"
+            }
+          },
+          "testimonial_BTR8gX": {
+            "type": "testimonial",
+            "settings": {
+              "quote": "We use these in our small group and they've helped people who've never prayed out loud feel comfortable sharing. The Scripture connections are beautiful and relevant.",
+              "name": "",
+              "initials": "TK",
+              "role": "Pastor"
+            }
+          },
+          "testimonial_WG4maF": {
+            "type": "testimonial",
+            "settings": {
+              "quote": "Leaders could immediately see how these cards open up prayer in a way that's simple, real, and accessible for young people. Instant hit at our youth leaders conference.",
+              "name": "",
+              "initials": "CK",
+              "role": "Youth Pastor"
+            }
+          }
+        },
+        "block_order": [
+          "testimonial_hDr4BD",
+          "testimonial_F3zff8",
+          "testimonial_BTR8gX",
+          "testimonial_WG4maF"
+        ],
+        "settings": {
+          "tag": "Stories of Impact",
+          "heading": "What People Are Saying",
+          "description": "Lives transformed through deeper prayer"
+        }
+      },
+      "cta": {
+        "type": "cta",
+        "settings": {
+          "heading": "Ready to Transform Your Prayer Life?",
+          "description": "Join thousands who have discovered a new way to connect with God through Prayer Portals. Perfect for personal devotion, youth groups, small groups, and ministry.",
+          "button_text": "Get Your Cards Today",
+          "button_link": ""
+        }
+      },
+      "contact": {
+        "type": "contact",
+        "settings": {
+          "heading": "Get in Touch",
+          "description": "Have questions about Prayer Portals or want to order in bulk for your ministry? We'd love to hear from you.",
+          "location": "Christchurch, New Zealand",
+          "phone": "027 569 0061",
+          "email": ""
+        }
+      },
+      "footer": {
+        "type": "footer",
+        "settings": {
+          "heading": "My Living Hope",
+          "description": "Prayer Portals — helping you go deeper with Jesus through prayer. Connect your emotions with Scripture and discover new ways to commune with God.",
+          "newsletter_heading": "Join Our Email List",
+          "newsletter_text": "Get updates, encouragement, and early access to new products.",
+          "newsletter_placeholder": "Enter your email",
+          "newsletter_button": "Subscribe",
+          "menu_1_title": "Quick Links",
+          "menu_1": "footer",
+          "menu_2_title": "Shop",
+          "menu_2": "",
+          "menu_3_title": "Support",
+          "menu_3": "",
+          "social_facebook": "",
+          "social_instagram": "",
+          "social_youtube": ""
+        }
+      }
+    },
+    "content_for_index": []
   }
 }
