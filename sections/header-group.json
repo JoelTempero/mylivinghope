@@ -1,11 +1,192 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "type": "header",
   "name": "Header group",
   "sections": {
     "header": {
       "type": "header",
-      "settings": {}
+      "settings": {
+        "menu": "main-menu"
+      }
+    },
+    "hero_mqwfgM": {
+      "type": "hero",
+      "name": "Hero",
+      "settings": {
+        "tagline": "Light in the Darkness",
+        "heading_line_1": "Go Deeper",
+        "heading_line_2_prefix": "With",
+        "heading_line_2_accent": "Jesus",
+        "description": "Prayer Portals are beautifully designed cards that help you bring both your joys and struggles to God. Connect your emotions with Scripture and discover new ways to pray.",
+        "button_1_text": "Explore Cards",
+        "button_1_link": "",
+        "button_2_text": "Learn More",
+        "button_2_link": "",
+        "main_image": "shopify://shop_images/MLH_Photoset_A-04.jpg",
+        "float_image_1": "shopify://shop_images/MLH_Photoset_A-06.jpg",
+        "float_image_2": "shopify://shop_images/MLH_Photoset_A-13.jpg"
+      }
+    },
+    "about_7zNYPX": {
+      "type": "about",
+      "blocks": {
+        "text_Arqazc": {
+          "type": "text",
+          "settings": {
+            "text": "Prayer Portals were born from a simple observation: many of us want to connect with God but struggle to find the words. Whether you're feeling overwhelmed, grateful, confused, or hopeful—these cards meet you where you are."
+          }
+        },
+        "text_zKqiQC": {
+          "type": "text",
+          "settings": {
+            "text": "Each card connects an emotion or need with relevant Scripture and a prayer starter. They won't pray for you, but they'll help you begin. Created in Christchurch, New Zealand, for youth ministries, small groups, and anyone seeking a deeper prayer life."
+          }
+        },
+        "verse_rF9WzF": {
+          "type": "verse",
+          "settings": {
+            "verse_text": "\"Your word is a lamp for my feet, a light on my path.\"",
+            "verse_reference": "Psalm 119:105"
+          }
+        }
+      },
+      "block_order": [
+        "text_Arqazc",
+        "text_zKqiQC",
+        "verse_rF9WzF"
+      ],
+      "name": "About",
+      "settings": {
+        "heading": "Helping You <span>Pray</span> Without Shame or Confusion"
+      }
+    },
+    "how_it_works_cPfVPL": {
+      "type": "how-it-works",
+      "blocks": {
+        "step_UMKrgB": {
+          "type": "step",
+          "settings": {
+            "title": "Identify Your Feeling",
+            "description": "Browse the cards until you find the emotion, need, or desire that resonates with what you're experiencing right now."
+          }
+        },
+        "step_cVcVTj": {
+          "type": "step",
+          "settings": {
+            "title": "Discover Scripture",
+            "description": "Flip the card over to find Bible verses that speak directly to your situation, connecting God's Word to your heart."
+          }
+        },
+        "step_Cayimz": {
+          "type": "step",
+          "settings": {
+            "title": "Begin Your Prayer",
+            "description": "Use the prayer starter as a launching point. Let it guide you into honest, meaningful conversation with God."
+          }
+        }
+      },
+      "block_order": [
+        "step_UMKrgB",
+        "step_cVcVTj",
+        "step_Cayimz"
+      ],
+      "name": "How It Works",
+      "settings": {
+        "tag": "Simple & Meaningful",
+        "heading": "How Prayer Portals Work",
+        "description": "Three simple steps to transform your prayer life"
+      }
+    },
+    "featured_products_dRXKLy": {
+      "type": "featured-products",
+      "name": "Featured Products",
+      "settings": {
+        "tag": "Our Collection",
+        "heading": "Prayer Card Sets",
+        "description": "Beautiful, practical tools for your spiritual journey",
+        "collection": "",
+        "products_to_show": 3
+      }
+    },
+    "testimonials_RpKhnQ": {
+      "type": "testimonials",
+      "blocks": {
+        "testimonial_pKqRTJ": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "The Prayer Prompts were incredibly helpful. Our youth group now has a tangible way to engage with prayer that doesn't feel forced or awkward. The cards open up real conversations with God.",
+            "name": "",
+            "initials": "YL",
+            "role": "North Island, NZ"
+          }
+        },
+        "testimonial_fbfgtY": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "I've always struggled to know what to pray. These cards meet me exactly where I am emotionally and help me find words when I have none. They've completely changed my quiet times.",
+            "name": "",
+            "initials": "SM",
+            "role": "Christchurch, NZ"
+          }
+        },
+        "testimonial_mNyzj9": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "We use these in our small group and they've helped people who've never prayed out loud feel comfortable sharing. The Scripture connections are beautiful and relevant.",
+            "name": "",
+            "initials": "DK",
+            "role": "Small Group Leader"
+          }
+        },
+        "testimonial_x6Ph84": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Leaders could immediately see how these cards open up prayer in a way that's simple, real, and accessible for young people. Instant hit at our youth leaders conference.",
+            "name": "",
+            "initials": "BYM",
+            "role": "Rotorua, NZ"
+          }
+        }
+      },
+      "block_order": [
+        "testimonial_pKqRTJ",
+        "testimonial_fbfgtY",
+        "testimonial_mNyzj9",
+        "testimonial_x6Ph84"
+      ],
+      "name": "Testimonials",
+      "settings": {
+        "tag": "Stories of Impact",
+        "heading": "What People Are Saying",
+        "description": "Lives transformed through deeper prayer"
+      }
+    },
+    "cta_kfw8kx": {
+      "type": "cta",
+      "name": "Call to Action",
+      "settings": {
+        "heading": "Ready to Transform Your Prayer Life?",
+        "description": "Join thousands who have discovered a new way to connect with God through Prayer Portals. Perfect for personal devotion, youth groups, small groups, and ministry.",
+        "button_text": "Get Your Cards Today",
+        "button_link": ""
+      }
     }
   },
-  "order": ["header"]
+  "order": [
+    "header",
+    "hero_mqwfgM",
+    "about_7zNYPX",
+    "how_it_works_cPfVPL",
+    "featured_products_dRXKLy",
+    "testimonials_RpKhnQ",
+    "cta_kfw8kx"
+  ]
 }
