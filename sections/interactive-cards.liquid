@@ -1,57 +1,67 @@
 {% comment %}
   Interactive Prayer Cards Section
-  Drag cards around, click to flip in lightbox
 {% endcomment %}
 
-<section class="section interactive-cards" id="try-cards">
+<section class="section" id="try-cards" style="padding: 6rem 0;">
   <div class="container">
-    <header class="section-header reveal">
-      <span class="section-tag">{{ section.settings.tag | default: "Try It Out" }}</span>
-      <h2>{{ section.settings.heading | default: "Experience Prayer Portals" }}</h2>
-      <p>{{ section.settings.description | default: "Drag the cards around. Click one to flip it over and see how it works." }}</p>
+    <header class="section-header">
+      <span class="section-tag">{{ section.settings.tag }}</span>
+      <h2>{{ section.settings.heading }}</h2>
+      <p style="color: var(--text-muted);">{{ section.settings.description }}</p>
     </header>
 
-    <div class="interactive-cards__container" id="cardsContainer">
+    <div id="cardsContainer" style="position: relative; height: 500px; max-width: 900px; margin: 0 auto;">
       {% for block in section.blocks %}
         <div 
-          class="prayer-card" 
-          data-card-id="{{ block.id }}"
-          draggable="false"
-          style="{% if block.settings.position_x %}left: {{ block.settings.position_x }}%;{% endif %}{% if block.settings.position_y %}top: {{ block.settings.position_y }}%;{% endif %}{% if block.settings.rotation %}transform: rotate({{ block.settings.rotation }}deg);{% endif %}"
+          class="draggable-card" 
+          data-index="{{ forloop.index }}"
+          style="
+            position: absolute;
+            width: 200px;
+            height: 280px;
+            cursor: grab;
+            z-index: {{ forloop.index }};
+            left: {{ block.settings.position_x }}%;
+            top: {{ block.settings.position_y }}%;
+            transform: rotate({{ block.settings.rotation }}deg);
+          "
         >
-          <div class="prayer-card__inner">
-            <div class="prayer-card__front">
+          <div class="card-inner" style="
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.6s ease;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(33,32,33,0.15);
+          ">
+            <div class="card-front" style="
+              position: absolute;
+              width: 100%;
+              height: 100%;
+              backface-visibility: hidden;
+              border-radius: 16px;
+              overflow: hidden;
+            ">
               {% if block.settings.front_image %}
-                <img 
-                  src="{{ block.settings.front_image | image_url: width: 400 }}" 
-                  alt="{{ block.settings.card_name | default: 'Prayer Card' }} - Front"
-                  loading="lazy"
-                  draggable="false"
-                >
+                <img src="{{ block.settings.front_image | image_url: width: 400 }}" alt="{{ block.settings.card_name }} - Front" style="width:100%;height:100%;object-fit:cover;" draggable="false">
               {% else %}
-                <img 
-                  src="{{ 'card-' | append: forloop.index | append: '-front.jpg' | asset_url }}" 
-                  alt="{{ block.settings.card_name | default: 'Prayer Card' }} - Front"
-                  loading="lazy"
-                  draggable="false"
-                >
+                <div style="width:100%;height:100%;background:var(--soft-blush);display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-size:1.5rem;color:var(--charcoal);">{{ block.settings.card_name }}</div>
               {% endif %}
             </div>
-            <div class="prayer-card__back">
+            <div class="card-back" style="
+              position: absolute;
+              width: 100%;
+              height: 100%;
+              backface-visibility: hidden;
+              border-radius: 16px;
+              overflow: hidden;
+              transform: rotateY(180deg);
+            ">
               {% if block.settings.back_image %}
-                <img 
-                  src="{{ block.settings.back_image | image_url: width: 400 }}" 
-                  alt="{{ block.settings.card_name | default: 'Prayer Card' }} - Back with Scripture"
-                  loading="lazy"
-                  draggable="false"
-                >
+                <img src="{{ block.settings.back_image | image_url: width: 400 }}" alt="{{ block.settings.card_name }} - Back" style="width:100%;height:100%;object-fit:cover;" draggable="false">
               {% else %}
-                <img 
-                  src="{{ 'card-' | append: forloop.index | append: '-back.jpg' | asset_url }}" 
-                  alt="{{ block.settings.card_name | default: 'Prayer Card' }} - Back with Scripture"
-                  loading="lazy"
-                  draggable="false"
-                >
+                <div style="width:100%;height:100%;background:var(--forest-green);display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-size:1rem;color:white;padding:1rem;text-align:center;">Scripture and Prayer for {{ block.settings.card_name }}</div>
               {% endif %}
             </div>
           </div>
@@ -59,67 +69,99 @@
       {% endfor %}
     </div>
 
-    <p class="interactive-cards__hint">
-      <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M18 8h1a4 4 0 0 1 0 8h-1"/>
-        <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/>
-        <line x1="6" y1="1" x2="6" y2="4"/>
-        <line x1="10" y1="1" x2="10" y2="4"/>
-        <line x1="14" y1="1" x2="14" y2="4"/>
-      </svg>
-      {{ section.settings.hint_text | default: "Drag cards to move them • Click to flip and reveal Scripture" }}
+    <p style="text-align:center;margin-top:2rem;color:var(--text-muted);font-size:0.9375rem;">
+      Drag cards to move them - Click to flip and reveal Scripture
     </p>
   </div>
 </section>
 
-<!-- Lightbox -->
-<div class="card-lightbox" id="cardLightbox">
-  <div class="prayer-card prayer-card--lightbox" id="lightboxCard">
-    <div class="prayer-card__inner">
-      <div class="prayer-card__front" id="lightboxFront"></div>
-      <div class="prayer-card__back" id="lightboxBack"></div>
+<div id="cardLightbox" style="
+  position: fixed;
+  inset: 0;
+  background: rgba(33,32,33,0.85);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+">
+  <div id="lightboxCardContainer" style="
+    width: 280px;
+    height: 400px;
+    cursor: pointer;
+    perspective: 1000px;
+  ">
+    <div id="lightboxCardInner" style="
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.6s ease;
+      border-radius: 16px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+    ">
+      <div id="lightboxFront" style="
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        border-radius: 16px;
+        overflow: hidden;
+        background: var(--soft-blush);
+      "></div>
+      <div id="lightboxBack" style="
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        border-radius: 16px;
+        overflow: hidden;
+        transform: rotateY(180deg);
+        background: var(--forest-green);
+      "></div>
     </div>
   </div>
 </div>
 
 <script>
 (function() {
-  const container = document.getElementById('cardsContainer');
-  const cards = document.querySelectorAll('.prayer-card:not(.prayer-card--lightbox)');
-  const lightbox = document.getElementById('cardLightbox');
-  const lightboxCard = document.getElementById('lightboxCard');
-  const lightboxFront = document.getElementById('lightboxFront');
-  const lightboxBack = document.getElementById('lightboxBack');
+  var container = document.getElementById('cardsContainer');
+  if (!container) return;
+  
+  var cards = document.querySelectorAll('.draggable-card');
+  var lightbox = document.getElementById('cardLightbox');
+  var lightboxInner = document.getElementById('lightboxCardInner');
+  var lightboxFront = document.getElementById('lightboxFront');
+  var lightboxBack = document.getElementById('lightboxBack');
 
-  let isDragging = false;
-  let dragCard = null;
-  let startX, startY, initialX, initialY;
-  let hasMoved = false;
-  let highestZ = 10;
+  var isDragging = false;
+  var currentCard = null;
+  var startX = 0;
+  var startY = 0;
+  var initialX = 0;
+  var initialY = 0;
+  var hasMoved = false;
+  var highestZ = 10;
 
-  // Initialize card positions
-  cards.forEach((card, index) => {
-    card.style.zIndex = index + 1;
-    
-    // Drag start
-    card.addEventListener('mousedown', startDrag);
-    card.addEventListener('touchstart', startDrag, { passive: false });
-  });
+  for (var i = 0; i < cards.length; i++) {
+    cards[i].addEventListener('mousedown', startDrag);
+    cards[i].addEventListener('touchstart', startDrag);
+  }
 
   function startDrag(e) {
-    if (e.target.closest('.prayer-card--lightbox')) return;
-    
-    dragCard = e.currentTarget;
+    currentCard = this;
     isDragging = true;
     hasMoved = false;
 
-    // Bring to front
-    highestZ++;
-    dragCard.style.zIndex = highestZ;
+    highestZ = highestZ + 1;
+    currentCard.style.zIndex = highestZ;
 
-    const rect = dragCard.getBoundingClientRect();
-    const containerRect = container.getBoundingClientRect();
-    
+    var rect = currentCard.getBoundingClientRect();
+    var containerRect = container.getBoundingClientRect();
+
     if (e.type === 'touchstart') {
       startX = e.touches[0].clientX;
       startY = e.touches[0].clientY;
@@ -131,115 +173,110 @@
     initialX = rect.left - containerRect.left;
     initialY = rect.top - containerRect.top;
 
-    dragCard.style.cursor = 'grabbing';
-    dragCard.style.transition = 'none';
-
-    // Clear percentage positioning, use pixels
-    dragCard.style.left = initialX + 'px';
-    dragCard.style.top = initialY + 'px';
+    currentCard.style.cursor = 'grabbing';
+    currentCard.style.left = initialX + 'px';
+    currentCard.style.top = initialY + 'px';
+    currentCard.style.transform = 'rotate(0deg)';
 
     document.addEventListener('mousemove', drag);
     document.addEventListener('mouseup', endDrag);
-    document.addEventListener('touchmove', drag, { passive: false });
+    document.addEventListener('touchmove', drag);
     document.addEventListener('touchend', endDrag);
 
     e.preventDefault();
   }
 
   function drag(e) {
-    if (!isDragging || !dragCard) return;
+    if (!isDragging || !currentCard) return;
 
-    let clientX, clientY;
+    var clientX = 0;
+    var clientY = 0;
+    
     if (e.type === 'touchmove') {
       clientX = e.touches[0].clientX;
       clientY = e.touches[0].clientY;
-      e.preventDefault();
     } else {
       clientX = e.clientX;
       clientY = e.clientY;
     }
 
-    const deltaX = clientX - startX;
-    const deltaY = clientY - startY;
+    var deltaX = clientX - startX;
+    var deltaY = clientY - startY;
 
-    // Check if moved enough to count as a drag
     if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
       hasMoved = true;
     }
 
-    const newX = initialX + deltaX;
-    const newY = initialY + deltaY;
+    var newX = initialX + deltaX;
+    var newY = initialY + deltaY;
 
-    // Keep within container bounds
-    const containerRect = container.getBoundingClientRect();
-    const cardRect = dragCard.getBoundingClientRect();
-    
-    const maxX = containerRect.width - cardRect.width;
-    const maxY = containerRect.height - cardRect.height;
+    currentCard.style.left = newX + 'px';
+    currentCard.style.top = newY + 'px';
 
-    dragCard.style.left = Math.max(0, Math.min(maxX, newX)) + 'px';
-    dragCard.style.top = Math.max(0, Math.min(maxY, newY)) + 'px';
-    
-    // Remove rotation while dragging
-    dragCard.style.transform = 'rotate(0deg)';
+    e.preventDefault();
   }
 
   function endDrag(e) {
-    if (!dragCard) return;
+    if (!currentCard) return;
 
     document.removeEventListener('mousemove', drag);
     document.removeEventListener('mouseup', endDrag);
     document.removeEventListener('touchmove', drag);
     document.removeEventListener('touchend', endDrag);
 
-    dragCard.style.cursor = 'grab';
-    dragCard.style.transition = '';
+    currentCard.style.cursor = 'grab';
 
-    // If didn't move much, treat as click
     if (!hasMoved) {
-      openLightbox(dragCard);
+      openLightbox(currentCard);
     }
 
     isDragging = false;
-    dragCard = null;
+    currentCard = null;
   }
 
   function openLightbox(card) {
-    const frontImg = card.querySelector('.prayer-card__front img');
-    const backImg = card.querySelector('.prayer-card__back img');
+    var front = card.querySelector('.card-front');
+    var back = card.querySelector('.card-back');
 
-    lightboxFront.innerHTML = `<img src="${frontImg.src}" alt="${frontImg.alt}" draggable="false">`;
-    lightboxBack.innerHTML = `<img src="${backImg.src}" alt="${backImg.alt}" draggable="false">`;
+    lightboxFront.innerHTML = front.innerHTML;
+    lightboxBack.innerHTML = back.innerHTML;
 
-    lightbox.classList.add('card-lightbox--active');
-    lightboxCard.classList.remove('prayer-card--flipped');
-
-    // Prevent body scroll
+    lightbox.style.opacity = '1';
+    lightbox.style.visibility = 'visible';
+    lightboxInner.style.transform = 'rotateY(0deg)';
     document.body.style.overflow = 'hidden';
   }
 
   function closeLightbox() {
-    lightbox.classList.remove('card-lightbox--active');
-    lightboxCard.classList.remove('prayer-card--flipped');
+    lightbox.style.opacity = '0';
+    lightbox.style.visibility = 'hidden';
+    lightboxInner.style.transform = 'rotateY(0deg)';
     document.body.style.overflow = '';
   }
 
-  // Click lightbox card to flip
-  lightboxCard.addEventListener('click', function(e) {
-    e.stopPropagation();
-    this.classList.toggle('prayer-card--flipped');
-  });
+  var lightboxContainer = document.getElementById('lightboxCardContainer');
+  if (lightboxContainer) {
+    lightboxContainer.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var currentTransform = lightboxInner.style.transform;
+      if (currentTransform.indexOf('180deg') > -1) {
+        lightboxInner.style.transform = 'rotateY(0deg)';
+      } else {
+        lightboxInner.style.transform = 'rotateY(180deg) rotate(90deg)';
+      }
+    });
+  }
 
-  // Click outside card to close
-  lightbox.addEventListener('click', function(e) {
-    if (e.target === lightbox) {
-      closeLightbox();
-    }
-  });
+  if (lightbox) {
+    lightbox.addEventListener('click', function(e) {
+      if (e.target === lightbox) {
+        closeLightbox();
+      }
+    });
+  }
 
-  // ESC to close
   document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && lightbox.classList.contains('card-lightbox--active')) {
+    if (e.key === 'Escape') {
       closeLightbox();
     }
   });
@@ -249,12 +286,11 @@
 {% schema %}
 {
   "name": "Interactive Cards",
-  "class": "interactive-cards-section",
   "settings": [
     {
       "type": "text",
       "id": "tag",
-      "label": "Section tag",
+      "label": "Tag",
       "default": "Try It Out"
     },
     {
@@ -268,18 +304,12 @@
       "id": "description",
       "label": "Description",
       "default": "Drag the cards around. Click one to flip it over and see how it works."
-    },
-    {
-      "type": "text",
-      "id": "hint_text",
-      "label": "Hint text",
-      "default": "Drag cards to move them • Click to flip and reveal Scripture"
     }
   ],
   "blocks": [
     {
       "type": "card",
-      "name": "Prayer Card",
+      "name": "Card",
       "settings": [
         {
           "type": "text",
@@ -300,29 +330,29 @@
         {
           "type": "range",
           "id": "position_x",
-          "label": "Horizontal position (%)",
+          "label": "Position X",
           "min": 0,
           "max": 70,
-          "step": 5,
-          "default": 10
+          "default": 10,
+          "unit": "%"
         },
         {
           "type": "range",
           "id": "position_y",
-          "label": "Vertical position (%)",
+          "label": "Position Y",
           "min": 0,
           "max": 60,
-          "step": 5,
-          "default": 15
+          "default": 15,
+          "unit": "%"
         },
         {
           "type": "range",
           "id": "rotation",
-          "label": "Initial rotation (degrees)",
+          "label": "Rotation",
           "min": -15,
           "max": 15,
-          "step": 1,
-          "default": 0
+          "default": 0,
+          "unit": "deg"
         }
       ]
     }
