@@ -1,47 +1,42 @@
 {% comment %}
   Interactive Prayer Cards Section
-  Cards start centered, can be dragged, proper cursor offset tracking
+  With customizable starting positions for each card
 {% endcomment %}
 
 <style>
 .interactive-cards-section {
   padding: 6rem 0;
-  overflow: visible;
-}
-
-.interactive-cards__wrapper {
   position: relative;
-  min-height: 450px;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 2rem;
+  z-index: 10;
+  background: var(--cream, #FDF8F5);
 }
 
-.interactive-cards__container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 2rem;
-  min-height: 350px;
+.interactive-cards__area {
+  position: relative;
+  height: 450px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .interactive-cards__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
   text-align: center;
   color: var(--text-muted, #8a8788);
   font-style: italic;
-  padding: 4rem 2rem;
 }
 
 .prayer-card {
-  position: relative;
+  position: absolute;
   width: {{ section.settings.card_width }}px;
   height: {{ section.settings.card_height }}px;
   cursor: grab;
   perspective: 1000px;
   user-select: none;
-  flex-shrink: 0;
   touch-action: none;
+  z-index: 1;
 }
 
 .prayer-card:active {
@@ -85,6 +80,7 @@
   object-fit: {{ section.settings.image_fit }};
   object-position: {{ section.settings.image_position }};
   pointer-events: none;
+  -webkit-user-drag: none;
 }
 
 .prayer-card__back {
@@ -111,34 +107,37 @@
   font-size: 0.9375rem;
 }
 
-/* Responsive scaling */
+/* Responsive */
 @media (max-width: 1200px) {
   .prayer-card {
-    width: calc({{ section.settings.card_width }}px * 0.8);
-    height: calc({{ section.settings.card_height }}px * 0.8);
+    width: calc({{ section.settings.card_width }}px * 0.75);
+    height: calc({{ section.settings.card_height }}px * 0.75);
+  }
+  
+  .interactive-cards__area {
+    height: 380px;
   }
 }
 
 @media (max-width: 768px) {
-  .interactive-cards__wrapper {
-    padding: 1rem;
-    min-height: 400px;
-  }
-  
-  .interactive-cards__container {
-    gap: 1rem;
-  }
-  
   .prayer-card {
-    width: calc({{ section.settings.card_width }}px * 0.65);
-    height: calc({{ section.settings.card_height }}px * 0.65);
+    width: calc({{ section.settings.card_width }}px * 0.55);
+    height: calc({{ section.settings.card_height }}px * 0.55);
+  }
+  
+  .interactive-cards__area {
+    height: 320px;
   }
 }
 
 @media (max-width: 480px) {
   .prayer-card {
-    width: calc({{ section.settings.card_width }}px * 0.5);
-    height: calc({{ section.settings.card_height }}px * 0.5);
+    width: calc({{ section.settings.card_width }}px * 0.45);
+    height: calc({{ section.settings.card_height }}px * 0.45);
+  }
+  
+  .interactive-cards__area {
+    height: 280px;
   }
 }
 </style>
@@ -151,49 +150,52 @@
       <p style="color: var(--text-muted);">{{ section.settings.description }}</p>
     </header>
 
-    <div class="interactive-cards__wrapper">
-      <div class="interactive-cards__container" id="cardsContainer">
-        {% if section.blocks.size > 0 %}
-          {% for block in section.blocks %}
-            <div class="prayer-card" data-index="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
-              <div class="prayer-card__inner">
-                <div class="prayer-card__front">
-                  {% if block.settings.front_image %}
-                    <img 
-                      src="{{ block.settings.front_image | image_url: width: 900 }}" 
-                      alt="Prayer card front" 
-                      draggable="false"
-                      loading="lazy"
-                    >
-                  {% else %}
-                    <div class="prayer-card__placeholder">
-                      Add front image
-                    </div>
-                  {% endif %}
-                </div>
-                <div class="prayer-card__back">
-                  {% if block.settings.back_image %}
-                    <img 
-                      src="{{ block.settings.back_image | image_url: width: 900 }}" 
-                      alt="Prayer card back" 
-                      draggable="false"
-                      loading="lazy"
-                    >
-                  {% else %}
-                    <div class="prayer-card__placeholder">
-                      Add back image
-                    </div>
-                  {% endif %}
-                </div>
+    <div class="interactive-cards__area" id="cardsArea">
+      {% if section.blocks.size > 0 %}
+        {% for block in section.blocks %}
+          <div 
+            class="prayer-card" 
+            data-index="{{ forloop.index0 }}"
+            style="left: {{ block.settings.start_x }}%; top: {{ block.settings.start_y }}%;"
+            {{ block.shopify_attributes }}
+          >
+            <div class="prayer-card__inner">
+              <div class="prayer-card__front">
+                {% if block.settings.front_image %}
+                  <img 
+                    src="{{ block.settings.front_image | image_url: width: 900 }}" 
+                    alt="Prayer card front" 
+                    draggable="false"
+                    loading="lazy"
+                  >
+                {% else %}
+                  <div class="prayer-card__placeholder">
+                    Add front image
+                  </div>
+                {% endif %}
+              </div>
+              <div class="prayer-card__back">
+                {% if block.settings.back_image %}
+                  <img 
+                    src="{{ block.settings.back_image | image_url: width: 900 }}" 
+                    alt="Prayer card back" 
+                    draggable="false"
+                    loading="lazy"
+                  >
+                {% else %}
+                  <div class="prayer-card__placeholder">
+                    Add back image
+                  </div>
+                {% endif %}
               </div>
             </div>
-          {% endfor %}
-        {% else %}
-          <div class="interactive-cards__empty">
-            <p>Add cards using the "Add Card" button in the sidebar</p>
           </div>
-        {% endif %}
-      </div>
+        {% endfor %}
+      {% else %}
+        <div class="interactive-cards__empty">
+          <p>Add cards using the "Add Card" button in the sidebar</p>
+        </div>
+      {% endif %}
     </div>
 
     {% if section.blocks.size > 0 %}
@@ -209,75 +211,67 @@
   var cards = document.querySelectorAll('.prayer-card');
   if (!cards.length) return;
 
-  var isDragging = false;
-  var currentCard = null;
-  var currentIndex = -1;
-  var offsetX = 0;
-  var offsetY = 0;
-  var hasMoved = false;
-  var highestZ = 10;
-  
-  // Store each card's position
-  var positions = [];
+  var state = {
+    isDragging: false,
+    currentCard: null,
+    currentIndex: -1,
+    startMouseX: 0,
+    startMouseY: 0,
+    startCardX: 0,
+    startCardY: 0,
+    hasMoved: false,
+    highestZ: 10
+  };
+
+  // Initialize cards
   for (var i = 0; i < cards.length; i++) {
-    positions[i] = { x: 0, y: 0 };
     cards[i].style.zIndex = i + 1;
+    setupCard(cards[i], i);
   }
 
-  // Add event listeners
-  for (var i = 0; i < cards.length; i++) {
-    addDragListeners(cards[i], i);
-  }
-
-  function addDragListeners(card, index) {
+  function setupCard(card, index) {
     card.addEventListener('mousedown', function(e) {
-      startDrag(e, index);
+      onStart(e, index);
     });
     card.addEventListener('touchstart', function(e) {
-      startDrag(e, index);
+      onStart(e, index);
     }, { passive: false });
   }
 
-  function startDrag(e, index) {
+  function onStart(e, index) {
     e.preventDefault();
     
-    currentCard = cards[index];
-    currentIndex = index;
-    isDragging = true;
-    hasMoved = false;
+    state.currentCard = cards[index];
+    state.currentIndex = index;
+    state.isDragging = true;
+    state.hasMoved = false;
 
     // Bring to front
-    highestZ++;
-    currentCard.style.zIndex = highestZ;
-    currentCard.classList.add('prayer-card--dragging');
+    state.highestZ++;
+    state.currentCard.style.zIndex = state.highestZ;
+    state.currentCard.classList.add('prayer-card--dragging');
 
-    // Get cursor/touch position
-    var clientX, clientY;
+    // Get mouse/touch position
     if (e.type === 'touchstart') {
-      clientX = e.touches[0].clientX;
-      clientY = e.touches[0].clientY;
+      state.startMouseX = e.touches[0].clientX;
+      state.startMouseY = e.touches[0].clientY;
     } else {
-      clientX = e.clientX;
-      clientY = e.clientY;
+      state.startMouseX = e.clientX;
+      state.startMouseY = e.clientY;
     }
 
-    // Get card's current position on screen
-    var rect = currentCard.getBoundingClientRect();
-    
-    // Calculate offset from cursor to card's top-left corner
-    // This keeps the card anchored to where user clicked
-    offsetX = clientX - rect.left + positions[index].x;
-    offsetY = clientY - rect.top + positions[index].y;
+    // Get card's current position
+    state.startCardX = state.currentCard.offsetLeft;
+    state.startCardY = state.currentCard.offsetTop;
 
-    // Add move/end listeners to document
-    document.addEventListener('mousemove', onDrag);
-    document.addEventListener('mouseup', endDrag);
-    document.addEventListener('touchmove', onDrag, { passive: false });
-    document.addEventListener('touchend', endDrag);
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onEnd);
+    document.addEventListener('touchmove', onMove, { passive: false });
+    document.addEventListener('touchend', onEnd);
   }
 
-  function onDrag(e) {
-    if (!isDragging || !currentCard) return;
+  function onMove(e) {
+    if (!state.isDragging || !state.currentCard) return;
     e.preventDefault();
 
     var clientX, clientY;
@@ -289,41 +283,37 @@
       clientY = e.clientY;
     }
 
-    // Calculate new position maintaining the grab offset
-    var rect = currentCard.getBoundingClientRect();
-    var newX = clientX - (rect.left - positions[currentIndex].x) - (offsetX - positions[currentIndex].x);
-    var newY = clientY - (rect.top - positions[currentIndex].y) - (offsetY - positions[currentIndex].y);
+    var deltaX = clientX - state.startMouseX;
+    var deltaY = clientY - state.startMouseY;
 
-    // Check if moved enough to count as drag
-    if (Math.abs(newX - positions[currentIndex].x) > 3 || Math.abs(newY - positions[currentIndex].y) > 3) {
-      hasMoved = true;
+    if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) {
+      state.hasMoved = true;
     }
 
-    // Apply transform
-    currentCard.style.transform = 'translate(' + newX + 'px, ' + newY + 'px)';
-    positions[currentIndex].x = newX;
-    positions[currentIndex].y = newY;
+    var newX = state.startCardX + deltaX;
+    var newY = state.startCardY + deltaY;
+
+    state.currentCard.style.left = newX + 'px';
+    state.currentCard.style.top = newY + 'px';
   }
 
-  function endDrag(e) {
-    if (!currentCard) return;
+  function onEnd() {
+    if (!state.currentCard) return;
 
-    // Remove listeners
-    document.removeEventListener('mousemove', onDrag);
-    document.removeEventListener('mouseup', endDrag);
-    document.removeEventListener('touchmove', onDrag);
-    document.removeEventListener('touchend', endDrag);
+    document.removeEventListener('mousemove', onMove);
+    document.removeEventListener('mouseup', onEnd);
+    document.removeEventListener('touchmove', onMove);
+    document.removeEventListener('touchend', onEnd);
 
-    currentCard.classList.remove('prayer-card--dragging');
+    state.currentCard.classList.remove('prayer-card--dragging');
 
-    // If didn't move, toggle flip
-    if (!hasMoved) {
-      currentCard.classList.toggle('prayer-card--flipped');
+    if (!state.hasMoved) {
+      state.currentCard.classList.toggle('prayer-card--flipped');
     }
 
-    isDragging = false;
-    currentCard = null;
-    currentIndex = -1;
+    state.isDragging = false;
+    state.currentCard = null;
+    state.currentIndex = -1;
   }
 })();
 </script>
@@ -367,7 +357,7 @@
     {
       "type": "range",
       "id": "card_width",
-      "label": "Card width (px)",
+      "label": "Card width",
       "min": 200,
       "max": 600,
       "step": 10,
@@ -377,7 +367,7 @@
     {
       "type": "range",
       "id": "card_height",
-      "label": "Card height (px)",
+      "label": "Card height",
       "min": 150,
       "max": 500,
       "step": 10,
@@ -412,17 +402,13 @@
     {
       "type": "select",
       "id": "image_position",
-      "label": "Image position (when cropped)",
+      "label": "Image position",
       "options": [
         { "value": "center", "label": "Center" },
         { "value": "top", "label": "Top" },
         { "value": "bottom", "label": "Bottom" },
         { "value": "left", "label": "Left" },
-        { "value": "right", "label": "Right" },
-        { "value": "top left", "label": "Top Left" },
-        { "value": "top right", "label": "Top Right" },
-        { "value": "bottom left", "label": "Bottom Left" },
-        { "value": "bottom right", "label": "Bottom Right" }
+        { "value": "right", "label": "Right" }
       ],
       "default": "center"
     }
@@ -441,6 +427,30 @@
           "type": "image_picker",
           "id": "back_image",
           "label": "Back image"
+        },
+        {
+          "type": "header",
+          "content": "Starting Position"
+        },
+        {
+          "type": "range",
+          "id": "start_x",
+          "label": "Horizontal position",
+          "min": 0,
+          "max": 80,
+          "step": 5,
+          "default": 35,
+          "unit": "%"
+        },
+        {
+          "type": "range",
+          "id": "start_y",
+          "label": "Vertical position",
+          "min": 0,
+          "max": 70,
+          "step": 5,
+          "default": 20,
+          "unit": "%"
         }
       ]
     }

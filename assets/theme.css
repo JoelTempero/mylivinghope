@@ -81,17 +81,6 @@ body {
   color: var(--text-primary);
   background-color: var(--cream);
   overflow-x: hidden;
-  position: relative;
-  width: 100%;
-  max-width: 100vw;
-}
-
-/* Prevent horizontal scroll on all containers */
-.container,
-section,
-main {
-  max-width: 100%;
-  overflow-x: hidden;
 }
 
 /* Typography */
@@ -440,14 +429,12 @@ img {
   overflow: hidden;
   background: linear-gradient(135deg, var(--cream) 0%, var(--blush-light) 100%);
   padding-top: 80px;
-  max-width: 100vw;
 }
 
 .hero__bg {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  pointer-events: none;
 }
 
 .hero__pattern {
@@ -468,15 +455,6 @@ img {
   background: radial-gradient(circle, var(--soft-blush) 0%, transparent 70%);
   opacity: 0.6;
   filter: blur(80px);
-  pointer-events: none;
-}
-
-@media (max-width: 768px) {
-  .hero__glow {
-    width: 300px;
-    height: 300px;
-    right: -50px;
-  }
 }
 
 .hero__content {
@@ -606,16 +584,6 @@ img {
   top: -200px;
   left: -200px;
   filter: blur(60px);
-  pointer-events: none;
-}
-
-@media (max-width: 768px) {
-  .about__shape {
-    width: 250px;
-    height: 250px;
-    top: -100px;
-    left: -100px;
-  }
 }
 
 .about__grid {
@@ -1037,13 +1005,6 @@ img {
   background: radial-gradient(ellipse, var(--soft-blush) 0%, transparent 70%);
   opacity: 0.5;
   pointer-events: none;
-}
-
-@media (max-width: 768px) {
-  .cta__glow {
-    width: 400px;
-    height: 200px;
-  }
 }
 
 .cta__content {
