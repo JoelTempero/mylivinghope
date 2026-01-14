@@ -1,6 +1,6 @@
 {% comment %}
   Interactive Prayer Cards Section
-  Horizontal cards that flip to vertical in place
+  Flexible number of cards with adjustable aspect ratio
 {% endcomment %}
 
 <style>
@@ -11,19 +11,28 @@
 
 .interactive-cards__container {
   position: relative;
-  height: 450px;
-  max-width: 1200px;
+  min-height: 400px;
+  max-width: 1400px;
   margin: 0 auto;
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
-  padding: 0 2rem;
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.interactive-cards__empty {
+  text-align: center;
+  color: var(--text-muted, #8a8788);
+  font-style: italic;
+  padding: 4rem 2rem;
 }
 
 .prayer-card {
   position: relative;
-  width: 420px;
-  height: 300px;
+  width: {{ section.settings.card_width }}px;
+  height: {{ section.settings.card_height }}px;
   cursor: grab;
   perspective: 1000px;
   user-select: none;
@@ -40,7 +49,7 @@
   height: 100%;
   transform-style: preserve-3d;
   transition: transform 0.6s ease;
-  border-radius: 16px;
+  border-radius: {{ section.settings.card_radius }}px;
   box-shadow: 0 10px 30px rgba(33, 32, 33, 0.2);
 }
 
@@ -54,7 +63,7 @@
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
-  border-radius: 16px;
+  border-radius: {{ section.settings.card_radius }}px;
   overflow: hidden;
   background: var(--soft-blush, #F5D7CF);
 }
@@ -63,7 +72,8 @@
 .prayer-card__back img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: {{ section.settings.image_fit }};
+  object-position: {{ section.settings.image_position }};
 }
 
 .prayer-card__back {
@@ -77,21 +87,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-heading, 'Libre Baskerville', serif);
-  font-size: 1.5rem;
-  padding: 1.5rem;
-  text-align: center;
-}
-
-.prayer-card__front .prayer-card__placeholder {
-  color: var(--charcoal, #212021);
-  background: linear-gradient(135deg, #F5D7CF 0%, #E8C4BA 100%);
-}
-
-.prayer-card__back .prayer-card__placeholder {
-  color: white;
-  background: linear-gradient(135deg, #336F49 0%, #265438 100%);
-  font-size: 1.25rem;
+  font-family: var(--font-body, 'Montserrat', sans-serif);
+  font-size: 0.875rem;
+  color: var(--text-muted, #8a8788);
+  background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
 }
 
 .interactive-cards__hint {
@@ -101,30 +100,29 @@
   font-size: 0.9375rem;
 }
 
-/* Responsive adjustments */
+/* Responsive scaling */
 @media (max-width: 1200px) {
-  .interactive-cards__container {
-    flex-wrap: wrap;
-    height: auto;
-    gap: 2rem;
-    padding: 2rem;
-  }
-  
   .prayer-card {
-    width: 340px;
-    height: 240px;
+    width: calc({{ section.settings.card_width }}px * 0.85);
+    height: calc({{ section.settings.card_height }}px * 0.85);
   }
 }
 
 @media (max-width: 768px) {
-  .interactive-cards__container {
-    flex-direction: column;
-    align-items: center;
+  .prayer-card {
+    width: calc({{ section.settings.card_width }}px * 0.7);
+    height: calc({{ section.settings.card_height }}px * 0.7);
   }
   
+  .interactive-cards__container {
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
   .prayer-card {
-    width: 300px;
-    height: 210px;
+    width: calc({{ section.settings.card_width }}px * 0.55);
+    height: calc({{ section.settings.card_height }}px * 0.55);
   }
 }
 </style>
@@ -138,46 +136,53 @@
     </header>
 
     <div class="interactive-cards__container" id="cardsContainer">
-      {% assign card_names = "Anxious,Grateful,Lonely" | split: "," %}
-      {% for i in (1..3) %}
-        {% assign block = section.blocks[forloop.index0] %}
-        {% assign default_name = card_names[forloop.index0] %}
-        <div class="prayer-card" data-index="{{ forloop.index }}">
-          <div class="prayer-card__inner">
-            <div class="prayer-card__front">
-              {% if block.settings.front_image %}
-                <img 
-                  src="{{ block.settings.front_image | image_url: width: 840 }}" 
-                  alt="{{ block.settings.card_name | default: default_name }} - Front" 
-                  draggable="false"
-                >
-              {% else %}
-                <div class="prayer-card__placeholder">
-                  {{ block.settings.card_name | default: default_name }}
-                </div>
-              {% endif %}
-            </div>
-            <div class="prayer-card__back">
-              {% if block.settings.back_image %}
-                <img 
-                  src="{{ block.settings.back_image | image_url: width: 840 }}" 
-                  alt="{{ block.settings.card_name | default: default_name }} - Scripture" 
-                  draggable="false"
-                >
-              {% else %}
-                <div class="prayer-card__placeholder">
-                  Scripture &amp; Prayer for {{ block.settings.card_name | default: default_name }}
-                </div>
-              {% endif %}
+      {% if section.blocks.size > 0 %}
+        {% for block in section.blocks %}
+          <div class="prayer-card" data-index="{{ forloop.index }}" {{ block.shopify_attributes }}>
+            <div class="prayer-card__inner">
+              <div class="prayer-card__front">
+                {% if block.settings.front_image %}
+                  <img 
+                    src="{{ block.settings.front_image | image_url: width: 900 }}" 
+                    alt="Prayer card front" 
+                    draggable="false"
+                    loading="lazy"
+                  >
+                {% else %}
+                  <div class="prayer-card__placeholder">
+                    Add front image
+                  </div>
+                {% endif %}
+              </div>
+              <div class="prayer-card__back">
+                {% if block.settings.back_image %}
+                  <img 
+                    src="{{ block.settings.back_image | image_url: width: 900 }}" 
+                    alt="Prayer card back" 
+                    draggable="false"
+                    loading="lazy"
+                  >
+                {% else %}
+                  <div class="prayer-card__placeholder">
+                    Add back image
+                  </div>
+                {% endif %}
+              </div>
             </div>
           </div>
+        {% endfor %}
+      {% else %}
+        <div class="interactive-cards__empty">
+          <p>Add cards using the "Add Card" button in the sidebar</p>
         </div>
-      {% endfor %}
+      {% endif %}
     </div>
 
-    <p class="interactive-cards__hint">
-      {{ section.settings.hint_text }}
-    </p>
+    {% if section.blocks.size > 0 %}
+      <p class="interactive-cards__hint">
+        {{ section.settings.hint_text }}
+      </p>
+    {% endif %}
   </div>
 </section>
 
@@ -218,12 +223,16 @@
     }
 
     var transform = window.getComputedStyle(currentCard).transform;
-    var matrix = new DOMMatrix(transform);
-    initialLeft = matrix.m41;
-    initialTop = matrix.m42;
+    if (transform && transform !== 'none') {
+      var matrix = new DOMMatrix(transform);
+      initialLeft = matrix.m41;
+      initialTop = matrix.m42;
+    } else {
+      initialLeft = 0;
+      initialTop = 0;
+    }
 
     currentCard.style.cursor = 'grabbing';
-    currentCard.style.transition = 'none';
 
     document.addEventListener('mousemove', drag);
     document.addEventListener('mouseup', endDrag);
@@ -270,7 +279,6 @@
     document.removeEventListener('touchend', endDrag);
 
     currentCard.style.cursor = 'grab';
-    currentCard.style.transition = '';
 
     if (!hasMoved) {
       currentCard.classList.toggle('prayer-card--flipped');
@@ -286,6 +294,10 @@
 {
   "name": "Interactive Cards",
   "settings": [
+    {
+      "type": "header",
+      "content": "Section Text"
+    },
     {
       "type": "text",
       "id": "tag",
@@ -309,29 +321,88 @@
       "id": "hint_text",
       "label": "Hint text",
       "default": "Drag cards to move them • Click to flip and reveal Scripture"
+    },
+    {
+      "type": "header",
+      "content": "Card Dimensions"
+    },
+    {
+      "type": "range",
+      "id": "card_width",
+      "label": "Card width (px)",
+      "min": 200,
+      "max": 600,
+      "step": 10,
+      "default": 420,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_height",
+      "label": "Card height (px)",
+      "min": 150,
+      "max": 500,
+      "step": 10,
+      "default": 300,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Corner radius",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Image Settings"
+    },
+    {
+      "type": "select",
+      "id": "image_fit",
+      "label": "Image fit",
+      "options": [
+        { "value": "cover", "label": "Cover (crop to fill)" },
+        { "value": "contain", "label": "Contain (show full image)" },
+        { "value": "fill", "label": "Stretch to fill" }
+      ],
+      "default": "cover"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image position (when cropped)",
+      "options": [
+        { "value": "center", "label": "Center" },
+        { "value": "top", "label": "Top" },
+        { "value": "bottom", "label": "Bottom" },
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" },
+        { "value": "top left", "label": "Top Left" },
+        { "value": "top right", "label": "Top Right" },
+        { "value": "bottom left", "label": "Bottom Left" },
+        { "value": "bottom right", "label": "Bottom Right" }
+      ],
+      "default": "center"
     }
   ],
   "blocks": [
     {
       "type": "card",
       "name": "Card",
-      "limit": 3,
       "settings": [
-        {
-          "type": "text",
-          "id": "card_name",
-          "label": "Card name",
-          "default": "Emotion"
-        },
         {
           "type": "image_picker",
           "id": "front_image",
-          "label": "Front image (horizontal)"
+          "label": "Front image"
         },
         {
           "type": "image_picker",
           "id": "back_image",
-          "label": "Back image (horizontal)"
+          "label": "Back image"
         }
       ]
     }
@@ -339,26 +410,7 @@
   "presets": [
     {
       "name": "Interactive Cards",
-      "blocks": [
-        {
-          "type": "card",
-          "settings": {
-            "card_name": "Anxious"
-          }
-        },
-        {
-          "type": "card",
-          "settings": {
-            "card_name": "Grateful"
-          }
-        },
-        {
-          "type": "card",
-          "settings": {
-            "card_name": "Lonely"
-          }
-        }
-      ]
+      "blocks": []
     }
   ]
 }
