@@ -31,11 +31,33 @@
           "button_1_text": "Explore Cards",
           "button_1_link": "",
           "button_2_text": "Learn More",
-          "button_2_link": ""
+          "button_2_link": "",
+          "main_image": "shopify://shop_images/MLH_Photoset_A-04.jpg",
+          "float_image_1": "shopify://shop_images/MLH_Photoset_A-13.jpg",
+          "float_image_2": "shopify://shop_images/MLH_Photoset_A-06.jpg"
         }
       },
       "about": {
         "type": "about",
+        "blocks": {
+          "verse_fWNUp9": {
+            "type": "verse",
+            "settings": {
+              "verse_text": "\"Your word is a lamp for my feet, a light on my path.\"",
+              "verse_reference": "Psalm 119:105"
+            }
+          },
+          "text_8zDtLD": {
+            "type": "text",
+            "settings": {
+              "text": "Prayer Portals were born from a simple observation: many of us want to connect with God but struggle to find the words. Whether you're feeling overwhelmed, grateful, confused, or hopeful—these cards meet you where you are.\n\nEach card connects an emotion or need with relevant Scripture and a prayer starter. They won't pray for you, but they'll help you begin. Created in Christchurch, New Zealand, for youth ministries, small groups, and anyone seeking a deeper prayer life."
+            }
+          }
+        },
+        "block_order": [
+          "verse_fWNUp9",
+          "text_8zDtLD"
+        ],
         "settings": {
           "heading": "Helping You <span>Pray</span> Without Shame or Confusion"
         }
