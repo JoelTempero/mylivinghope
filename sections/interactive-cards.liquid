@@ -1,12 +1,12 @@
 {% comment %}
   Interactive Prayer Cards Section
-  Flexible number of cards with adjustable aspect ratio
+  Cards start centered and spread evenly - always visible
 {% endcomment %}
 
 <style>
 .interactive-cards-section {
   padding: 6rem 0;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .interactive-cards__container {
@@ -195,19 +195,26 @@
   var currentCard = null;
   var startX = 0;
   var startY = 0;
-  var initialLeft = 0;
-  var initialTop = 0;
+  var currentX = 0;
+  var currentY = 0;
   var hasMoved = false;
   var highestZ = 10;
+  
+  // Store each card's current transform
+  var cardTransforms = [];
 
   for (var i = 0; i < cards.length; i++) {
     cards[i].style.zIndex = i + 1;
-    cards[i].addEventListener('mousedown', startDrag);
-    cards[i].addEventListener('touchstart', startDrag);
+    cardTransforms[i] = { x: 0, y: 0 };
+    
+    (function(index) {
+      cards[index].addEventListener('mousedown', function(e) { startDrag(e, index); });
+      cards[index].addEventListener('touchstart', function(e) { startDrag(e, index); });
+    })(i);
   }
 
-  function startDrag(e) {
-    currentCard = this;
+  function startDrag(e, index) {
+    currentCard = cards[index];
     isDragging = true;
     hasMoved = false;
 
@@ -222,22 +229,15 @@
       startY = e.clientY;
     }
 
-    var transform = window.getComputedStyle(currentCard).transform;
-    if (transform && transform !== 'none') {
-      var matrix = new DOMMatrix(transform);
-      initialLeft = matrix.m41;
-      initialTop = matrix.m42;
-    } else {
-      initialLeft = 0;
-      initialTop = 0;
-    }
+    currentX = cardTransforms[index].x;
+    currentY = cardTransforms[index].y;
 
     currentCard.style.cursor = 'grabbing';
 
     document.addEventListener('mousemove', drag);
-    document.addEventListener('mouseup', endDrag);
+    document.addEventListener('mouseup', function(ev) { endDrag(ev, index); });
     document.addEventListener('touchmove', drag, { passive: false });
-    document.addEventListener('touchend', endDrag);
+    document.addEventListener('touchend', function(ev) { endDrag(ev, index); });
 
     e.preventDefault();
   }
@@ -264,21 +264,27 @@
       hasMoved = true;
     }
 
-    var newX = initialLeft + deltaX;
-    var newY = initialTop + deltaY;
+    var newX = currentX + deltaX;
+    var newY = currentY + deltaY;
 
     currentCard.style.transform = 'translate(' + newX + 'px, ' + newY + 'px)';
   }
 
-  function endDrag(e) {
+  function endDrag(e, index) {
     if (!currentCard) return;
 
     document.removeEventListener('mousemove', drag);
-    document.removeEventListener('mouseup', endDrag);
     document.removeEventListener('touchmove', drag);
-    document.removeEventListener('touchend', endDrag);
 
     currentCard.style.cursor = 'grab';
+
+    // Save current position
+    var transform = currentCard.style.transform;
+    var match = transform.match(/translate\(([^,]+)px,\s*([^)]+)px\)/);
+    if (match) {
+      cardTransforms[index].x = parseFloat(match[1]);
+      cardTransforms[index].y = parseFloat(match[2]);
+    }
 
     if (!hasMoved) {
       currentCard.classList.toggle('prayer-card--flipped');
