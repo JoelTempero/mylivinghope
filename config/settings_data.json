@@ -153,13 +153,22 @@
       "testimonials": {
         "type": "testimonials",
         "blocks": {
+          "testimonial_JJqPe3": {
+            "type": "testimonial",
+            "settings": {
+              "quote": "Leaders could immediately see how these cards open up prayer in a way that's simple, real, and accessible for young people. Instant hit at our youth leaders conference.",
+              "name": "",
+              "initials": "BY",
+              "role": "Youth Leader"
+            }
+          },
           "testimonial_HpPkWD": {
             "type": "testimonial",
             "settings": {
               "quote": "We use these in our small group and they've helped people who've never prayed out loud feel comfortable sharing. The Scripture connections are beautiful and relevant.",
               "name": "",
-              "initials": "",
-              "role": "Youth Leader"
+              "initials": "DK",
+              "role": "Small Group Leader"
             }
           },
           "testimonial_P6XaHw": {
@@ -167,7 +176,7 @@
             "settings": {
               "quote": "I've always struggled to know what to pray. These cards meet me exactly where I am emotionally and help me find words when I have none. They've completely changed my quiet times.",
               "name": "",
-              "initials": "",
+              "initials": "YL",
               "role": "Youth"
             }
           },
@@ -176,12 +185,13 @@
             "settings": {
               "quote": "The Prayer Prompts were incredibly helpful. Our youth group now has a tangible way to engage with prayer that doesn't feel forced or awkward. The cards open up real conversations with God.",
               "name": "",
-              "initials": "",
+              "initials": "SM",
               "role": "Youth Leader"
             }
           }
         },
         "block_order": [
+          "testimonial_JJqPe3",
           "testimonial_HpPkWD",
           "testimonial_P6XaHw",
           "testimonial_RAhANz"
