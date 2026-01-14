@@ -106,21 +106,27 @@
             "type": "card",
             "settings": {
               "front_image": "shopify://shop_images/card-3-front.jpg",
-              "back_image": "shopify://shop_images/card-3-back.jpg"
+              "back_image": "shopify://shop_images/card-3-back.jpg",
+              "start_x": 75,
+              "start_y": 5
             }
           },
           "card_yrJUaB": {
             "type": "card",
             "settings": {
               "front_image": "shopify://shop_images/card-2-front.jpg",
-              "back_image": "shopify://shop_images/card-2-back.jpg"
+              "back_image": "shopify://shop_images/card-2-back.jpg",
+              "start_x": 35,
+              "start_y": 20
             }
           },
           "card_rTeVrJ": {
             "type": "card",
             "settings": {
               "front_image": "shopify://shop_images/card-1-front.jpg",
-              "back_image": "shopify://shop_images/card-1-back.jpg"
+              "back_image": "shopify://shop_images/card-1-back.jpg",
+              "start_x": 0,
+              "start_y": 20
             }
           }
         },
