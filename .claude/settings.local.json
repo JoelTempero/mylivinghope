@@ -4,7 +4,10 @@
       "Bash(npm install:*)",
       "Bash(npm run build:*)",
       "Bash(firebase:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(node -e:*)",
+      "Bash(powershell:*)",
+      "Bash(xxd:*)"
     ]
   }
 }
