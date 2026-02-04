@@ -1,0 +1,52 @@
+{% comment %}
+  About Page Template
+  Select this template for your About page in Shopify admin
+{% endcomment %}
+
+<div class="page-header page-header--about">
+  <div class="container">
+    <h1>{{ page.title }}</h1>
+  </div>
+</div>
+
+<section class="section about about--page">
+  <div class="container">
+    <div class="about__shape" aria-hidden="true"></div>
+    <div class="about__grid">
+      {% if page.metafields.custom.about_image %}
+        <div class="about__image-wrapper reveal">
+          <img
+            src="{{ page.metafields.custom.about_image | image_url: width: 800 }}"
+            alt="{{ page.title }}"
+            class="about__image"
+            width="800"
+            height="600"
+            loading="lazy"
+          >
+          <div class="about__accent" aria-hidden="true"></div>
+        </div>
+      {% endif %}
+
+      <div class="about__content reveal">
+        <div class="prose">
+          {{ page.content }}
+        </div>
+
+        {% if page.metafields.custom.scripture_text %}
+          <blockquote class="about__verse">
+            <p class="about__verse-text">{{ page.metafields.custom.scripture_text }}</p>
+            {% if page.metafields.custom.scripture_reference %}
+              <cite class="about__verse-cite">— {{ page.metafields.custom.scripture_reference }}</cite>
+            {% endif %}
+          </blockquote>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% comment %}
+  Optional: Include additional sections that make sense for an about page
+{% endcomment %}
+{% section 'testimonials' %}
+{% section 'cta' %}

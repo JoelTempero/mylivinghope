@@ -24,11 +24,11 @@
 
           <a href="{{ product.url }}" class="product-card__image-wrapper">
             {% if product.featured_image %}
-              <img 
-                src="{{ product.featured_image | image_url: width: 800 }}"
+              <img
+                src="{{ product.featured_image | image_url: width: 600, height: 600, crop: 'center' }}"
                 alt="{{ product.featured_image.alt | default: product.title }}"
                 class="product-card__image"
-                width="800"
+                width="600"
                 height="600"
                 loading="lazy"
               >
@@ -39,8 +39,10 @@
             <h3 class="product-card__title">
               <a href="{{ product.url }}">{{ product.title }}</a>
             </h3>
-            <p class="product-card__description">{{ product.description | strip_html | truncate: 120 }}</p>
-            
+            {% if product.description != blank %}
+              <p class="product-card__description">{{ product.description | strip_html | truncate: 80 }}</p>
+            {% endif %}
+
             <div class="product-card__pricing">
               <span class="product-card__price">{{ product.price | money }}</span>
               {% if product.compare_at_price > product.price %}
