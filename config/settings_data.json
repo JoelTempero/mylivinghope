@@ -247,6 +247,40 @@
           "social_instagram": "",
           "social_youtube": ""
         }
+      },
+      "page-header": {
+        "type": "page-header",
+        "settings": {
+          "subtitle": ""
+        }
+      },
+      "page-content": {
+        "type": "page-content",
+        "blocks": {
+          "text_nbP3Tg": {
+            "type": "text",
+            "settings": {
+              "heading": "",
+              "subheading": "",
+              "text": "<p>Hey! I’m Jesse<br/><br/>I love Jesus and I love seeing other people discover his Love.<br/>To help people on their faith journey, I have started a business called My Living Hope. I hope to provide resources that serve as catalysts for people wanting to grow deeper with Jesus.<br/><br/>My first product is called Prayer Portals. These cards are designed to help you bring your emotions and desires to Jesus. They aim to assist you in making prayer easy, accessible and real.<br/><br/></p>"
+            }
+          },
+          "image_cUePcY": {
+            "type": "image",
+            "settings": {
+              "image": "shopify://shop_images/IMG_0172.jpg",
+              "caption": ""
+            }
+          }
+        },
+        "block_order": [
+          "text_nbP3Tg",
+          "image_cUePcY"
+        ],
+        "settings": {
+          "background": "cream",
+          "wide_layout": false
+        }
       }
     },
     "content_for_index": []
