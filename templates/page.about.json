@@ -1,0 +1,58 @@
+{
+  "sections": {
+    "page-header": {
+      "type": "page-header",
+      "settings": {}
+    },
+    "main-content": {
+      "type": "page-content",
+      "blocks": {
+        "heading-1": {
+          "type": "heading",
+          "settings": {
+            "tag": "Our Story",
+            "title": "About My Living Hope",
+            "subtitle": "Prayer cards born from a heart for connection"
+          }
+        },
+        "text-1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Prayer Portals were born from a simple observation: many of us want to connect with God but struggle to find the words. Whether you're feeling overwhelmed, grateful, confused, or hopeful—these cards meet you where you are.</p>"
+          }
+        },
+        "image-text-1": {
+          "type": "image_text",
+          "settings": {
+            "heading": "Helping You <span>Pray</span>",
+            "text": "<p>Each card connects an emotion or need with relevant Scripture and a prayer starter. They won't pray for you, but they'll help you begin.</p><p>Created in Christchurch, New Zealand, for youth ministries, small groups, and anyone seeking a deeper prayer life.</p>",
+            "reverse": false
+          }
+        },
+        "quote-1": {
+          "type": "quote",
+          "settings": {
+            "quote": "\"Your word is a lamp for my feet, a light on my path.\"",
+            "citation": "Psalm 119:105"
+          }
+        }
+      },
+      "block_order": ["heading-1", "text-1", "image-text-1", "quote-1"],
+      "settings": {
+        "background": "cream",
+        "wide_layout": false
+      }
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "disabled": true,
+      "settings": {}
+    },
+    "cta": {
+      "type": "cta",
+      "disabled": true,
+      "settings": {}
+    }
+  },
+  "order": ["page-header", "main-content", "testimonials", "cta"]
+}

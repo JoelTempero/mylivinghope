@@ -1,67 +1,312 @@
 {% comment %}
-  Collection Template
+  Collection Template - All Products Page
 {% endcomment %}
 
-<div class="page-header">
-  <div class="container">
-    <h1>{{ collection.title }}</h1>
-    {% if collection.description != blank %}
-      <p>{{ collection.description }}</p>
-    {% endif %}
-  </div>
-</div>
+<style>
+/* Collection Page Styles - Scoped to ensure they apply */
+.collection-page {
+  padding-top: 0;
+}
 
-<section class="section">
-  <div class="container">
-    <div class="products__grid">
-      {% for product in collection.products %}
-        <article class="product-card reveal reveal--delay-{{ forloop.index | modulo: 4 }}">
+.collection-header {
+  background: linear-gradient(135deg, var(--forest-green, #336F49) 0%, var(--green-dark, #265438) 100%);
+  padding: 3rem 0;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .collection-header {
+    padding: 4rem 0;
+  }
+}
+
+.collection-header h1 {
+  color: #fff;
+  margin-bottom: 0.5rem;
+  font-size: clamp(1.75rem, 4vw, 3rem);
+}
+
+.collection-header p {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.collection-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  padding: 2rem 5%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+@media (min-width: 640px) {
+  .collection-grid {
+    gap: 1.5rem;
+    padding: 3rem 5%;
+  }
+}
+
+@media (min-width: 900px) {
+  .collection-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .collection-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.collection-card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(33, 32, 33, 0.07);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.collection-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 15px 35px rgba(33, 32, 33, 0.12);
+}
+
+.collection-card__image-link {
+  display: block;
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%; /* 1:1 aspect ratio fallback */
+  overflow: hidden;
+  background: #FBE9E4;
+}
+
+.collection-card__image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.collection-card:hover .collection-card__image {
+  transform: scale(1.05);
+}
+
+.collection-card__badge {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  background: #212021;
+  color: #fff;
+  padding: 0.25rem 0.625rem;
+  border-radius: 50px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  z-index: 2;
+}
+
+@media (min-width: 640px) {
+  .collection-card__badge {
+    top: 0.75rem;
+    left: 0.75rem;
+    padding: 0.375rem 0.875rem;
+    font-size: 0.75rem;
+  }
+}
+
+.collection-card__body {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+@media (min-width: 640px) {
+  .collection-card__body {
+    padding: 1.25rem;
+  }
+}
+
+.collection-card__title {
+  font-family: var(--font-heading, 'Libre Baskerville', serif);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #212021;
+  margin: 0 0 0.375rem 0;
+  line-height: 1.3;
+}
+
+@media (min-width: 640px) {
+  .collection-card__title {
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+  }
+}
+
+.collection-card__title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.collection-card__title a:hover {
+  color: #336F49;
+}
+
+.collection-card__desc {
+  font-size: 0.8rem;
+  color: #8a8788;
+  line-height: 1.5;
+  margin: 0 0 0.75rem 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@media (max-width: 479px) {
+  .collection-card__desc {
+    display: none;
+  }
+}
+
+@media (min-width: 640px) {
+  .collection-card__desc {
+    font-size: 0.875rem;
+  }
+}
+
+.collection-card__footer {
+  margin-top: auto;
+}
+
+.collection-card__price {
+  font-family: var(--font-heading, 'Libre Baskerville', serif);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #212021;
+  margin-bottom: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .collection-card__price {
+    font-size: 1.375rem;
+  }
+}
+
+.collection-card__price-old {
+  font-size: 0.85rem;
+  color: #8a8788;
+  text-decoration: line-through;
+  margin-left: 0.5rem;
+  font-weight: 400;
+}
+
+.collection-card__btn {
+  display: block;
+  width: 100%;
+  padding: 0.625rem 1rem;
+  background: #336F49;
+  color: #fff;
+  font-family: var(--font-body, 'Montserrat', sans-serif);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  border: none;
+  border-radius: 50px;
+  transition: all 0.25s ease;
+}
+
+@media (min-width: 640px) {
+  .collection-card__btn {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.875rem;
+  }
+}
+
+.collection-card__btn:hover {
+  background: #265438;
+  transform: translateY(-2px);
+}
+
+.collection-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #8a8788;
+}
+</style>
+
+<div class="collection-page">
+  <div class="collection-header">
+    <div class="container">
+      <h1>{{ collection.title }}</h1>
+      {% if collection.description != blank %}
+        <p>{{ collection.description }}</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="collection-grid">
+    {% for product in collection.products %}
+      <article class="collection-card">
+        <a href="{{ product.url }}" class="collection-card__image-link">
           {% if product.compare_at_price > product.price %}
-            <span class="product-card__badge product-card__badge--sale">
+            <span class="collection-card__badge">
               Save {{ product.compare_at_price | minus: product.price | money }}
             </span>
           {% endif %}
+          {% if product.featured_image %}
+            <img
+              src="{{ product.featured_image | image_url: width: 600, height: 600, crop: 'center' }}"
+              alt="{{ product.featured_image.alt | default: product.title }}"
+              class="collection-card__image"
+              width="600"
+              height="600"
+              loading="lazy"
+            >
+          {% endif %}
+        </a>
 
-          <a href="{{ product.url }}" class="product-card__image-wrapper">
-            {% if product.featured_image %}
-              <img
-                src="{{ product.featured_image | image_url: width: 600, height: 600, crop: 'center' }}"
-                alt="{{ product.featured_image.alt | default: product.title }}"
-                class="product-card__image"
-                width="600"
-                height="600"
-                loading="lazy"
-              >
-            {% endif %}
-          </a>
+        <div class="collection-card__body">
+          <h3 class="collection-card__title">
+            <a href="{{ product.url }}">{{ product.title }}</a>
+          </h3>
 
-          <div class="product-card__content">
-            <h3 class="product-card__title">
-              <a href="{{ product.url }}">{{ product.title }}</a>
-            </h3>
-            {% if product.description != blank %}
-              <p class="product-card__description">{{ product.description | strip_html | truncate: 80 }}</p>
-            {% endif %}
+          {% if product.description != blank %}
+            <p class="collection-card__desc">{{ product.description | strip_html | truncate: 80 }}</p>
+          {% endif %}
 
-            <div class="product-card__pricing">
-              <span class="product-card__price">{{ product.price | money }}</span>
+          <div class="collection-card__footer">
+            <div class="collection-card__price">
+              {{ product.price | money }}
               {% if product.compare_at_price > product.price %}
-                <span class="product-card__price-old">{{ product.compare_at_price | money }}</span>
+                <span class="collection-card__price-old">{{ product.compare_at_price | money }}</span>
               {% endif %}
             </div>
 
-            <a href="{{ product.url }}" class="btn btn--primary product-card__btn">View Product</a>
+            <a href="{{ product.url }}" class="collection-card__btn">View Product</a>
           </div>
-        </article>
-      {% else %}
+        </div>
+      </article>
+    {% else %}
+      <div class="collection-empty">
         <p>No products found in this collection.</p>
-      {% endfor %}
-    </div>
-
-    {% if paginate.pages > 1 %}
-      <nav class="pagination">
-        {{ paginate | default_pagination }}
-      </nav>
-    {% endif %}
+      </div>
+    {% endfor %}
   </div>
-</section>
+
+  {% if paginate.pages > 1 %}
+    <nav class="pagination" style="text-align: center; padding: 2rem 0 4rem;">
+      {{ paginate | default_pagination }}
+    </nav>
+  {% endif %}
+</div>
