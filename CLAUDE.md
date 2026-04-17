@@ -59,16 +59,25 @@ Brain path: `D:/Sidequest Digital/Dev Projects/Brain/playbooks/`
 - Portal scaffolded with auth, layout, routing, and page stubs
 - UI component library started (Button, Card, Modal, Table, Input, Select, Badge)
 - Firebase integration with auth hook and collection hook
+- **Design specs complete** for both headless storefront and shared AI context layer
+- **Implementation plans complete** for both subsystems (22 tasks total)
 
 ## Next Steps
-- [ ] Assess current portal state and identify what's functional vs stub
-- [ ] Continue building out portal CRUD pages
+- [ ] Execute shared AI context layer plan (8 tasks) — use subagent-driven-development
+  - Plan: `docs/superpowers/plans/2026-04-18-shared-ai-context-layer.md`
+  - Set up git worktree first (`.worktrees/` dir, branch `feature/shared-ai-context`)
+- [ ] Execute headless storefront plan (14 tasks) — after context layer
+  - Plan: `docs/superpowers/plans/2026-04-18-headless-storefront.md`
 - [ ] Review and clean up git status (many deleted/unstaged files)
 
 ## Session Log
 ### 2026-04-18
 - Initial scan: identified project structure (Shopify theme + React portal)
 - Created CLAUDE.md for project tracking
+- Brainstormed two subsystems: headless storefront (Next.js + Shopify Storefront API) and shared AI context layer (Firebase Storage sync + Firestore MCP server)
+- Wrote and committed design specs: `docs/superpowers/specs/2026-04-18-headless-storefront-design.md` and `docs/superpowers/specs/2026-04-18-shared-ai-context-layer-design.md`
+- Wrote and committed implementation plans: `docs/superpowers/plans/2026-04-18-headless-storefront.md` and `docs/superpowers/plans/2026-04-18-shared-ai-context-layer.md`
+- Ready to execute — start with context layer plan using subagent-driven-development
 
 ## Key Decisions
 - Portal uses JSX (not TypeScript) — keep consistent
