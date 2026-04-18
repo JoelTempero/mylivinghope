@@ -43,6 +43,33 @@ Brain path: `D:/Sidequest Digital/Dev Projects/Brain/playbooks/`
 - **Auth**: Firebase Auth
 - **Icons**: Lucide React
 
+## Shared Business Context
+Read these files at session start for business context (run `npm run sync-context -- pull` first in `portal.mylivinghope/`):
+- `portal.mylivinghope/shared/CLAUDE-JOEL.md` — Joel's session logs and dev notes
+- `portal.mylivinghope/shared/CLAUDE-JESSE.md` — Jesse's session logs and business notes
+- `portal.mylivinghope/shared/MLH-SHARED.md` — Brand overview, priorities, key decisions
+
+To query live Firestore data during a session, use the mlh-firestore MCP tools or run:
+- `node portal.mylivinghope/scripts/query-firestore.js <collection>` — query any collection
+- `node portal.mylivinghope/scripts/query-firestore.js --list` — see available collections
+
+## MCP Server Setup
+Add to `.claude/settings.json` on each machine:
+```json
+{
+  "mcpServers": {
+    "mlh-firestore": {
+      "command": "node",
+      "args": ["<absolute-path-to>/portal.mylivinghope/mcp-server/index.js"],
+      "env": {
+        "FIREBASE_STORAGE_BUCKET": "my-living-hope.firebasestorage.app",
+        "GOOGLE_APPLICATION_CREDENTIALS": "<absolute-path-to>/portal.mylivinghope/firebase-service-key.json"
+      }
+    }
+  }
+}
+```
+
 ## Build & Dev Commands
 - Dev server: `cd portal.mylivinghope && npm run dev`
 - Build: `cd portal.mylivinghope && npm run build`
