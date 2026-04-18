@@ -109,6 +109,7 @@ Add to `.claude/settings.json` on each machine:
 ## Key Decisions
 - Portal uses JSX (not TypeScript) — keep consistent
 - Zustand for state management over Redux/Context
+- Single Firebase project (`my-living-hope`) for everything — portal + live storefront hosted as separate web apps. `mlh-website-2a597` deleted 2026-04-18.
 
 ## Known Issues
 - Many files showing as deleted in git status — needs investigation
