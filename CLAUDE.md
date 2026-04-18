@@ -1,14 +1,13 @@
 # My Living Hope
 
 ## Overview
-- **Client**: My Living Hope (greeting card business)
+- **Client**: My Living Hope (greeting card business, Jesse Major founder)
 - **Type**: Shopify Storefront + Firebase Admin Portal
-- **Status**: In Progress
+- **Status**: Portal functional, storefront next
 
 ## Project Structure
-- `mylivinghope/` — Shopify theme (Liquid templates, CSS, JS)
+- `mylivinghope/` — Shopify theme (Liquid templates, synced by Shopify)
 - `portal.mylivinghope/` — React admin portal (Vite + Firebase)
-- `mylivinghope/web/` — Legacy Next.js app (deprecated, appears abandoned)
 
 ## Playbooks In Use
 Read from Brain at session start. Do not copy into this project.
@@ -33,15 +32,16 @@ Brain path: `D:/Sidequest Digital/Dev Projects/Brain/playbooks/`
 - `playbooks/Analytics.md` — storefront analytics
 
 ## Tech Stack
-- **Storefront**: Shopify (Liquid, custom theme)
+- **Storefront**: Shopify (Liquid, custom theme) — planned headless rebuild
 - **Portal Frontend**: React 19 + Vite 7 + Tailwind CSS v4
 - **Portal State**: Zustand
 - **Portal Forms**: React Hook Form + Zod validation
 - **Portal Tables**: TanStack React Table
 - **Portal Routing**: React Router v7
-- **Backend/DB**: Firebase (Firestore)
+- **Backend/DB**: Firebase (Firestore) — project `my-living-hope`
 - **Auth**: Firebase Auth
 - **Icons**: Lucide React
+- **AI Context**: Firebase Storage sync + Firestore MCP server + CLI scripts
 
 ## Shared Business Context
 Read these files at session start for business context (run `npm run sync-context -- pull` first in `portal.mylivinghope/`):
@@ -74,6 +74,9 @@ Add to `.claude/settings.json` on each machine:
 - Dev server: `cd portal.mylivinghope && npm run dev`
 - Build: `cd portal.mylivinghope && npm run build`
 - Lint: `cd portal.mylivinghope && npm run lint`
+- Deploy: `cd portal.mylivinghope && firebase deploy --only hosting --project my-living-hope`
+- Deploy storage rules: `cd portal.mylivinghope && firebase deploy --only storage --project my-living-hope`
+- Sync context: `cd portal.mylivinghope && npm run sync-context -- pull`
 
 ## Code Conventions
 - JSX (not TSX) — portal uses plain JavaScript with JSX
@@ -83,34 +86,44 @@ Add to `.claude/settings.json` on each machine:
 
 ## Current Progress
 - Shopify theme built with custom sections (hero, cards, testimonials, etc.)
-- Portal scaffolded with auth, layout, routing, and page stubs
-- UI component library started (Button, Card, Modal, Table, Input, Select, Badge)
-- Firebase integration with auth hook and collection hook
-- **Design specs complete** for both headless storefront and shared AI context layer
-- **Implementation plans complete** for both subsystems (22 tasks total)
+- Portal fully functional — all 12 pages with working Firestore CRUD
+- UI component library: Button, Card, Modal, Table, Input, Select, Badge
+- Firebase integration with auth hook and useCollection hook
+- Shared AI context layer complete (scripts, MCP server, Cloud Function, portal Claude page)
+- Context files populated with real business data + Jesse's setup guide
+- Storage rules and CORS configured for shared context files
+- Deployed to my-living-hope.web.app
 
 ## Next Steps
-- [ ] Execute shared AI context layer plan (8 tasks) — use subagent-driven-development
-  - Plan: `docs/superpowers/plans/2026-04-18-shared-ai-context-layer.md`
-  - Set up git worktree first (`.worktrees/` dir, branch `feature/shared-ai-context`)
-- [ ] Execute headless storefront plan (14 tasks) — after context layer
-  - Plan: `docs/superpowers/plans/2026-04-18-headless-storefront.md`
-- [ ] Review and clean up git status (many deleted/unstaged files)
+- [ ] Joel to review portal Claude page live and fix any issues
+- [ ] Build headless storefront (14-task plan at `docs/superpowers/plans/2026-04-18-headless-storefront.md`)
+- [ ] Wire MCP server into Joel's `.claude/settings.json` for native Firestore tools
+- [ ] Deploy Cloud Function (`firebase deploy --only functions --project my-living-hope`)
+- [ ] Help Jesse get Claude Code set up on his machine
 
 ## Session Log
-### 2026-04-18
+### 2026-04-18 (session 2)
+- Built shared AI context layer (8 tasks): firebase-admin scripts, sync-context CLI, Firestore query CLI, MCP server, Cloud Function, portal Sync Context button
+- Consolidated Firebase projects — deleted `mlh-website-2a597`, keeping `my-living-hope`
+- Added Claude Context page to portal (3 tabs: Shared Context, Joel's Notes, Jesse's Notes)
+- Populated all 3 context files with real business data + Jesse's setup guide
+- Fixed Storage rules (added `shared/` path) and CORS for the bucket
+- Deployed portal to my-living-hope.web.app
+- Priority decision: portal polish/fixes first, then headless storefront
+
+### 2026-04-18 (session 1)
 - Initial scan: identified project structure (Shopify theme + React portal)
-- Created CLAUDE.md for project tracking
-- Brainstormed two subsystems: headless storefront (Next.js + Shopify Storefront API) and shared AI context layer (Firebase Storage sync + Firestore MCP server)
-- Wrote and committed design specs: `docs/superpowers/specs/2026-04-18-headless-storefront-design.md` and `docs/superpowers/specs/2026-04-18-shared-ai-context-layer-design.md`
-- Wrote and committed implementation plans: `docs/superpowers/plans/2026-04-18-headless-storefront.md` and `docs/superpowers/plans/2026-04-18-shared-ai-context-layer.md`
-- Ready to execute — start with context layer plan using subagent-driven-development
+- Created CLAUDE.md, brainstormed headless storefront + shared AI context layer
+- Wrote design specs and implementation plans for both subsystems
 
 ## Key Decisions
 - Portal uses JSX (not TypeScript) — keep consistent
 - Zustand for state management over Redux/Context
-- Single Firebase project (`my-living-hope`) for everything — portal + live storefront hosted as separate web apps. `mlh-website-2a597` deleted 2026-04-18.
+- Single Firebase project (`my-living-hope`) for everything — portal + live storefront as separate web apps
+- Priority: portal functionality → headless storefront
+- All users (Joel, Jesse, Annabelle) can access Claude Context page
 
 ## Known Issues
-- Many files showing as deleted in git status — needs investigation
-- Legacy `mylivinghope/web/` Next.js app may need cleanup
+- Cloud Function `generateContext` not yet deployed (needs `firebase deploy --only functions`)
+- MCP server not yet wired into Joel's `.claude/settings.json`
+- PWA manifest icon missing (`pwa-192x192.png` — console warning on Claude page)
