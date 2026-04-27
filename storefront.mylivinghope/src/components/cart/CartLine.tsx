@@ -58,26 +58,26 @@ export default function CartLineItem({ line }: CartLineProps) {
         <div className="flex items-center gap-2 mt-2">
           <button
             onClick={() => updateQuantity(line.quantity - 1)}
-            className="w-8 h-8 rounded-full border border-charcoal/15 flex items-center justify-center hover:bg-charcoal/5 transition-colors"
+            className="w-11 h-11 rounded-full border border-charcoal/15 flex items-center justify-center hover:bg-charcoal/5 transition-colors"
             aria-label="Decrease quantity"
           >
-            <Minus className="w-3 h-3" />
+            <Minus className="w-3.5 h-3.5" />
           </button>
           <span className="text-sm font-medium w-6 text-center">
             {line.quantity}
           </span>
           <button
             onClick={() => updateQuantity(line.quantity + 1)}
-            className="w-8 h-8 rounded-full border border-charcoal/15 flex items-center justify-center hover:bg-charcoal/5 transition-colors"
+            className="w-11 h-11 rounded-full border border-charcoal/15 flex items-center justify-center hover:bg-charcoal/5 transition-colors"
             aria-label="Increase quantity"
           >
-            <Plus className="w-3 h-3" />
+            <Plus className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
       <button
         onClick={() => updateQuantity(0)}
-        className="text-text-muted hover:text-red-500 transition-colors self-start mt-1"
+        className="w-11 h-11 flex items-center justify-center rounded-full text-text-muted hover:text-red-500 hover:bg-red-50 transition-colors self-start"
         aria-label="Remove item"
       >
         <Trash2 className="w-4 h-4" />

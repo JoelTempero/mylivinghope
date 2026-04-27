@@ -22,7 +22,7 @@ export default function Header() {
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
           ? 'bg-forest-green shadow-lg'
-          : 'bg-forest-green'
+          : 'bg-forest-green/90 backdrop-blur-sm'
       }`}
     >
       <a
@@ -61,23 +61,16 @@ export default function Header() {
 
           <button
             onClick={openCart}
-            className="relative text-white/90 hover:text-white transition-colors"
+            className="relative text-white/90 hover:text-white transition-colors p-3"
             aria-label={`Cart (${itemCount} items)`}
           >
             <ShoppingBag className="w-5 h-5" />
             {itemCount > 0 && (
-              <span className="absolute -top-2 -right-2 w-5 h-5 bg-soft-blush text-charcoal text-xs font-bold rounded-full flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-soft-blush text-charcoal text-xs font-bold rounded-full flex items-center justify-center">
                 {itemCount}
               </span>
             )}
           </button>
-
-          <Link
-            href="/products"
-            className="bg-white text-forest-green text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-cream transition-colors"
-          >
-            Get Cards
-          </Link>
         </div>
 
         <div className="flex md:hidden items-center gap-3">
@@ -88,7 +81,7 @@ export default function Header() {
           >
             <ShoppingBag className="w-5 h-5" />
             {itemCount > 0 && (
-              <span className="absolute top-0 right-0 w-5 h-5 bg-soft-blush text-charcoal text-xs font-bold rounded-full flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-soft-blush text-charcoal text-xs font-bold rounded-full flex items-center justify-center">
                 {itemCount}
               </span>
             )}
@@ -131,15 +124,6 @@ export default function Header() {
           >
             Contact
           </Link>
-          <div className="pt-3">
-            <Link
-              href="/products"
-              onClick={() => setMobileOpen(false)}
-              className="inline-block bg-white text-forest-green text-sm font-semibold px-6 py-3 rounded-full hover:bg-cream transition-colors"
-            >
-              Get Cards
-            </Link>
-          </div>
         </div>
       )}
     </header>

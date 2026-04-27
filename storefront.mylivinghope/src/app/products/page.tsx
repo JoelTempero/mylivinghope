@@ -25,7 +25,7 @@ export default async function ProductsPage() {
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-3">
             Shop
           </h1>
-          <p className="text-white/70 text-lg max-w-xl mx-auto">
+          <p className="text-white/85 text-lg max-w-xl mx-auto">
             Browse our collection of Prayer Portals &mdash; beautiful, practical
             tools for your spiritual journey
           </p>

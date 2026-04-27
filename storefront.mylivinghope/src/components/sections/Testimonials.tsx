@@ -22,13 +22,13 @@ export default function Testimonials() {
     <section className="py-20 md:py-28 bg-forest-green">
       <div className="max-w-[1400px] mx-auto px-[5%]">
         <div className="text-center max-w-2xl mx-auto mb-16">
-          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-white/60 mb-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-white/85 mb-4">
             Stories of Impact
           </p>
           <h2 className="text-[clamp(2rem,4vw,3rem)] font-bold text-white mb-4">
             What People Are Saying
           </h2>
-          <p className="text-white/70 text-lg">
+          <p className="text-white/85 text-lg">
             Lives transformed through deeper prayer
           </p>
         </div>
@@ -37,19 +37,19 @@ export default function Testimonials() {
           {testimonials.map((t) => (
             <div
               key={t.initials}
-              className="bg-white/[0.08] backdrop-blur-sm border border-white/10 rounded-2xl p-8 hover:bg-white/[0.12] hover:-translate-y-1 transition-all duration-300"
+              className="bg-white/[0.15] backdrop-blur-sm border border-white/15 rounded-2xl p-8 hover:bg-white/[0.20] hover:-translate-y-1 transition-all duration-300"
             >
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-white/15 flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 rounded-full bg-white/30 flex items-center justify-center flex-shrink-0">
                   <span className="text-sm font-bold text-white">
                     {t.initials}
                   </span>
                 </div>
                 <div>
-                  <svg className="w-8 h-8 text-white/20 mb-3" fill="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-8 h-8 text-white/35 mb-3" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151C7.546 6.068 5.983 8.789 5.983 11h4v10H0z" />
                   </svg>
-                  <p className="text-white/80 text-sm leading-relaxed">
+                  <p className="text-white/90 text-sm leading-relaxed">
                     {t.text}
                   </p>
                 </div>

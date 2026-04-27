@@ -15,15 +15,23 @@ export default function CTA() {
           through Prayer Portals. Perfect for personal devotion, youth groups,
           small groups, and ministry.
         </p>
-        <Link
-          href="/products"
-          className="inline-flex items-center gap-2 bg-forest-green hover:bg-green-dark text-white font-semibold px-10 py-4 rounded-full transition-colors text-base"
-        >
-          Get Your Cards Today
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <path d="M5 12h14M12 5l7 7-7 7" />
-          </svg>
-        </Link>
+        <div className="flex flex-wrap gap-4 justify-center">
+          <Link
+            href="/products"
+            className="inline-flex items-center gap-2 bg-forest-green hover:bg-green-dark text-white font-semibold px-10 py-4 rounded-full transition-colors text-base"
+          >
+            Get Your Cards Today
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </Link>
+          <Link
+            href="/contact"
+            className="inline-flex items-center gap-2 border-2 border-charcoal text-charcoal hover:bg-charcoal hover:text-white font-semibold px-10 py-4 rounded-full transition-colors text-base"
+          >
+            Get in Touch
+          </Link>
+        </div>
       </div>
     </section>
   )

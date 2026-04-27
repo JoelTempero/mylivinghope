@@ -12,7 +12,7 @@
   --color-cream: #FDF8F5;
   --color-off-white: #FAFAFA;
   --color-text-secondary: #5a5758;
-  --color-text-muted: #8a8788;
+  --color-text-muted: #706e6f;
 
   --font-heading: "Libre Baskerville", "Goudy Old Style", Georgia, serif;
   --font-body: "Montserrat", "Proxima Nova", system-ui, sans-serif;
@@ -36,11 +36,11 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--color-charcoal);
 }
 
-a {
+main a {
   color: var(--color-forest-green);
   transition: color 250ms;
 }
-a:hover {
+main a:hover {
   color: var(--color-green-dark);
 }
 
@@ -113,6 +113,17 @@ a:hover {
 
 .rotate-y-180 {
   transform: rotateY(180deg);
+}
+
+/* Focus-visible styles for keyboard navigation */
+:focus-visible {
+  outline: 2px solid var(--color-forest-green);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+footer :focus-visible {
+  outline-color: white;
 }
 
 /* Reduced motion */

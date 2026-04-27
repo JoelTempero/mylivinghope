@@ -44,7 +44,7 @@ export default function Hero() {
           </div>
 
           {/* Hero visuals */}
-          <div className="relative flex justify-center items-center">
+          <div className="relative flex justify-center items-center overflow-hidden py-8 sm:py-0 sm:overflow-visible">
             {/* Main image placeholder */}
             <div className="relative w-[280px] h-[380px] sm:w-[340px] sm:h-[460px] lg:w-[400px] lg:h-[540px] rounded-3xl bg-gradient-to-br from-forest-green/10 to-soft-blush/40 shadow-xl overflow-hidden flex items-center justify-center">
               <div className="text-center p-8">
@@ -58,17 +58,25 @@ export default function Hero() {
               </div>
             </div>
 
-            {/* Floating accent cards */}
-            <div className="absolute -top-4 -left-4 sm:-left-8 w-[120px] h-[160px] sm:w-[140px] sm:h-[190px] rounded-2xl bg-white shadow-lg animate-float flex items-center justify-center border border-soft-blush/30">
+            {/* Floating accent cards — hidden on very small screens */}
+            <div className="hidden sm:flex absolute -top-4 -left-8 w-[140px] h-[190px] rounded-2xl bg-white shadow-lg animate-float items-center justify-center border border-soft-blush/30">
               <div className="text-center p-3">
-                <p className="text-2xl mb-1">🙏</p>
+                <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-forest-green/10 flex items-center justify-center">
+                  <svg className="w-5 h-5 text-forest-green" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                  </svg>
+                </div>
                 <p className="text-xs font-semibold text-charcoal">Gratitude</p>
                 <p className="text-[10px] text-text-muted mt-0.5">Psalm 136:1</p>
               </div>
             </div>
-            <div className="absolute -bottom-4 -right-4 sm:-right-8 w-[120px] h-[160px] sm:w-[140px] sm:h-[190px] rounded-2xl bg-white shadow-lg animate-float-delayed flex items-center justify-center border border-soft-blush/30">
+            <div className="hidden sm:flex absolute -bottom-4 -right-8 w-[140px] h-[190px] rounded-2xl bg-white shadow-lg animate-float-delayed items-center justify-center border border-soft-blush/30">
               <div className="text-center p-3">
-                <p className="text-2xl mb-1">💛</p>
+                <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-forest-green/10 flex items-center justify-center">
+                  <svg className="w-5 h-5 text-forest-green" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 0 0-2.455 2.456Z" />
+                  </svg>
+                </div>
                 <p className="text-xs font-semibold text-charcoal">Hope</p>
                 <p className="text-[10px] text-text-muted mt-0.5">Romans 15:13</p>
               </div>

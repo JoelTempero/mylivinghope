@@ -19,11 +19,9 @@ export default async function Home() {
   return (
     <div id="main-content">
       <Hero />
-      <AboutSection />
-      <HowItWorks />
 
-      {/* Featured Products */}
-      <section className="py-20 md:py-28 bg-cream">
+      {/* Featured Products — first thing after the hero */}
+      <section className="py-20 md:py-28 bg-white">
         <div className="max-w-[1400px] mx-auto px-[5%]">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <p className="section-tag mb-4">Our Collection</p>
@@ -38,6 +36,8 @@ export default async function Home() {
         </div>
       </section>
 
+      <AboutSection />
+      <HowItWorks />
       <Testimonials />
       <CTA />
     </div>
