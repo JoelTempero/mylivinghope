@@ -1,5 +1,9 @@
-import Link from 'next/link'
 import { getProducts } from '@/lib/shopify'
+import Hero from '@/components/sections/Hero'
+import AboutSection from '@/components/sections/About'
+import HowItWorks from '@/components/sections/HowItWorks'
+import Testimonials from '@/components/sections/Testimonials'
+import CTA from '@/components/sections/CTA'
 import ProductGrid from '@/components/product/ProductGrid'
 
 export const revalidate = 60
@@ -9,39 +13,33 @@ export default async function Home() {
   try {
     products = await getProducts(4)
   } catch {
-    // Shopify token not configured yet — show page without products
+    // Shopify token not configured yet
   }
 
   return (
-    <div>
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
-        <p className="text-sm text-[#336F49] font-medium tracking-wider uppercase mb-4">
-          Light in the Darkness
-        </p>
-        <h1 className="text-5xl sm:text-6xl font-bold text-[#212021] mb-6">
-          Go Deeper With <span className="text-[#336F49]">Jesus</span>
-        </h1>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
-          Prayer Portals are beautifully designed cards that help you bring both
-          your joys and struggles to God. Connect your emotions with Scripture
-          and discover new ways to pray.
-        </p>
-        <Link
-          href="/products"
-          className="inline-block px-8 py-3 bg-[#336F49] hover:bg-[#2a5a3b] text-white rounded-lg font-medium transition-colors"
-        >
-          Explore Cards
-        </Link>
+    <div id="main-content">
+      <Hero />
+      <AboutSection />
+      <HowItWorks />
+
+      {/* Featured Products */}
+      <section className="py-20 md:py-28 bg-cream">
+        <div className="max-w-[1400px] mx-auto px-[5%]">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <p className="section-tag mb-4">Our Collection</p>
+            <h2 className="text-[clamp(2rem,4vw,3rem)] font-bold mb-4">
+              Prayer Card Sets
+            </h2>
+            <p className="text-text-secondary text-lg">
+              Beautiful, practical tools for your spiritual journey
+            </p>
+          </div>
+          <ProductGrid products={products} />
+        </div>
       </section>
 
-      {products.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <h2 className="text-3xl font-bold text-[#212021] mb-8">
-            Featured Products
-          </h2>
-          <ProductGrid products={products} />
-        </section>
-      )}
+      <Testimonials />
+      <CTA />
     </div>
   )
 }

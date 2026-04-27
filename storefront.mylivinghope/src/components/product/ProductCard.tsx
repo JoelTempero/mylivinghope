@@ -9,10 +9,16 @@ interface ProductCardProps {
 export default function ProductCard({ product }: ProductCardProps) {
   const price = product.variants[0]?.price
   const comparePrice = product.variants[0]?.compareAtPrice
+  const onSale =
+    comparePrice &&
+    parseFloat(comparePrice.amount) > parseFloat(price?.amount || '0')
 
   return (
-    <Link href={`/products/${product.handle}`} className="group block">
-      <div className="aspect-square relative overflow-hidden rounded-xl bg-white shadow-sm group-hover:shadow-md transition-shadow">
+    <Link
+      href={`/products/${product.handle}`}
+      className="group block bg-white rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 overflow-hidden"
+    >
+      <div className="aspect-square relative overflow-hidden">
         {product.featuredImage ? (
           <Image
             src={product.featuredImage.url}
@@ -22,32 +28,49 @@ export default function ProductCard({ product }: ProductCardProps) {
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-400">
-            No image
+          <div className="w-full h-full bg-gradient-to-br from-soft-blush/30 to-blush-light flex items-center justify-center">
+            <div className="text-center">
+              <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-forest-green/10 flex items-center justify-center">
+                <svg className="w-8 h-8 text-forest-green" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+                </svg>
+              </div>
+              <p className="text-sm text-text-muted">Prayer Portals</p>
+            </div>
           </div>
         )}
+
+        {/* Badges */}
         {!product.availableForSale && (
-          <div className="absolute top-3 right-3 bg-[#212021] text-white text-xs px-2 py-1 rounded">
+          <div className="absolute top-3 left-3 bg-charcoal text-white text-xs font-semibold px-3 py-1.5 rounded-full">
             Sold out
           </div>
         )}
+        {onSale && product.availableForSale && (
+          <div className="absolute top-3 left-3 bg-forest-green text-white text-xs font-semibold px-3 py-1.5 rounded-full">
+            Sale
+          </div>
+        )}
       </div>
-      <div className="mt-3">
-        <h3 className="font-medium text-[#212021] group-hover:text-[#336F49] transition-colors">
+
+      <div className="p-5">
+        <h3 className="font-heading font-bold text-charcoal group-hover:text-forest-green transition-colors mb-2">
           {product.title}
         </h3>
-        <div className="flex items-center gap-2 mt-1">
-          <span className="text-[#336F49] font-semibold">
-            ${parseFloat(price?.amount || '0').toFixed(2)}{' '}
-            {price?.currencyCode}
+        <div className="flex items-center gap-2">
+          <span className="text-forest-green font-bold text-lg">
+            ${parseFloat(price?.amount || '0').toFixed(2)}
           </span>
-          {comparePrice &&
-            parseFloat(comparePrice.amount) >
-              parseFloat(price?.amount || '0') && (
-              <span className="text-sm text-gray-400 line-through">
-                ${parseFloat(comparePrice.amount).toFixed(2)}
-              </span>
-            )}
+          {onSale && (
+            <span className="text-sm text-text-muted line-through">
+              ${parseFloat(comparePrice.amount).toFixed(2)}
+            </span>
+          )}
+          {price?.currencyCode && (
+            <span className="text-xs text-text-muted">
+              {price.currencyCode}
+            </span>
+          )}
         </div>
       </div>
     </Link>

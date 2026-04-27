@@ -1,1 +1,128 @@
 @import "tailwindcss";
+
+@theme inline {
+  --color-charcoal: #212021;
+  --color-charcoal-light: #3a3839;
+  --color-soft-blush: #F5D7CF;
+  --color-blush-light: #FBE9E4;
+  --color-blush-dark: #E8C4BA;
+  --color-forest-green: #336F49;
+  --color-green-light: #4A8A5F;
+  --color-green-dark: #265438;
+  --color-cream: #FDF8F5;
+  --color-off-white: #FAFAFA;
+  --color-text-secondary: #5a5758;
+  --color-text-muted: #8a8788;
+
+  --font-heading: "Libre Baskerville", "Goudy Old Style", Georgia, serif;
+  --font-body: "Montserrat", "Proxima Nova", system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-charcoal);
+  background-color: var(--color-cream);
+  line-height: 1.7;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-charcoal);
+}
+
+a {
+  color: var(--color-forest-green);
+  transition: color 250ms;
+}
+a:hover {
+  color: var(--color-green-dark);
+}
+
+/* Section tag labels */
+.section-tag {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--color-forest-green);
+}
+
+/* Prose overrides for product descriptions */
+.prose-mlh h1, .prose-mlh h2, .prose-mlh h3 {
+  font-family: var(--font-heading);
+  color: var(--color-charcoal);
+}
+.prose-mlh p {
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+}
+.prose-mlh a {
+  color: var(--color-forest-green);
+}
+
+/* Reveal animation */
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-reveal {
+  animation: reveal 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+.animate-reveal-delay-1 { animation-delay: 0.1s; }
+.animate-reveal-delay-2 { animation-delay: 0.2s; }
+.animate-reveal-delay-3 { animation-delay: 0.3s; }
+.animate-reveal-delay-4 { animation-delay: 0.4s; }
+
+/* Float animation for hero images */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float 6s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+/* Card flip */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}

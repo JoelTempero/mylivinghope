@@ -1,69 +1,103 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ShoppingBag, Menu, X } from 'lucide-react'
 import { useCartStore } from '@/stores/cart'
 
 export default function Header() {
   const { cart, openCart } = useCartStore()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const itemCount = cart?.totalQuantity || 0
 
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
   return (
-    <header className="sticky top-0 z-50 bg-[#FDF8F5]/90 backdrop-blur-md border-b border-[#336F49]/10">
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <Link href="/" className="text-xl font-bold text-[#336F49]">
-          My Living Hope
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? 'bg-forest-green shadow-lg'
+          : 'bg-forest-green'
+      }`}
+    >
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-white focus:text-forest-green focus:px-4 focus:py-2 focus:rounded"
+      >
+        Skip to content
+      </a>
+
+      <nav className="max-w-[1400px] mx-auto px-[5%] h-[80px] md:h-[90px] flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-3 text-white">
+          <span className="font-heading text-xl md:text-2xl font-bold tracking-tight">
+            My Living Hope
+          </span>
         </Link>
 
-        <div className="hidden sm:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-8">
           <Link
             href="/products"
-            className="text-sm text-[#212021] hover:text-[#336F49] transition-colors"
+            className="text-sm font-medium text-white/90 hover:text-white transition-colors tracking-wide uppercase"
           >
             Shop
           </Link>
           <Link
             href="/about"
-            className="text-sm text-[#212021] hover:text-[#336F49] transition-colors"
+            className="text-sm font-medium text-white/90 hover:text-white transition-colors tracking-wide uppercase"
           >
             About
           </Link>
           <Link
             href="/contact"
-            className="text-sm text-[#212021] hover:text-[#336F49] transition-colors"
+            className="text-sm font-medium text-white/90 hover:text-white transition-colors tracking-wide uppercase"
           >
             Contact
           </Link>
+
           <button
             onClick={openCart}
-            className="relative text-[#212021] hover:text-[#336F49] transition-colors"
+            className="relative text-white/90 hover:text-white transition-colors"
+            aria-label={`Cart (${itemCount} items)`}
           >
             <ShoppingBag className="w-5 h-5" />
             {itemCount > 0 && (
-              <span className="absolute -top-2 -right-2 w-5 h-5 bg-[#336F49] text-white text-xs rounded-full flex items-center justify-center">
+              <span className="absolute -top-2 -right-2 w-5 h-5 bg-soft-blush text-charcoal text-xs font-bold rounded-full flex items-center justify-center">
                 {itemCount}
               </span>
             )}
           </button>
+
+          <Link
+            href="/products"
+            className="bg-white text-forest-green text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-cream transition-colors"
+          >
+            Get Cards
+          </Link>
         </div>
 
-        <div className="flex sm:hidden items-center gap-4">
+        <div className="flex md:hidden items-center gap-3">
           <button
             onClick={openCart}
-            className="relative text-[#212021] hover:text-[#336F49] transition-colors"
+            className="relative text-white/90 hover:text-white transition-colors p-2"
+            aria-label={`Cart (${itemCount} items)`}
           >
             <ShoppingBag className="w-5 h-5" />
             {itemCount > 0 && (
-              <span className="absolute -top-2 -right-2 w-5 h-5 bg-[#336F49] text-white text-xs rounded-full flex items-center justify-center">
+              <span className="absolute top-0 right-0 w-5 h-5 bg-soft-blush text-charcoal text-xs font-bold rounded-full flex items-center justify-center">
                 {itemCount}
               </span>
             )}
           </button>
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="text-[#212021]"
+            className="text-white p-2"
+            aria-label="Toggle menu"
+            aria-expanded={mobileOpen}
           >
             {mobileOpen ? (
               <X className="w-6 h-6" />
@@ -75,28 +109,37 @@ export default function Header() {
       </nav>
 
       {mobileOpen && (
-        <div className="sm:hidden bg-[#FDF8F5] border-b border-[#336F49]/10 px-4 pb-4 space-y-3">
+        <div className="md:hidden bg-green-dark border-t border-white/10 px-[5%] pb-6 pt-4 space-y-1 animate-reveal">
           <Link
             href="/products"
             onClick={() => setMobileOpen(false)}
-            className="block text-[#212021] hover:text-[#336F49] transition-colors py-2"
+            className="block text-white/90 hover:text-white transition-colors py-3 text-lg font-medium"
           >
             Shop
           </Link>
           <Link
             href="/about"
             onClick={() => setMobileOpen(false)}
-            className="block text-[#212021] hover:text-[#336F49] transition-colors py-2"
+            className="block text-white/90 hover:text-white transition-colors py-3 text-lg font-medium"
           >
             About
           </Link>
           <Link
             href="/contact"
             onClick={() => setMobileOpen(false)}
-            className="block text-[#212021] hover:text-[#336F49] transition-colors py-2"
+            className="block text-white/90 hover:text-white transition-colors py-3 text-lg font-medium"
           >
             Contact
           </Link>
+          <div className="pt-3">
+            <Link
+              href="/products"
+              onClick={() => setMobileOpen(false)}
+              className="inline-block bg-white text-forest-green text-sm font-semibold px-6 py-3 rounded-full hover:bg-cream transition-colors"
+            >
+              Get Cards
+            </Link>
+          </div>
         </div>
       )}
     </header>

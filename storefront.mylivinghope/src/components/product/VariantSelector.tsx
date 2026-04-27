@@ -16,20 +16,22 @@ export default function VariantSelector({
   if (variants.length <= 1) return null
 
   return (
-    <div className="space-y-2">
-      <label className="text-sm font-medium text-[#212021]">Options</label>
+    <div className="space-y-3">
+      <label className="text-sm font-semibold text-charcoal uppercase tracking-wider">
+        Options
+      </label>
       <div className="flex flex-wrap gap-2">
         {variants.map((variant) => (
           <button
             key={variant.id}
             onClick={() => onSelect(variant.id)}
             disabled={!variant.availableForSale}
-            className={`px-4 py-2 text-sm rounded-lg border transition-colors ${
+            className={`px-5 py-2.5 text-sm font-medium rounded-full border-2 transition-all duration-200 ${
               selectedVariantId === variant.id
-                ? 'border-[#336F49] bg-[#336F49] text-white'
+                ? 'border-forest-green bg-forest-green text-white shadow-md'
                 : variant.availableForSale
-                  ? 'border-gray-300 hover:border-[#336F49] text-[#212021]'
-                  : 'border-gray-200 text-gray-400 cursor-not-allowed'
+                  ? 'border-charcoal/20 text-charcoal hover:border-forest-green'
+                  : 'border-charcoal/10 text-text-muted cursor-not-allowed line-through'
             }`}
           >
             {variant.title}

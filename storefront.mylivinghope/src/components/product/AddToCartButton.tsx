@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ShoppingBag } from 'lucide-react'
+import { ShoppingBag, Check } from 'lucide-react'
 import { useCartStore } from '@/stores/cart'
 import { cartAction } from '@/components/cart/CartProvider'
 
@@ -15,6 +15,7 @@ export default function AddToCartButton({
   availableForSale,
 }: AddToCartButtonProps) {
   const [adding, setAdding] = useState(false)
+  const [added, setAdded] = useState(false)
   const { cart, openCart } = useCartStore()
 
   const handleAdd = async () => {
@@ -26,7 +27,9 @@ export default function AddToCartButton({
       } else {
         await cartAction('add', { cartId: cart.id, variantId })
       }
+      setAdded(true)
       openCart()
+      setTimeout(() => setAdded(false), 2000)
     } catch (err) {
       console.error('Failed to add to cart:', err)
     } finally {
@@ -38,7 +41,7 @@ export default function AddToCartButton({
     return (
       <button
         disabled
-        className="w-full py-3 px-6 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed"
+        className="w-full py-4 px-8 bg-charcoal/20 text-text-muted font-semibold rounded-full cursor-not-allowed text-base"
       >
         Sold Out
       </button>
@@ -49,10 +52,24 @@ export default function AddToCartButton({
     <button
       onClick={handleAdd}
       disabled={adding}
-      className="w-full py-3 px-6 bg-[#336F49] hover:bg-[#2a5a3b] text-white rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+      className="w-full py-4 px-8 bg-forest-green hover:bg-green-dark text-white font-semibold rounded-full transition-all duration-200 flex items-center justify-center gap-3 disabled:opacity-50 text-base shadow-md hover:shadow-lg"
     >
-      <ShoppingBag className="w-5 h-5" />
-      {adding ? 'Adding...' : 'Add to Cart'}
+      {added ? (
+        <>
+          <Check className="w-5 h-5" />
+          Added to Cart
+        </>
+      ) : adding ? (
+        <>
+          <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+          Adding...
+        </>
+      ) : (
+        <>
+          <ShoppingBag className="w-5 h-5" />
+          Add to Cart
+        </>
+      )}
     </button>
   )
 }

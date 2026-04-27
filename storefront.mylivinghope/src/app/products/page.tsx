@@ -18,14 +18,24 @@ export default async function ProductsPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <div className="mb-12">
-        <h1 className="text-4xl font-bold text-[#212021]">Shop</h1>
-        <p className="mt-2 text-gray-600">
-          Browse our collection of Prayer Portals
-        </p>
+    <div className="mt-[80px] md:mt-[90px]">
+      {/* Page header */}
+      <div className="bg-gradient-to-r from-forest-green to-green-dark py-16 md:py-20">
+        <div className="max-w-[1400px] mx-auto px-[5%] text-center">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-3">
+            Shop
+          </h1>
+          <p className="text-white/70 text-lg max-w-xl mx-auto">
+            Browse our collection of Prayer Portals &mdash; beautiful, practical
+            tools for your spiritual journey
+          </p>
+        </div>
       </div>
-      <ProductGrid products={products} />
+
+      {/* Product grid */}
+      <div className="max-w-[1400px] mx-auto px-[5%] py-16 md:py-20">
+        <ProductGrid products={products} />
+      </div>
     </div>
   )
 }

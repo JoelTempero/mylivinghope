@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { Minus, Plus, X } from 'lucide-react'
+import { Minus, Plus, Trash2 } from 'lucide-react'
 import type { ShopifyCartLine } from '@/types/shopify'
 import { useCartStore } from '@/stores/cart'
 import { cartAction } from '@/components/cart/CartProvider'
@@ -27,8 +27,8 @@ export default function CartLineItem({ line }: CartLineProps) {
   }
 
   return (
-    <div className="flex gap-4 py-4">
-      <div className="w-20 h-20 relative rounded-lg overflow-hidden bg-white flex-shrink-0">
+    <div className="flex gap-4 py-5">
+      <div className="w-20 h-20 relative rounded-xl overflow-hidden bg-white flex-shrink-0 shadow-sm">
         {line.merchandise.product.featuredImage ? (
           <Image
             src={line.merchandise.product.featuredImage.url}
@@ -38,30 +38,38 @@ export default function CartLineItem({ line }: CartLineProps) {
             sizes="80px"
           />
         ) : (
-          <div className="w-full h-full bg-gray-100" />
+          <div className="w-full h-full bg-gradient-to-br from-soft-blush/30 to-blush-light flex items-center justify-center">
+            <span className="text-xs text-text-muted">No img</span>
+          </div>
         )}
       </div>
       <div className="flex-1 min-w-0">
-        <h4 className="font-medium text-sm text-[#212021] truncate">
+        <h4 className="font-semibold text-sm text-charcoal truncate">
           {line.merchandise.product.title}
         </h4>
         {line.merchandise.title !== 'Default Title' && (
-          <p className="text-xs text-gray-500">{line.merchandise.title}</p>
+          <p className="text-xs text-text-muted mt-0.5">
+            {line.merchandise.title}
+          </p>
         )}
-        <p className="text-sm font-semibold text-[#336F49] mt-1">
+        <p className="text-sm font-bold text-forest-green mt-1">
           ${parseFloat(line.merchandise.price.amount).toFixed(2)}
         </p>
         <div className="flex items-center gap-2 mt-2">
           <button
             onClick={() => updateQuantity(line.quantity - 1)}
-            className="w-7 h-7 rounded border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
+            className="w-8 h-8 rounded-full border border-charcoal/15 flex items-center justify-center hover:bg-charcoal/5 transition-colors"
+            aria-label="Decrease quantity"
           >
             <Minus className="w-3 h-3" />
           </button>
-          <span className="text-sm w-6 text-center">{line.quantity}</span>
+          <span className="text-sm font-medium w-6 text-center">
+            {line.quantity}
+          </span>
           <button
             onClick={() => updateQuantity(line.quantity + 1)}
-            className="w-7 h-7 rounded border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
+            className="w-8 h-8 rounded-full border border-charcoal/15 flex items-center justify-center hover:bg-charcoal/5 transition-colors"
+            aria-label="Increase quantity"
           >
             <Plus className="w-3 h-3" />
           </button>
@@ -69,9 +77,10 @@ export default function CartLineItem({ line }: CartLineProps) {
       </div>
       <button
         onClick={() => updateQuantity(0)}
-        className="text-gray-400 hover:text-red-500 transition-colors self-start"
+        className="text-text-muted hover:text-red-500 transition-colors self-start mt-1"
+        aria-label="Remove item"
       >
-        <X className="w-4 h-4" />
+        <Trash2 className="w-4 h-4" />
       </button>
     </div>
   )
