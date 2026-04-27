@@ -113,13 +113,30 @@ Add to `.claude/settings.json` on each machine:
 ## Next Steps
 - [ ] **Generate Shopify Storefront API token** — Joel needs to create a custom app in Shopify admin, enable Storefront API scopes, and add the token to `storefront.mylivinghope/.env.local`
 - [ ] **Test storefront end-to-end** with live Shopify data (products, cart, checkout)
-- [ ] **Design pass** — apply design system / creative direction to storefront (currently functional but minimal styling)
+- [x] ~~**Design pass** — applied full MLH design system to storefront~~
+- [ ] **Add real images** — export hero/about/card images from Shopify and add to `storefront.mylivinghope/public/images/`
 - [ ] Wire MCP server into Joel's `.claude/settings.json` for native Firestore tools
 - [ ] Deploy Cloud Function (`firebase deploy --only functions --project my-living-hope`)
 - [ ] Help Jesse get Claude Code set up on his machine
 - [ ] Joel to review portal Claude page live and fix any issues
 
 ## Session Log
+### 2026-04-27 — Autopilot: Full Design Pass
+- Applied complete MLH design system to storefront, matching current Shopify site
+- Fonts: Libre Baskerville (headings) + Montserrat (body) via next/font/google
+- Full color palette as Tailwind theme tokens (forest-green, charcoal, cream, soft-blush, etc.)
+- CSS animations: reveal (scroll-in), float (hero accents), reduced-motion support
+- Header: forest green, fixed, scroll-aware, mobile hamburger, skip-to-content link
+- Footer: charcoal 4-column with newsletter signup and social icons
+- Homepage: Hero (gradient + floating card accents), About, How It Works (3 steps), Testimonials (glassmorphism on green), CTA
+- Products: green gradient page header, cards with hover elevation + sale badges
+- Product detail: styled gallery, pill variant selector, animated add-to-cart with success state
+- About: full story with Psalm quote, how-it-works mini-section
+- Contact: info cards (location/phone/email) + styled contact form
+- CartDrawer: slide animation, body scroll lock, empty state, checkout button
+- All real MLH copy from the current Shopify theme
+- Placeholder image areas where Joel needs to add actual product/hero photos
+
 ### 2026-04-27 — Autopilot: Headless Storefront Build
 - Scaffolded `storefront.mylivinghope/` with Next.js 16.2.4 (App Router, TypeScript, Tailwind v4)
 - Checked Next.js 16 docs for breaking changes — `revalidate` export still supported, `params` is Promise-based (already in plan)
