@@ -3,12 +3,12 @@
 ## Overview
 - **Client**: My Living Hope (greeting card business, Jesse Major founder)
 - **Type**: Shopify Storefront + Firebase Admin Portal
-- **Status**: Portal functional, storefront scaffolded (needs Shopify token)
+- **Status**: Portal functional, storefront rebuilt (React + Vite + Buy Buttons)
 
 ## Project Structure
 - `mylivinghope/` — Shopify theme (Liquid templates, synced by Shopify)
 - `portal.mylivinghope/` — React admin portal (Vite + Firebase)
-- `storefront.mylivinghope/` — Next.js headless storefront (Shopify Storefront API)
+- `storefront.mylivinghope/` — React + Vite storefront (Shopify Buy Buttons)
 
 ## Playbooks In Use
 Read from Brain at session start. Do not copy into this project.
@@ -33,7 +33,7 @@ Brain path: `D:/Sidequest Digital/Dev Projects/Brain/playbooks/`
 - `playbooks/Analytics.md` — storefront analytics
 
 ## Tech Stack
-- **Storefront (new)**: Next.js 16 (App Router) + TypeScript + Tailwind CSS v4 + Shopify Storefront API
+- **Storefront (new)**: React 19 + Vite 7 + Tailwind CSS v4 + Shopify Buy Buttons
 - **Storefront (legacy)**: Shopify Liquid theme — being replaced by headless
 - **Portal Frontend**: React 19 + Vite 7 + Tailwind CSS v4
 - **Portal State**: Zustand
@@ -87,9 +87,9 @@ Add to `.claude/settings.json` on each machine:
 
 ## Code Conventions
 - **Portal**: JSX (not TSX), plain JavaScript with JSX
-- **Storefront**: TSX, TypeScript throughout
+- **Storefront**: JSX (not TSX), plain JavaScript — same as portal
 - Component structure: `components/ui/` (primitives), `components/layout/` (shell)
-- Portal pages in `src/pages/`, storefront pages in `src/app/`
+- Both projects: pages in `src/pages/`
 - Shared pattern: `hooks/`, `stores/`, `lib/` in both projects
 
 ## Current Progress
@@ -101,26 +101,53 @@ Add to `.claude/settings.json` on each machine:
 - Context files populated with real business data + Jesse's setup guide
 - Storage rules and CORS configured for shared context files
 - Deployed to my-living-hope.web.app
-- **Headless storefront scaffolded** — Next.js 16, all pages and components built, builds clean
-  - Homepage with hero + featured products
-  - Products listing (/products) with ISR
-  - Product detail (/products/[handle]) with image gallery, variants, add-to-cart, JSON-LD
-  - Cart drawer with quantity controls and Shopify checkout redirect
-  - About and Contact pages
-  - Dynamic sitemap, SEO metadata
-  - Responsive header with mobile hamburger menu
+- **Storefront rebuilt** — pivoted from Next.js + Shopify Storefront API to React + Vite + Buy Buttons
+  - 3 pages: Home (hero + product showcase + about + how it works + testimonials + CTA), About, Contact
+  - Shopify Buy Button for commerce (no API token needed, no GraphQL, no cart management)
+  - All design work carried over from previous Next.js build (TSX → JSX conversion)
+  - Fast Vite dev server, Joel's standard stack (JSX, not TypeScript)
+  - Build clean (1.75s), lint clean, 177 npm packages (vs ~800+ with Next.js)
+- **Design audit complete** — 20 issues identified and fixed (contrast, accessibility, structure, touch targets)
 
 ## Next Steps
-- [ ] **Generate Shopify Storefront API token** — Joel needs to create a custom app in Shopify admin, enable Storefront API scopes, and add the token to `storefront.mylivinghope/.env.local`
-- [ ] **Test storefront end-to-end** with live Shopify data (products, cart, checkout)
+- [ ] **Enable Shopify Buy Button sales channel** — Jesse needs to add Buy Button channel in Shopify admin, then generate embed code for the flagship product. Update `BuyButton.jsx` with the real `storefrontAccessToken` and `productId`.
+- [ ] **Add real images** — export hero/about/card product photos and add to `storefront.mylivinghope/public/images/`
+- [ ] **Get Jesse's actual social URLs** — Facebook/Instagram currently use best-guess URLs, need confirmation
+- [ ] **Deploy storefront** — set up Firebase Hosting site for storefront, configure `firebase.json` with SPA rewrites
 - [x] ~~**Design pass** — applied full MLH design system to storefront~~
-- [ ] **Add real images** — export hero/about/card images from Shopify and add to `storefront.mylivinghope/public/images/`
+- [x] ~~**Design audit** — council audit (10 members), 20 issues fixed~~
+- [x] ~~**Buy Button pivot** — replaced Next.js + Storefront API with React + Vite + Buy Buttons~~
 - [ ] Wire MCP server into Joel's `.claude/settings.json` for native Firestore tools
 - [ ] Deploy Cloud Function (`firebase deploy --only functions --project my-living-hope`)
 - [ ] Help Jesse get Claude Code set up on his machine
 - [ ] Joel to review portal Claude page live and fix any issues
 
 ## Session Log
+### 2026-05-01 — Buy Button Pivot (Autopilot)
+- Brainstormed and approved pivot from Next.js + Shopify Storefront API to React + Vite + Buy Buttons
+- Motivation: Next.js lag on Windows, Storefront API token issues, massive overkill for 1 product
+- Wrote design spec (`docs/superpowers/specs/2026-05-01-storefront-buy-button-pivot-design.md`)
+- Wrote implementation plan (`docs/superpowers/plans/2026-05-01-storefront-buy-button-pivot.md`)
+- Executed all 8 tasks: scaffold, CSS/router, layout, sections, Buy Button, pages, SEO, cleanup
+- Deleted all Next.js/Shopify API code (29 files, ~2000 lines removed)
+- Ported all design work from TSX to JSX — identical visual output
+- New stack: React 19 + Vite 7 + React Router v7 + Tailwind CSS v4 + Lucide React
+- Commerce: Shopify Buy Button SDK (placeholder until Jesse enables the channel)
+- 3 pages: Home (6 sections), About (founder + audiences + mission), Contact (info + mailto form)
+- Build: 1.75s clean, 177 packages. Dev server on port 3854.
+- Key decision: Joel to pitch Jesse on focusing on 1 flagship product for now
+- **Needs Joel:** Enable Buy Button channel in Shopify admin, get real product photos
+
+### 2026-04-28 — Council Design Audit + Autopilot Fixes
+- Ran /council-auto with 10 design-focused members (4 completed, 6 hit rate limits — filled gaps manually)
+- Members: Pixel Perfectionist, Advocate (accessibility), Device Juggler (responsive), Steve Jobs, Wes Anderson, Saul Bass, Frank Ocean, Rachel, Grandma, Picky Client
+- 20 issues identified across P0-P3 priority tiers, all fixed in one session
+- **P0 Critical:** Fixed green-on-green testimonials (WCAG contrast failures), darkened text-muted (#8a8788→#706e6f), fixed 6 touch target violations (cart button, quantity buttons, trash icon, social icons)
+- **P1 Major:** Header now transitions from transparent to solid on scroll; homepage reordered (products right after hero instead of buried under 3 sections)
+- **P2 Significant:** About page completely rewritten (was copy-paste of homepage — now has unique founder story + audience cards + mission section); removed duplicate "Get Cards" CTA; removed fake newsletter form; updated social URLs; scoped global anchor color to prevent green-on-charcoal in footer; fixed white/70 contrast on page headers
+- **P3 Polish:** Replaced emojis with SVG icons in hero; hid floating cards on small screens; unified cart badge positioning; added global focus-visible styles; added secondary CTA to bottom section
+- Build clean, lint clean, 11 files changed
+
 ### 2026-04-27 — Autopilot: Full Design Pass
 - Applied complete MLH design system to storefront, matching current Shopify site
 - Fonts: Libre Baskerville (headings) + Montserrat (body) via next/font/google
@@ -167,13 +194,14 @@ Add to `.claude/settings.json` on each machine:
 - Wrote design specs and implementation plans for both subsystems
 
 ## Key Decisions
-- Portal uses JSX (not TypeScript) — keep consistent
-- Storefront uses TypeScript (new project, different stack)
-- Zustand for state management in both projects
+- Both portal and storefront use JSX (not TypeScript) — consistent stack
+- Zustand for portal state management; storefront has no state management (Buy Button handles cart)
 - Single Firebase project (`my-living-hope`) for everything — portal + live storefront as separate web apps
-- Priority: portal functionality → headless storefront
+- Priority: portal functionality → storefront
 - All users (Joel, Jesse, Annabelle) can access Claude Context page
-- Storefront deployed to Vercel (planned), checkout redirects to Shopify hosted checkout
+- Storefront deployed to Firebase Hosting (planned), checkout via Shopify Buy Button overlay
+- **Buy Button over Storefront API** — only 1 product, avoids API token issues, can revisit if catalog grows
+- **Focus on flagship product** — Joel pitching Jesse to lead with 1 card pack, others still in dev
 
 ## Known Issues
 - Cloud Function `generateContext` not yet deployed (needs `firebase deploy --only functions`)
