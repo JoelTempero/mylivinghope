@@ -1,6 +1,6 @@
-import Link from 'next/link'
+import { Link } from 'react-router-dom'
 
-function SocialIcon({ href, label, children }: { href: string; label: string; children: React.ReactNode }) {
+function SocialIcon({ href, label, children }) {
   return (
     <a
       href={href}
@@ -44,17 +44,17 @@ export default function Footer() {
             </h4>
             <ul className="space-y-3 text-sm text-white/70">
               <li>
-                <Link href="/" className="hover:text-white transition-colors">
+                <Link to="/" className="hover:text-white transition-colors">
                   Home
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="hover:text-white transition-colors">
+                <Link to="/about" className="hover:text-white transition-colors">
                   About
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="hover:text-white transition-colors">
+                <Link to="/contact" className="hover:text-white transition-colors">
                   Contact
                 </Link>
               </li>
@@ -68,14 +68,9 @@ export default function Footer() {
             </h4>
             <ul className="space-y-3 text-sm text-white/70">
               <li>
-                <Link href="/products" className="hover:text-white transition-colors">
-                  All Products
-                </Link>
-              </li>
-              <li>
-                <Link href="/products" className="hover:text-white transition-colors">
+                <a href="/#cards" className="hover:text-white transition-colors">
                   Prayer Portals
-                </Link>
+                </a>
               </li>
             </ul>
           </div>
@@ -87,7 +82,7 @@ export default function Footer() {
             </h4>
             <ul className="space-y-3 text-sm text-white/70">
               <li>
-                <Link href="/contact" className="hover:text-white transition-colors">
+                <Link to="/contact" className="hover:text-white transition-colors">
                   Get in Touch
                 </Link>
               </li>
@@ -107,7 +102,6 @@ export default function Footer() {
             in Christchurch, New Zealand.
           </p>
           <div className="flex items-center gap-3">
-            {/* TODO: Replace with Jesse's actual social URLs */}
             <SocialIcon href="https://www.facebook.com/MyLivingHopeNZ" label="Facebook">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                 <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
