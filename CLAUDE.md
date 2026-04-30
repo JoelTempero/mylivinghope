@@ -129,17 +129,23 @@ Add to `.claude/settings.json` on each machine:
 - [ ] Joel to review portal Claude page live and fix any issues
 
 ## Session Log
-### 2026-05-01 — Creative Council Audit
-- Ran /council-auto with 10 design-focused members for creative review of storefront
-- Members: Pixel Perfectionist, Steve Jobs, Wes Anderson, Saul Bass, Frank Ocean, Banksy, Hook Writer, Storyteller, Device Juggler, Rachel
-- All 10 completed successfully (no rate limit issues this time)
-- Unanimous verdict: site is competent but generic — "warm like a waiting room" (Frank Ocean)
-- **P0 Critical:** No product presence (identical placeholders everywhere), homepage narrative backwards (product before story), every section same shape, no visual identity system
-- **P1 Major:** Hero doesn't hook (generic headline), too many redundant sections, too polished for something born from struggle, testimonials feel fabricated
-- **P2 Significant:** No typographic tension, blush/cream tones blur together, responsive device issues (safe areas, hero height, tap targets)
-- Created `storefront.mylivinghope/CREATIVE.md` — creative direction document (6 principles: lead with wound, card-as-brand, break rhythm, show don't describe, typography as emotion, texture over polish)
-- Created `storefront.mylivinghope/DESIGN.md` — design system document (color, typography, card motif specs, layout system, component patterns, animation, responsive, accessibility)
-- **Next:** Implement the creative overhaul based on these documents
+### 2026-05-01 — Creative Council Audit + Overhaul (Autopilot)
+- Ran /council-auto with 10 design-focused members: Pixel Perfectionist, Steve Jobs, Wes Anderson, Saul Bass, Frank Ocean, Banksy, Hook Writer, Storyteller, Device Juggler, Rachel
+- Unanimous verdict: functional but generic — needs soul, visual identity, and narrative restructure
+- Created 3 design docs: `CREATIVE.md` (direction), `DESIGN.md` (system), `ANIMATIONS.md` (motion)
+- **Implemented creative overhaul (10 tasks):**
+  - Animation system: useScrollReveal hook (IntersectionObserver), useCardTilt hook (3D perspective), 6 reveal variants (fade-up, slide-left/right, scale-up, blur-in, fade-in), stagger delays, hero entrance sequence, card deal animation
+  - New components: ScrollReveal, CardTilt, CardFlip, BoxReveal, ProductImage, ScrollProgress, ScriptureInterlude
+  - Homepage restructured: Hero (wound) → Origin story → Scripture interlude → Product + How It Works (merged) → Testimonials → CTA (echoes wound)
+  - Hero redesigned: "You want to pray but the words won't come" → "Find Your Voice in Prayer", flippable demo card (Loneliness front/Scripture back), card deal entrance, scroll indicator
+  - Product showcase: 4 interactive emotion cards with tilt, merged how-it-works (Feel/Read/Pray), single focused Buy CTA
+  - All sections wired with scroll-triggered reveals (varied per section, not all fade-up)
+  - Micro-interactions: btn-interactive (scale+shadow hover, bounce click), form focus glow, scroll progress bar, staggered mobile menu
+  - Responsive fixes: svh hero height, viewport-fit=cover, safe-area padding, 48px hamburger tap target, footer link spacing
+  - Deleted HowItWorks.jsx (merged into ProductShowcase)
+  - Asset directories scaffolded: public/images/{cards,product,box}/, public/video/
+- Build: 1.76s clean, lint clean. 29 files changed, +1555 -434 lines.
+- **Needs Joel:** Drop 3D card renders, product photos, and box video into the scaffolded directories
 
 ### 2026-05-01 — Buy Button Pivot (Autopilot)
 - Brainstormed and approved pivot from Next.js + Shopify Storefront API to React + Vite + Buy Buttons
