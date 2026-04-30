@@ -108,14 +108,20 @@ Add to `.claude/settings.json` on each machine:
   - Fast Vite dev server, Joel's standard stack (JSX, not TypeScript)
   - Build clean (1.75s), lint clean, 177 npm packages (vs ~800+ with Next.js)
 - **Design audit complete** — 20 issues identified and fixed (contrast, accessibility, structure, touch targets)
+- **Creative council audit complete** — 10 design-focused members reviewed the storefront for creative direction
+  - CREATIVE.md and DESIGN.md created in `storefront.mylivinghope/`
+  - Unanimous verdict: functional but generic, needs soul and visual identity
+  - Key themes: lead with emotion not product, card shape as brand motif, break the template rhythm, show the actual product
 
 ## Next Steps
+- [ ] **Creative overhaul** — implement CREATIVE.md direction: restructure homepage narrative, add card motif system, vary section rhythm, add texture/emotion. See `storefront.mylivinghope/CREATIVE.md` for full plan.
 - [ ] **Enable Shopify Buy Button sales channel** — Jesse needs to add Buy Button channel in Shopify admin, then generate embed code for the flagship product. Update `BuyButton.jsx` with the real `storefrontAccessToken` and `productId`.
 - [ ] **Add real images** — export hero/about/card product photos and add to `storefront.mylivinghope/public/images/`
 - [ ] **Get Jesse's actual social URLs** — Facebook/Instagram currently use best-guess URLs, need confirmation
 - [ ] **Deploy storefront** — set up Firebase Hosting site for storefront, configure `firebase.json` with SPA rewrites
 - [x] ~~**Design pass** — applied full MLH design system to storefront~~
 - [x] ~~**Design audit** — council audit (10 members), 20 issues fixed~~
+- [x] ~~**Creative council audit** — 10 design members, CREATIVE.md + DESIGN.md created~~
 - [x] ~~**Buy Button pivot** — replaced Next.js + Storefront API with React + Vite + Buy Buttons~~
 - [ ] Wire MCP server into Joel's `.claude/settings.json` for native Firestore tools
 - [ ] Deploy Cloud Function (`firebase deploy --only functions --project my-living-hope`)
@@ -123,6 +129,18 @@ Add to `.claude/settings.json` on each machine:
 - [ ] Joel to review portal Claude page live and fix any issues
 
 ## Session Log
+### 2026-05-01 — Creative Council Audit
+- Ran /council-auto with 10 design-focused members for creative review of storefront
+- Members: Pixel Perfectionist, Steve Jobs, Wes Anderson, Saul Bass, Frank Ocean, Banksy, Hook Writer, Storyteller, Device Juggler, Rachel
+- All 10 completed successfully (no rate limit issues this time)
+- Unanimous verdict: site is competent but generic — "warm like a waiting room" (Frank Ocean)
+- **P0 Critical:** No product presence (identical placeholders everywhere), homepage narrative backwards (product before story), every section same shape, no visual identity system
+- **P1 Major:** Hero doesn't hook (generic headline), too many redundant sections, too polished for something born from struggle, testimonials feel fabricated
+- **P2 Significant:** No typographic tension, blush/cream tones blur together, responsive device issues (safe areas, hero height, tap targets)
+- Created `storefront.mylivinghope/CREATIVE.md` — creative direction document (6 principles: lead with wound, card-as-brand, break rhythm, show don't describe, typography as emotion, texture over polish)
+- Created `storefront.mylivinghope/DESIGN.md` — design system document (color, typography, card motif specs, layout system, component patterns, animation, responsive, accessibility)
+- **Next:** Implement the creative overhaul based on these documents
+
 ### 2026-05-01 — Buy Button Pivot (Autopilot)
 - Brainstormed and approved pivot from Next.js + Shopify Storefront API to React + Vite + Buy Buttons
 - Motivation: Next.js lag on Windows, Storefront API token issues, massive overkill for 1 product

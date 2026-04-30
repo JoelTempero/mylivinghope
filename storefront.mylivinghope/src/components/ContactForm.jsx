@@ -12,8 +12,10 @@ export default function ContactForm() {
     window.location.href = `mailto:prayerprompts@outlook.com?subject=Website enquiry from ${formData.name}&body=${encodeURIComponent(formData.message)}%0A%0AFrom: ${formData.name} (${formData.email})`
   }
 
+  const inputClass = "w-full px-4 py-3 rounded-xl border border-charcoal/15 bg-cream focus:outline-none focus:border-forest-green focus:ring-2 focus:ring-forest-green/20 focus:shadow-[0_0_0_4px_rgba(51,111,73,0.08)] transition-all duration-200 text-charcoal text-base"
+
   return (
-    <div className="bg-white rounded-3xl shadow-lg p-8 md:p-10">
+    <div className="bg-white rounded-2xl shadow-lg p-8 md:p-10 border border-charcoal/5">
       <h3 className="font-heading text-2xl font-bold mb-6">Send a Message</h3>
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
@@ -26,7 +28,7 @@ export default function ContactForm() {
             required
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="w-full px-4 py-3 rounded-xl border border-charcoal/15 bg-cream focus:outline-none focus:border-forest-green focus:ring-2 focus:ring-forest-green/20 transition-all text-charcoal"
+            className={inputClass}
             placeholder="Your name"
           />
         </div>
@@ -40,7 +42,7 @@ export default function ContactForm() {
             required
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            className="w-full px-4 py-3 rounded-xl border border-charcoal/15 bg-cream focus:outline-none focus:border-forest-green focus:ring-2 focus:ring-forest-green/20 transition-all text-charcoal"
+            className={inputClass}
             placeholder="your@email.com"
           />
         </div>
@@ -54,13 +56,13 @@ export default function ContactForm() {
             rows={5}
             value={formData.message}
             onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-            className="w-full px-4 py-3 rounded-xl border border-charcoal/15 bg-cream focus:outline-none focus:border-forest-green focus:ring-2 focus:ring-forest-green/20 transition-all text-charcoal resize-none"
+            className={`${inputClass} resize-none`}
             placeholder="How can we help?"
           />
         </div>
         <button
           type="submit"
-          className="w-full py-4 bg-forest-green hover:bg-green-dark text-white font-semibold rounded-full transition-colors text-base shadow-md"
+          className="btn-interactive w-full py-4 bg-forest-green hover:bg-green-dark text-white font-semibold rounded-full text-base shadow-md"
         >
           Send Message
         </button>

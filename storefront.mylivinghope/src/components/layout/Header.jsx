@@ -19,6 +19,7 @@ export default function Header() {
           ? 'bg-forest-green shadow-lg'
           : 'bg-forest-green/90 backdrop-blur-sm'
       }`}
+      style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
     >
       <a
         href="#main-content"
@@ -57,7 +58,7 @@ export default function Header() {
 
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="md:hidden text-white p-2"
+          className="md:hidden text-white p-3"
           aria-label="Toggle menu"
           aria-expanded={mobileOpen}
         >
@@ -65,31 +66,46 @@ export default function Header() {
         </button>
       </nav>
 
-      {mobileOpen && (
-        <div className="md:hidden bg-green-dark border-t border-white/10 px-[5%] pb-6 pt-4 space-y-1 animate-reveal">
-          <a
-            href="/#cards"
-            onClick={() => setMobileOpen(false)}
-            className="block text-white/90 hover:text-white transition-colors py-3 text-lg font-medium"
-          >
-            Shop
-          </a>
-          <Link
-            to="/about"
-            onClick={() => setMobileOpen(false)}
-            className="block text-white/90 hover:text-white transition-colors py-3 text-lg font-medium"
-          >
-            About
-          </Link>
-          <Link
-            to="/contact"
-            onClick={() => setMobileOpen(false)}
-            className="block text-white/90 hover:text-white transition-colors py-3 text-lg font-medium"
-          >
-            Contact
-          </Link>
+      <div
+        className={`md:hidden bg-green-dark border-t border-white/10 px-[5%] overflow-hidden transition-all duration-300 ease-in-out ${
+          mobileOpen ? 'max-h-60 pb-6 pt-4' : 'max-h-0'
+        }`}
+      >
+        <div className="space-y-1">
+          {[
+            { href: '/#cards', label: 'Shop', isLink: false },
+            { to: '/about', label: 'About', isLink: true },
+            { to: '/contact', label: 'Contact', isLink: true },
+          ].map((item, i) => {
+            const cls = `block text-white/90 hover:text-white transition-all py-3 text-lg font-medium ${
+              mobileOpen ? 'translate-x-0 opacity-100' : '-translate-x-4 opacity-0'
+            }`
+            const style = { transitionDelay: mobileOpen ? `${i * 50}ms` : '0ms' }
+
+            return item.isLink ? (
+              <Link
+                key={item.label}
+                to={item.to}
+                onClick={() => setMobileOpen(false)}
+                className={cls}
+                style={style}
+              >
+                {item.label}
+              </Link>
+            ) : (
+              <a
+                key={item.label}
+                href={item.href}
+                onClick={() => setMobileOpen(false)}
+                className={cls}
+                style={style}
+              >
+                {item.label}
+              </a>
+            )
+          })}
         </div>
-      )}
+      </div>
     </header>
   )
 }

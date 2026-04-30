@@ -1,4 +1,6 @@
 import { useEffect } from 'react'
+import ScrollReveal from '../components/ScrollReveal'
+import CardTilt from '../components/CardTilt'
 
 const audiences = [
   {
@@ -50,36 +52,42 @@ export default function About() {
 
   return (
     <div id="main-content" className="mt-[80px] md:mt-[90px]">
-      <div className="bg-gradient-to-r from-forest-green to-green-dark py-16 md:py-20">
-        <div className="max-w-[1400px] mx-auto px-[5%] text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-3">
+      {/* Page header — dramatic, no section-tag pattern */}
+      <div className="bg-gradient-to-br from-forest-green via-green-dark to-forest-green py-20 md:py-28 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -translate-y-1/2" />
+        </div>
+        <div className="relative max-w-[1400px] mx-auto px-[5%] text-center">
+          <h1 className="hero-reveal hero-reveal-1 text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
             About Prayer Portals
           </h1>
-          <p className="text-white/85 text-lg max-w-xl mx-auto">
+          <p className="hero-reveal hero-reveal-2 text-white/80 text-lg max-w-xl mx-auto">
             Helping you go deeper with Jesus through prayer
           </p>
         </div>
       </div>
 
-      <div className="max-w-[1400px] mx-auto px-[5%] py-16 md:py-24">
+      {/* Founder story */}
+      <div className="max-w-[1400px] mx-auto px-[5%] py-20 md:py-28">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          <div className="relative order-2 lg:order-1">
-            <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-soft-blush/50 to-blush-light aspect-[4/5] flex items-center justify-center shadow-lg">
-              <div className="text-center p-8">
-                <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-forest-green/10 flex items-center justify-center">
-                  <svg className="w-12 h-12 text-forest-green" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-                  </svg>
+          <ScrollReveal variant="slide-left" className="order-2 lg:order-1">
+            <div className="relative">
+              <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-soft-blush/50 to-blush-light aspect-[4/5] flex items-center justify-center shadow-lg">
+                <div className="text-center p-8">
+                  <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-forest-green/10 flex items-center justify-center">
+                    <svg className="w-12 h-12 text-forest-green" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                    </svg>
+                  </div>
+                  <p className="font-heading text-charcoal font-bold text-lg">Jesse Major</p>
+                  <p className="text-sm text-text-muted mt-1">Founder, Christchurch NZ</p>
                 </div>
-                <p className="font-heading text-charcoal font-bold text-lg">Jesse Major</p>
-                <p className="text-sm text-text-muted mt-1">Founder, Christchurch NZ</p>
               </div>
+              <div className="absolute -bottom-3 -right-3 w-full h-full rounded-2xl border-2 border-forest-green/15 -z-10" />
             </div>
-            <div className="absolute -bottom-4 -right-4 w-full h-full rounded-3xl border-2 border-forest-green/20 -z-10" />
-          </div>
+          </ScrollReveal>
 
-          <div className="order-1 lg:order-2">
-            <p className="section-tag mb-4">The Founder</p>
+          <ScrollReveal variant="slide-right" delay={0.15} className="order-1 lg:order-2">
             <h2 className="font-heading text-3xl md:text-4xl font-bold mb-8 leading-tight">
               A Heart for{' '}
               <span className="text-forest-green italic">Prayer</span>
@@ -106,7 +114,7 @@ export default function About() {
               </p>
             </div>
 
-            <blockquote className="mt-10 pl-6 border-l-4 border-forest-green/30">
+            <ScrollReveal variant="blur-in" delay={0.3} as="blockquote" className="mt-10 pl-6 border-l-4 border-forest-green/30">
               <p className="font-heading italic text-xl text-charcoal leading-relaxed">
                 &ldquo;He has sent me to bind up the brokenhearted, to
                 proclaim freedom for the captives.&rdquo;
@@ -114,57 +122,66 @@ export default function About() {
               <cite className="block text-sm text-text-muted mt-2 not-italic">
                 &mdash; Isaiah 61:1
               </cite>
-            </blockquote>
-          </div>
+            </ScrollReveal>
+          </ScrollReveal>
         </div>
       </div>
 
-      <div className="bg-white py-16 md:py-24">
+      {/* Who they're for */}
+      <div className="bg-white py-20 md:py-28">
         <div className="max-w-[1400px] mx-auto px-[5%]">
-          <div className="text-center max-w-2xl mx-auto mb-14">
-            <p className="section-tag mb-4">Who They're For</p>
+          <ScrollReveal variant="fade-up" className="text-center max-w-2xl mx-auto mb-14">
             <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4">
-              Prayer Portals Are Made For
+              Made For Everyone
             </h2>
             <p className="text-text-secondary text-lg">
               Anyone who wants to pray more honestly and deeply
             </p>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            {audiences.map((a) => (
-              <div key={a.title} className="bg-cream rounded-2xl p-7 border border-charcoal/5">
-                <div className="w-14 h-14 mb-4 rounded-2xl bg-forest-green/10 flex items-center justify-center">
-                  {a.icon}
-                </div>
-                <h3 className="font-heading text-lg font-bold mb-2">{a.title}</h3>
-                <p className="text-text-secondary text-sm leading-relaxed">{a.description}</p>
-              </div>
+          </ScrollReveal>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-4xl mx-auto">
+            {audiences.map((a, i) => (
+              <ScrollReveal key={a.title} variant="scale-up" delay={i * 0.1}>
+                <CardTilt maxDeg={5}>
+                  <div className="bg-cream rounded-2xl p-7 border border-charcoal/5 hover:shadow-lg transition-shadow duration-300 h-full">
+                    <div className="w-14 h-14 mb-4 rounded-2xl bg-forest-green/10 flex items-center justify-center">
+                      {a.icon}
+                    </div>
+                    <h3 className="font-heading text-lg font-bold mb-2">{a.title}</h3>
+                    <p className="text-text-secondary text-sm leading-relaxed">{a.description}</p>
+                  </div>
+                </CardTilt>
+              </ScrollReveal>
             ))}
           </div>
         </div>
       </div>
 
-      <div className="bg-soft-blush py-16 md:py-24">
+      {/* Mission */}
+      <div className="bg-soft-blush py-20 md:py-28">
         <div className="max-w-3xl mx-auto px-[5%] text-center">
-          <p className="section-tag mb-4">Our Mission</p>
-          <h2 className="font-heading text-3xl md:text-4xl font-bold mb-6 leading-tight">
-            To help every person find their voice in prayer
-          </h2>
-          <p className="text-text-secondary text-lg leading-relaxed mb-10">
-            We believe prayer is for everyone &mdash; not just the people who
-            find it easy. Prayer Portals remove the pressure of finding the
-            &ldquo;right&rdquo; words and replace it with an invitation to be
-            honest. Every card is a door into deeper conversation with God.
-          </p>
-          <a
-            href="/#cards"
-            className="inline-flex items-center gap-2 bg-forest-green hover:bg-green-dark text-white font-semibold px-8 py-3.5 rounded-full transition-colors text-sm"
-          >
-            Explore our cards
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
-          </a>
+          <ScrollReveal variant="blur-in">
+            <h2 className="font-heading text-3xl md:text-4xl font-bold mb-6 leading-tight">
+              To help every person find their voice in prayer
+            </h2>
+          </ScrollReveal>
+          <ScrollReveal variant="fade-up" delay={0.2}>
+            <p className="text-text-secondary text-lg leading-relaxed mb-10">
+              We believe prayer is for everyone &mdash; not just the people who
+              find it easy. Prayer Portals remove the pressure of finding the
+              &ldquo;right&rdquo; words and replace it with an invitation to be
+              honest. Every card is a door into deeper conversation with God.
+            </p>
+            <a
+              href="/#cards"
+              className="btn-interactive inline-flex items-center gap-2 bg-forest-green hover:bg-green-dark text-white font-semibold px-8 py-3.5 rounded-full text-sm"
+            >
+              Explore our cards
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </a>
+          </ScrollReveal>
         </div>
       </div>
     </div>

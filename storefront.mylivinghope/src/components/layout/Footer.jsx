@@ -16,7 +16,7 @@ function SocialIcon({ href, label, children }) {
 
 export default function Footer() {
   return (
-    <footer className="bg-charcoal text-white [&_a]:text-inherit">
+    <footer className="bg-charcoal text-white [&_a]:text-inherit" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
       <div className="max-w-[1400px] mx-auto px-[5%] pt-16 md:pt-24 pb-8">
         <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr] gap-8 md:gap-12 pb-12 border-b border-white/10">
           {/* Brand */}
@@ -97,7 +97,7 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8">
-          <p className="text-xs text-white/50">
+          <p className="text-xs text-white/60">
             &copy; {new Date().getFullYear()} My Living Hope. Made with &hearts;
             in Christchurch, New Zealand.
           </p>

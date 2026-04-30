@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { MapPin, Phone, Mail } from 'lucide-react'
 import ContactForm from '../components/ContactForm'
+import ScrollReveal from '../components/ScrollReveal'
 
 export default function Contact() {
   useEffect(() => {
@@ -9,12 +10,15 @@ export default function Contact() {
 
   return (
     <div id="main-content" className="mt-[80px] md:mt-[90px]">
-      <div className="bg-gradient-to-r from-forest-green to-green-dark py-16 md:py-20">
-        <div className="max-w-[1400px] mx-auto px-[5%] text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-3">
+      <div className="bg-gradient-to-br from-forest-green via-green-dark to-forest-green py-20 md:py-28 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute bottom-0 left-0 w-80 h-80 bg-white/5 rounded-full blur-3xl translate-y-1/2" />
+        </div>
+        <div className="relative max-w-[1400px] mx-auto px-[5%] text-center">
+          <h1 className="hero-reveal hero-reveal-1 text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
             Get in Touch
           </h1>
-          <p className="text-white/85 text-lg max-w-xl mx-auto">
+          <p className="hero-reveal hero-reveal-2 text-white/80 text-lg max-w-xl mx-auto">
             We'd love to hear from you
           </p>
         </div>
@@ -22,7 +26,7 @@ export default function Contact() {
 
       <div className="max-w-[1400px] mx-auto px-[5%] py-16 md:py-24">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
-          <div>
+          <ScrollReveal variant="slide-left">
             <h2 className="font-heading text-3xl font-bold mb-6">
               Let's Connect
             </h2>
@@ -33,43 +37,35 @@ export default function Contact() {
             </p>
 
             <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-forest-green/10 flex items-center justify-center flex-shrink-0">
-                  <MapPin className="w-5 h-5 text-forest-green" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-charcoal mb-1">Location</h3>
-                  <p className="text-text-secondary">Christchurch, New Zealand</p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-forest-green/10 flex items-center justify-center flex-shrink-0">
-                  <Phone className="w-5 h-5 text-forest-green" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-charcoal mb-1">Phone</h3>
-                  <a href="tel:+64275690061" className="text-forest-green hover:text-green-dark transition-colors">
-                    027 569 0061
-                  </a>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-forest-green/10 flex items-center justify-center flex-shrink-0">
-                  <Mail className="w-5 h-5 text-forest-green" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-charcoal mb-1">Email</h3>
-                  <a href="mailto:prayerprompts@outlook.com" className="text-forest-green hover:text-green-dark transition-colors">
-                    prayerprompts@outlook.com
-                  </a>
-                </div>
-              </div>
+              {[
+                { Icon: MapPin, title: 'Location', content: 'Christchurch, New Zealand' },
+                { Icon: Phone, title: 'Phone', href: 'tel:+64275690061', content: '027 569 0061' },
+                { Icon: Mail, title: 'Email', href: 'mailto:prayerprompts@outlook.com', content: 'prayerprompts@outlook.com' },
+              ].map((item, i) => (
+                <ScrollReveal key={item.title} variant="fade-up" delay={i * 0.1}>
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-full bg-forest-green/10 flex items-center justify-center flex-shrink-0">
+                      <item.Icon className="w-5 h-5 text-forest-green" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-charcoal mb-1">{item.title}</h3>
+                      {item.href ? (
+                        <a href={item.href} className="text-forest-green hover:text-green-dark transition-colors">
+                          {item.content}
+                        </a>
+                      ) : (
+                        <p className="text-text-secondary">{item.content}</p>
+                      )}
+                    </div>
+                  </div>
+                </ScrollReveal>
+              ))}
             </div>
-          </div>
+          </ScrollReveal>
 
-          <ContactForm />
+          <ScrollReveal variant="slide-right" delay={0.2}>
+            <ContactForm />
+          </ScrollReveal>
         </div>
       </div>
     </div>

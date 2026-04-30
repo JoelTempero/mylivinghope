@@ -64,29 +64,111 @@ main a:hover {
   color: var(--color-forest-green);
 }
 
-@keyframes reveal {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* ============================================
+   SCROLL-TRIGGERED ANIMATIONS
+   Driven by .in-view class via IntersectionObserver
+   ============================================ */
+
+/* Base: all reveal elements start hidden */
+.reveal {
+  opacity: 0;
+  will-change: transform, opacity;
 }
 
-.animate-reveal {
-  animation: reveal 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+.reveal.in-view {
+  opacity: 1;
 }
 
-.animate-reveal-delay-1 { animation-delay: 0.1s; }
-.animate-reveal-delay-2 { animation-delay: 0.2s; }
-.animate-reveal-delay-3 { animation-delay: 0.3s; }
-.animate-reveal-delay-4 { animation-delay: 0.4s; }
+/* Fade Up — default reveal */
+.reveal-fade-up {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform, opacity;
+}
+.reveal-fade-up.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Fade In — subtle, no movement */
+.reveal-fade-in {
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  will-change: opacity;
+}
+.reveal-fade-in.in-view {
+  opacity: 1;
+}
+
+/* Slide Left — for left-column content */
+.reveal-slide-left {
+  opacity: 0;
+  transform: translateX(-60px);
+  transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform, opacity;
+}
+.reveal-slide-left.in-view {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Slide Right — for right-column content */
+.reveal-slide-right {
+  opacity: 0;
+  transform: translateX(60px);
+  transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform, opacity;
+}
+.reveal-slide-right.in-view {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Scale Up — for cards, images, featured elements */
+.reveal-scale-up {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.7s ease,
+              transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform, opacity;
+}
+.reveal-scale-up.in-view {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Blur In — for Scripture quotes, emotional moments */
+.reveal-blur-in {
+  opacity: 0;
+  filter: blur(8px);
+  transition: opacity 1s ease,
+              filter 1s ease;
+  will-change: filter, opacity;
+}
+.reveal-blur-in.in-view {
+  opacity: 1;
+  filter: blur(0);
+}
+
+/* Stagger delays for child items in grids */
+.stagger-1 { transition-delay: 0.1s; }
+.stagger-2 { transition-delay: 0.2s; }
+.stagger-3 { transition-delay: 0.3s; }
+.stagger-4 { transition-delay: 0.4s; }
+.stagger-5 { transition-delay: 0.5s; }
+.stagger-6 { transition-delay: 0.6s; }
+
+/* ============================================
+   CONTINUOUS ANIMATIONS
+   ============================================ */
 
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-15px); }
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(1deg); }
 }
 
 .animate-float {
@@ -97,6 +179,193 @@ main a:hover {
   animation: float 6s ease-in-out infinite;
   animation-delay: 2s;
 }
+
+.animate-float-slow {
+  animation: float 8s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+@keyframes gentle-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.animate-gentle-pulse {
+  animation: gentle-pulse 3s ease-in-out infinite;
+}
+
+/* ============================================
+   CARD INTERACTIONS
+   ============================================ */
+
+/* Card flip */
+.card-flip-container {
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.card-flip-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.card-flip-container.flipped .card-flip-inner {
+  transform: rotateY(180deg);
+}
+
+.card-flip-front,
+.card-flip-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.card-flip-back {
+  transform: rotateY(180deg);
+}
+
+/* Card tilt hover glow */
+.card-tilt {
+  transition: box-shadow 0.3s ease;
+}
+.card-tilt:hover {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+}
+
+/* Card fan — stack of cards that spread on hover/in-view */
+.card-fan {
+  position: relative;
+}
+
+.card-fan-item {
+  position: absolute;
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+              opacity 0.4s ease;
+}
+
+.card-fan.in-view .card-fan-item:nth-child(1) {
+  transform: rotate(-12deg) translateX(-20px);
+}
+.card-fan.in-view .card-fan-item:nth-child(2) {
+  transform: rotate(-4deg) translateX(-6px);
+}
+.card-fan.in-view .card-fan-item:nth-child(3) {
+  transform: rotate(4deg) translateX(6px);
+}
+.card-fan.in-view .card-fan-item:nth-child(4) {
+  transform: rotate(12deg) translateX(20px);
+}
+
+/* ============================================
+   HERO ENTRANCE SEQUENCE
+   ============================================ */
+
+@keyframes hero-text-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+.hero-reveal {
+  opacity: 0;
+  animation: hero-text-reveal 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.hero-reveal-1 { animation-delay: 0.1s; }
+.hero-reveal-2 { animation-delay: 0.25s; }
+.hero-reveal-3 { animation-delay: 0.4s; }
+.hero-reveal-4 { animation-delay: 0.55s; }
+.hero-reveal-5 { animation-delay: 0.7s; }
+.hero-reveal-6 { animation-delay: 0.85s; }
+
+@keyframes card-deal {
+  from {
+    opacity: 0;
+    transform: translateX(100px) rotate(20deg) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) rotate(0deg) scale(1);
+  }
+}
+
+.card-deal {
+  opacity: 0;
+  animation: card-deal 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.card-deal-1 { animation-delay: 0.5s; }
+.card-deal-2 { animation-delay: 0.65s; }
+.card-deal-3 { animation-delay: 0.8s; }
+
+/* ============================================
+   MICRO-INTERACTIONS
+   ============================================ */
+
+/* Button interactions */
+.btn-interactive {
+  transition: transform 0.15s ease, box-shadow 0.2s ease, background-color 0.25s ease;
+}
+.btn-interactive:hover {
+  transform: scale(1.03);
+  box-shadow: 0 10px 25px -5px rgba(51, 111, 73, 0.3);
+}
+.btn-interactive:active {
+  transform: scale(0.97);
+}
+
+/* Scroll progress bar */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: var(--color-forest-green);
+  z-index: 100;
+  transform-origin: left;
+  transition: none;
+}
+
+/* Image placeholder shimmer */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.image-placeholder {
+  background: linear-gradient(
+    90deg,
+    var(--color-blush-light) 25%,
+    var(--color-soft-blush) 50%,
+    var(--color-blush-light) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+/* Scripture interlude — standalone breathing section */
+.scripture-interlude {
+  font-family: var(--font-heading);
+  font-style: italic;
+  color: var(--color-charcoal);
+  line-height: 1.6;
+}
+
+/* ============================================
+   LEGACY + UTILITIES
+   ============================================ */
 
 .perspective-1000 {
   perspective: 1000px;
@@ -128,5 +397,17 @@ footer :focus-visible {
   }
   html {
     scroll-behavior: auto;
+  }
+  .reveal, .reveal-fade-up, .reveal-fade-in,
+  .reveal-slide-left, .reveal-slide-right,
+  .reveal-scale-up, .reveal-blur-in {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+  .hero-reveal, .card-deal {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
   }
 }
