@@ -1,19 +1,19 @@
 const testimonials = [
   {
     initials: "YL",
-    text: "The Prayer Prompts were incredibly helpful. Our youth group now has a tangible way to engage with prayer that doesn’t feel forced or awkward. The cards open up real conversations with God.",
+    text: "The Prayer Prompts were incredibly helpful. Our youth group now has a tangible way to engage with prayer that doesn't feel forced or awkward. The cards open up real conversations with God.",
   },
   {
     initials: "SM",
-    text: "I’ve always struggled to know what to pray. These cards meet me exactly where I am emotionally and help me find words when I have none. They’ve completely changed my quiet times.",
+    text: "I've always struggled to know what to pray. These cards meet me exactly where I am emotionally and help me find words when I have none. They've completely changed my quiet times.",
   },
   {
     initials: "DK",
-    text: "We use these in our small group and they’ve helped people who’ve never prayed out loud feel comfortable sharing. The Scripture connections are beautiful and relevant.",
+    text: "We use these in our small group and they've helped people who've never prayed out loud feel comfortable sharing. The Scripture connections are beautiful and relevant.",
   },
   {
     initials: "BYM",
-    text: "Leaders could immediately see how these cards open up prayer in a way that’s simple, real, and accessible for young people. Instant hit at our youth leaders conference.",
+    text: "Leaders could immediately see how these cards open up prayer in a way that's simple, real, and accessible for young people. Instant hit at our youth leaders conference.",
   },
 ]
 

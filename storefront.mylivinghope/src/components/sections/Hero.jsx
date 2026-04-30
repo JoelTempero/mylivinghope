@@ -1,23 +1,19 @@
-import Link from 'next/link'
+import { Link } from 'react-router-dom'
 
 export default function Hero() {
   return (
     <section className="relative min-h-[calc(100vh-80px)] md:min-h-[calc(100vh-90px)] mt-[80px] md:mt-[90px] flex items-center bg-gradient-to-br from-cream via-cream to-blush-light overflow-hidden">
-      {/* Decorative blobs */}
       <div className="absolute top-[10%] right-[5%] w-72 h-72 bg-soft-blush/30 rounded-full blur-3xl" />
       <div className="absolute bottom-[15%] left-[10%] w-56 h-56 bg-forest-green/5 rounded-full blur-3xl" />
 
       <div className="max-w-[1400px] mx-auto px-[5%] py-16 md:py-24 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-          {/* Text */}
           <div className="text-center lg:text-left">
             <p className="section-tag mb-4 animate-reveal">Light in the Darkness</p>
             <h1 className="text-[clamp(2.5rem,5vw,4rem)] font-bold leading-[1.1] mb-6 animate-reveal animate-reveal-delay-1">
               Go Deeper{' '}
               <br />
-              <span className="text-forest-green italic">
-                With Jesus
-              </span>
+              <span className="text-forest-green italic">With Jesus</span>
             </h1>
             <p className="text-lg text-text-secondary max-w-xl mx-auto lg:mx-0 mb-8 animate-reveal animate-reveal-delay-2">
               Prayer Portals are beautifully designed cards that help you bring
@@ -25,17 +21,17 @@ export default function Hero() {
               Scripture and discover new ways to pray.
             </p>
             <div className="flex flex-wrap gap-4 justify-center lg:justify-start animate-reveal animate-reveal-delay-3">
-              <Link
-                href="/products"
+              <a
+                href="#cards"
                 className="inline-flex items-center gap-2 bg-forest-green hover:bg-green-dark text-white font-semibold px-8 py-3.5 rounded-full transition-colors text-sm"
               >
                 Explore Cards
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
-              </Link>
+              </a>
               <Link
-                href="/about"
+                to="/about"
                 className="inline-flex items-center gap-2 border-2 border-charcoal text-charcoal hover:bg-charcoal hover:text-white font-semibold px-8 py-3.5 rounded-full transition-colors text-sm"
               >
                 Learn More
@@ -43,9 +39,7 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Hero visuals */}
           <div className="relative flex justify-center items-center overflow-hidden py-8 sm:py-0 sm:overflow-visible">
-            {/* Main image placeholder */}
             <div className="relative w-[280px] h-[380px] sm:w-[340px] sm:h-[460px] lg:w-[400px] lg:h-[540px] rounded-3xl bg-gradient-to-br from-forest-green/10 to-soft-blush/40 shadow-xl overflow-hidden flex items-center justify-center">
               <div className="text-center p-8">
                 <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-forest-green/10 flex items-center justify-center">
@@ -58,7 +52,6 @@ export default function Hero() {
               </div>
             </div>
 
-            {/* Floating accent cards — hidden on very small screens */}
             <div className="hidden sm:flex absolute -top-4 -left-8 w-[140px] h-[190px] rounded-2xl bg-white shadow-lg animate-float items-center justify-center border border-soft-blush/30">
               <div className="text-center p-3">
                 <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-forest-green/10 flex items-center justify-center">

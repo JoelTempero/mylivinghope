@@ -3,7 +3,7 @@ const steps = [
     number: 1,
     title: 'Identify Your Feeling',
     description:
-      "Browse the cards until you find the emotion, need, or desire that resonates with what you’re experiencing right now.",
+      "Browse the cards until you find the emotion, need, or desire that resonates with what you're experiencing right now.",
     icon: (
       <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
@@ -14,7 +14,7 @@ const steps = [
     number: 2,
     title: 'Discover Scripture',
     description:
-      "Flip the card over to find Bible verses that speak directly to your situation, connecting God’s Word to your heart.",
+      "Flip the card over to find Bible verses that speak directly to your situation, connecting God's Word to your heart.",
     icon: (
       <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
