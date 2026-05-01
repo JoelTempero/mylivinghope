@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://mylivinghope.co.nz/sitemap.xml
+Sitemap: https://mylivinghope.org.nz/sitemap.xml
