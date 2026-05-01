@@ -5,7 +5,6 @@ import Footer from './components/layout/Footer'
 import ScrollProgress from './components/ScrollProgress'
 import Home from './pages/Home'
 import About from './pages/About'
-import Contact from './pages/Contact'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -25,7 +24,6 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
         </Routes>
       </main>
       <Footer />

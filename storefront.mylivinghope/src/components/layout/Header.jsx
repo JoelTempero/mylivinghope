@@ -1,16 +1,20 @@
 import { Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, ShoppingBag } from 'lucide-react'
+import { openCart, onCartCount } from '../BuyButton'
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [cartCount, setCartCount] = useState(0)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10)
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  useEffect(() => onCartCount(setCartCount), [])
 
   return (
     <header
@@ -29,15 +33,17 @@ export default function Header() {
       </a>
 
       <nav className="max-w-[1400px] mx-auto px-[5%] h-[80px] md:h-[90px] flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-3 text-white">
-          <span className="font-heading text-xl md:text-2xl font-bold tracking-tight">
-            My Living Hope
-          </span>
+        <Link to="/" className="flex items-center">
+          <img
+            src="/images/icon.png"
+            alt="My Living Hope"
+            className="h-[50px] md:h-[60px] w-auto"
+          />
         </Link>
 
         <div className="hidden md:flex items-center gap-8">
           <a
-            href="/#cards"
+            href="/#shop"
             className="text-sm font-medium text-white/90 hover:text-white transition-colors tracking-wide uppercase"
           >
             Shop
@@ -48,22 +54,52 @@ export default function Header() {
           >
             About
           </Link>
-          <Link
-            to="/contact"
+          <a
+            href="#contact"
             className="text-sm font-medium text-white/90 hover:text-white transition-colors tracking-wide uppercase"
+            onClick={(e) => { e.preventDefault(); document.querySelector('footer')?.scrollIntoView({ behavior: 'smooth' }) }}
           >
             Contact
-          </Link>
+          </a>
+          <button
+            onMouseDown={(e) => e.stopPropagation()}
+            onClick={(e) => { e.stopPropagation(); openCart() }}
+            className="relative text-white/90 hover:text-white transition-colors p-2 cursor-pointer z-[99999]"
+            aria-label={`Cart${cartCount > 0 ? `, ${cartCount} items` : ''}`}
+          >
+            <ShoppingBag className="w-5 h-5" />
+            {cartCount > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 bg-soft-blush text-charcoal text-[10px] font-bold w-4.5 h-4.5 flex items-center justify-center rounded-full">
+                {cartCount}
+              </span>
+            )}
+          </button>
         </div>
 
-        <button
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="md:hidden text-white p-3"
-          aria-label="Toggle menu"
-          aria-expanded={mobileOpen}
-        >
-          {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
+        <div className="md:hidden flex items-center gap-1">
+          <button
+            onMouseDown={(e) => e.stopPropagation()}
+            onTouchStart={(e) => e.stopPropagation()}
+            onClick={(e) => { e.stopPropagation(); openCart() }}
+            className="relative text-white/90 hover:text-white transition-colors p-3 cursor-pointer z-[99999]"
+            aria-label={`Cart${cartCount > 0 ? `, ${cartCount} items` : ''}`}
+          >
+            <ShoppingBag className="w-5 h-5" />
+            {cartCount > 0 && (
+              <span className="absolute top-1.5 right-1.5 bg-soft-blush text-charcoal text-[10px] font-bold w-4.5 h-4.5 flex items-center justify-center rounded-full">
+                {cartCount}
+              </span>
+            )}
+          </button>
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="text-white p-3"
+            aria-label="Toggle menu"
+            aria-expanded={mobileOpen}
+          >
+            {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
       </nav>
 
       <div
@@ -75,7 +111,7 @@ export default function Header() {
           {[
             { href: '/#cards', label: 'Shop', isLink: false },
             { to: '/about', label: 'About', isLink: true },
-            { to: '/contact', label: 'Contact', isLink: true },
+            { href: '#contact', label: 'Contact', isLink: false, scrollToFooter: true },
           ].map((item, i) => {
             const cls = `block text-white/90 hover:text-white transition-all py-3 text-lg font-medium ${
               mobileOpen ? 'translate-x-0 opacity-100' : '-translate-x-4 opacity-0'
@@ -96,7 +132,13 @@ export default function Header() {
               <a
                 key={item.label}
                 href={item.href}
-                onClick={() => setMobileOpen(false)}
+                onClick={(e) => {
+                  setMobileOpen(false)
+                  if (item.scrollToFooter) {
+                    e.preventDefault()
+                    document.querySelector('footer')?.scrollIntoView({ behavior: 'smooth' })
+                  }
+                }}
                 className={cls}
                 style={style}
               >

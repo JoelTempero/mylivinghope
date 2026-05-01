@@ -19,7 +19,7 @@ export default function Contact() {
             Get in Touch
           </h1>
           <p className="hero-reveal hero-reveal-2 text-white/80 text-lg max-w-xl mx-auto">
-            We'd love to hear from you
+            Questions, bulk orders, or just saying hello
           </p>
         </div>
       </div>
@@ -31,9 +31,8 @@ export default function Contact() {
               Let's Connect
             </h2>
             <p className="text-text-secondary text-lg leading-relaxed mb-10">
-              Whether you have a question about Prayer Portals, want to order in
-              bulk for your ministry, or just want to say hello &mdash;
-              we're here for you.
+              Got a question about Prayer Portals? Want to order a set for
+              your youth group or church? Drop us a line.
             </p>
 
             <div className="space-y-6">
