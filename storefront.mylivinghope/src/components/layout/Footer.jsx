@@ -169,6 +169,11 @@ export default function Footer() {
                 Sidequest Digital
               </a>
             </p>
+            <p className="text-xs text-white/40 text-center mt-2">
+              <Link to="/privacy" className="hover:text-white/60 transition-colors">Privacy Policy</Link>
+              <span className="mx-2">·</span>
+              <Link to="/terms" className="hover:text-white/60 transition-colors">Terms & Conditions</Link>
+            </p>
           </div>
         </div>
 
@@ -224,6 +229,11 @@ export default function Footer() {
               <a href="https://sidequest.nz" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors underline underline-offset-2">
                 Sidequest Digital
               </a>
+            </p>
+            <p className="text-xs text-white/40">
+              <Link to="/privacy" className="hover:text-white/60 transition-colors">Privacy Policy</Link>
+              <span className="mx-2">·</span>
+              <Link to="/terms" className="hover:text-white/60 transition-colors">Terms & Conditions</Link>
             </p>
           </div>
         </div>
