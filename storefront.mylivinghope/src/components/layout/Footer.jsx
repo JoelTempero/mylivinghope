@@ -17,13 +17,51 @@ function SocialIcon({ href, label, children }) {
 
 function FooterContactForm() {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' })
+  const [status, setStatus] = useState('idle')
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    window.location.href = `mailto:prayerprompts@outlook.com?subject=Website enquiry from ${formData.name}&body=${encodeURIComponent(formData.message)}%0A%0AFrom: ${formData.name} (${formData.email})`
+    setStatus('sending')
+
+    try {
+      const res = await fetch('https://formsubmit.co/ajax/prayerprompts@outlook.com', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+          _subject: `Website enquiry from ${formData.name}`,
+        }),
+      })
+
+      if (res.ok) {
+        setStatus('sent')
+        setFormData({ name: '', email: '', message: '' })
+      } else {
+        setStatus('error')
+      }
+    } catch {
+      setStatus('error')
+    }
   }
 
   const inputClass = "w-full px-3 py-2.5 rounded-lg border border-white/15 bg-white/5 focus:outline-none focus:border-forest-green focus:ring-1 focus:ring-forest-green/30 transition-all duration-200 text-white text-sm placeholder:text-white/40"
+
+  if (status === 'sent') {
+    return (
+      <div className="text-center py-6">
+        <p className="text-white font-semibold mb-1">Message sent!</p>
+        <p className="text-white/60 text-sm">We'll be in touch soon.</p>
+        <button
+          onClick={() => setStatus('idle')}
+          className="text-sm text-white/50 hover:text-white mt-3 underline underline-offset-2"
+        >
+          Send another message
+        </button>
+      </div>
+    )
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
@@ -53,11 +91,15 @@ function FooterContactForm() {
         className={`${inputClass} resize-none`}
         placeholder="Your message"
       />
+      {status === 'error' && (
+        <p className="text-red-300 text-sm">Something went wrong. Please try again or email us directly.</p>
+      )}
       <button
         type="submit"
-        className="btn-interactive w-full py-2.5 bg-forest-green hover:bg-green-light text-white font-semibold rounded-lg text-sm"
+        disabled={status === 'sending'}
+        className="btn-interactive w-full py-2.5 bg-forest-green hover:bg-green-light text-white font-semibold rounded-lg text-sm disabled:opacity-60 disabled:cursor-not-allowed"
       >
-        Send Message
+        {status === 'sending' ? 'Sending...' : 'Send Message'}
       </button>
     </form>
   )
