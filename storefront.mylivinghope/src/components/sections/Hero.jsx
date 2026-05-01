@@ -24,8 +24,8 @@ export default function Hero() {
 
       <div
         ref={imageRef}
-        className="hero-reveal hero-reveal-3 hidden lg:block absolute pointer-events-none"
-        style={{ right: '5%', top: '8%', width: '43%', willChange: 'transform' }}
+        className="hero-reveal hero-reveal-3 hidden lg:block absolute pointer-events-none w-[580px] xl:w-[43%]"
+        style={{ right: '5%', top: '8%', willChange: 'transform' }}
       >
         <img
           src="/images/websitehero.webp"
