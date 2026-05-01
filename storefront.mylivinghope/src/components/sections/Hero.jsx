@@ -5,13 +5,21 @@ export default function Hero() {
   const imageRef = useRef(null)
 
   useEffect(() => {
-    function onScroll() {
+    function update() {
       const image = imageRef.current
       if (!image) return
       image.style.transform = `translateY(${window.scrollY * 0.15}px)`
+      const vw = window.innerWidth
+      const right = Math.min(vw * 0.03, -700 + (vw - 1024) * 1.46)
+      image.style.right = `${right}px`
     }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    window.addEventListener('scroll', update, { passive: true })
+    window.addEventListener('resize', update, { passive: true })
+    update()
+    return () => {
+      window.removeEventListener('scroll', update)
+      window.removeEventListener('resize', update)
+    }
   }, [])
 
   return (
@@ -24,8 +32,8 @@ export default function Hero() {
 
       <div
         ref={imageRef}
-        className="hero-reveal hero-reveal-3 hidden lg:block absolute pointer-events-none w-[580px] xl:w-[43%]"
-        style={{ right: '5%', top: '8%', willChange: 'transform' }}
+        className="hero-reveal hero-reveal-3 hidden lg:block absolute pointer-events-none"
+        style={{ width: '1220px', top: '5.5%', willChange: 'transform' }}
       >
         <img
           src="/images/websitehero.webp"

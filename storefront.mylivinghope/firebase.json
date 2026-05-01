@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "mlh-storefront",
+    "site": "mylivinghope",
     "public": "dist",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
