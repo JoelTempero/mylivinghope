@@ -3,7 +3,7 @@
 ## Overview
 - **Client**: My Living Hope (greeting card business, Jesse Major founder)
 - **Type**: Shopify Storefront + Firebase Admin Portal
-- **Status**: Portal functional, storefront rebuilt (React + Vite + Buy Buttons)
+- **Status**: Portal functional, storefront deployed to mylivinghope.web.app (DNS pending for mylivinghope.org.nz)
 
 ## Project Structure
 - `mylivinghope/` — Shopify theme (Liquid templates, synced by Shopify)
@@ -84,6 +84,8 @@ Add to `.claude/settings.json` on each machine:
 - Dev server: `cd storefront.mylivinghope && npm run dev`
 - Build: `cd storefront.mylivinghope && npm run build`
 - Lint: `cd storefront.mylivinghope && npm run lint`
+- Deploy: `cd storefront.mylivinghope && npm run deploy`
+- Hosting site: `mylivinghope` (mylivinghope.web.app → mylivinghope.org.nz)
 
 ## Code Conventions
 - **Portal**: JSX (not TSX), plain JavaScript with JSX
@@ -112,23 +114,47 @@ Add to `.claude/settings.json` on each machine:
   - CREATIVE.md and DESIGN.md created in `storefront.mylivinghope/`
   - Unanimous verdict: functional but generic, needs soul and visual identity
   - Key themes: lead with emotion not product, card shape as brand motif, break the template rhythm, show the actual product
+- **Mobile polish pass complete** — scripture interlude responsive, footer redesigned, card drag, cart button fixed
+- **Header cart button working** — Shopify SDK overlay was blocking clicks; fixed with z-[99999] + stopPropagation on mouseDown/touchStart/click
+- **Storefront polish & deploy complete:**
+  - Contact form wired to FormSubmit.co (free, no backend)
+  - Privacy Policy + Terms & Conditions pages (NZ legal compliance)
+  - Favicon generated from lantern icon
+  - SEO: sitemap, robots.txt, OG tags updated for mylivinghope.org.nz
+  - Hero image: 1220px fixed width with JS-driven responsive right-slide
+  - Instagram URL corrected, dev artifacts cleaned up
+  - Deployed to Firebase Hosting (mylivinghope.web.app), DNS pending for custom domain
 
 ## Next Steps
-- [ ] **Creative overhaul** — implement CREATIVE.md direction: restructure homepage narrative, add card motif system, vary section rhythm, add texture/emotion. See `storefront.mylivinghope/CREATIVE.md` for full plan.
-- [ ] **Enable Shopify Buy Button sales channel** — Jesse needs to add Buy Button channel in Shopify admin, then generate embed code for the flagship product. Update `BuyButton.jsx` with the real `storefrontAccessToken` and `productId`.
-- [ ] **Add real images** — export hero/about/card product photos and add to `storefront.mylivinghope/public/images/`
-- [ ] **Get Jesse's actual social URLs** — Facebook/Instagram currently use best-guess URLs, need confirmation
-- [ ] **Deploy storefront** — set up Firebase Hosting site for storefront, configure `firebase.json` with SPA rewrites
-- [x] ~~**Design pass** — applied full MLH design system to storefront~~
-- [x] ~~**Design audit** — council audit (10 members), 20 issues fixed~~
-- [x] ~~**Creative council audit** — 10 design members, CREATIVE.md + DESIGN.md created~~
-- [x] ~~**Buy Button pivot** — replaced Next.js + Storefront API with React + Vite + Buy Buttons~~
+- [ ] **Verify DNS propagation** — check that mylivinghope.org.nz resolves to Firebase IPs and SSL provisions (A records: 199.36.158.100 + 199.36.158.101)
+- [ ] **Jesse: activate FormSubmit.co** — first contact form submission triggers verification email to prayerprompts@outlook.com, must click to confirm
+- [ ] **Instagram embed** — explore embedding Instagram feed as a section on homepage and about page (@mylivinghopenz)
+- [ ] **Test mobile card drag on real device** — touch drag only tested in browser emulation, may need threshold/scroll tuning
 - [ ] Wire MCP server into Joel's `.claude/settings.json` for native Firestore tools
 - [ ] Deploy Cloud Function (`firebase deploy --only functions --project my-living-hope`)
 - [ ] Help Jesse get Claude Code set up on his machine
 - [ ] Joel to review portal Claude page live and fix any issues
 
 ## Session Log
+### 2026-05-02 — Storefront Polish & First Deploy
+- **Contact form**: Replaced mailto: with FormSubmit.co AJAX POST, added sending/sent/error states
+- **Privacy Policy page** (`/privacy`): NZ Privacy Act 2020, plain language, covers Shopify + FormSubmit data
+- **Terms & Conditions page** (`/terms`): Consumer Guarantees Act 1993, 14-day returns, NZ governing law
+- **Footer**: Added privacy/terms links in copyright bar (mobile + desktop), fixed Instagram URL to @mylivinghopenz
+- **Favicon**: Generated ico/16/32/180 from lantern icon via sharp, wired into index.html
+- **SEO**: Sitemap updated (removed /contact, added /privacy + /terms), domain → mylivinghope.org.nz, og:url added
+- **Hero image fix**: 1220px fixed width, JS-driven `right` calculation that slides image right as viewport shrinks (prevents text overlap). Used tuner UI for Joel to dial in exact values.
+- **Firebase Hosting**: Configured as site `mylivinghope` on project `my-living-hope`, deployed to mylivinghope.web.app
+- **DNS**: A records pointed to Firebase (199.36.158.100 + .101), TXT verification in place, waiting for propagation + SSL
+- 12 commits this session, build clean (1.88s)
+
+### 2026-05-02 — Mobile Polish + Cart Button Fix
+- **Scripture interlude mobile**: Split verse into 6 lines (from 3) with separate fit-to-width sizing (0.9x scale), desktop layout unchanged. Disabled glow hover on mobile (screen width check).
+- **Footer mobile redesign**: Reordered to contact form → contact details/socials → centered logo (h-32) + copyright. Quick links hidden on mobile. Removed Facebook icon (client doesn't have it).
+- **Mobile card interaction**: Added mouse+touch drag to MobileCard with 8px threshold, horizontal-only (vertical scrolls page), tap-to-flip via onClick, smooth snap-back animation.
+- **Cart button fix (major)**: Header cart button was unresponsive. Root cause: Shopify Buy Button SDK injects invisible overlay blocking clicks. Fix: `z-[99999]` on button + `stopPropagation()` on mouseDown/touchStart/click to prevent SDK event interception. Also added `pointer-events: none` to scroll progress bar.
+- Files changed: Header.jsx, BuyButton.jsx, ScriptureInterlude.jsx, Footer.jsx, InteractiveCards.jsx, index.css
+
 ### 2026-05-01 — Creative Council Audit + Overhaul (Autopilot)
 - Ran /council-auto with 10 design-focused members: Pixel Perfectionist, Steve Jobs, Wes Anderson, Saul Bass, Frank Ocean, Banksy, Hook Writer, Storyteller, Device Juggler, Rachel
 - Unanimous verdict: functional but generic — needs soul, visual identity, and narrative restructure
@@ -172,50 +198,9 @@ Add to `.claude/settings.json` on each machine:
 - **P3 Polish:** Replaced emojis with SVG icons in hero; hid floating cards on small screens; unified cart badge positioning; added global focus-visible styles; added secondary CTA to bottom section
 - Build clean, lint clean, 11 files changed
 
-### 2026-04-27 — Autopilot: Full Design Pass
-- Applied complete MLH design system to storefront, matching current Shopify site
-- Fonts: Libre Baskerville (headings) + Montserrat (body) via next/font/google
-- Full color palette as Tailwind theme tokens (forest-green, charcoal, cream, soft-blush, etc.)
-- CSS animations: reveal (scroll-in), float (hero accents), reduced-motion support
-- Header: forest green, fixed, scroll-aware, mobile hamburger, skip-to-content link
-- Footer: charcoal 4-column with newsletter signup and social icons
-- Homepage: Hero (gradient + floating card accents), About, How It Works (3 steps), Testimonials (glassmorphism on green), CTA
-- Products: green gradient page header, cards with hover elevation + sale badges
-- Product detail: styled gallery, pill variant selector, animated add-to-cart with success state
-- About: full story with Psalm quote, how-it-works mini-section
-- Contact: info cards (location/phone/email) + styled contact form
-- CartDrawer: slide animation, body scroll lock, empty state, checkout button
-- All real MLH copy from the current Shopify theme
-- Placeholder image areas where Joel needs to add actual product/hero photos
-
-### 2026-04-27 — Autopilot: Headless Storefront Build
-- Scaffolded `storefront.mylivinghope/` with Next.js 16.2.4 (App Router, TypeScript, Tailwind v4)
-- Checked Next.js 16 docs for breaking changes — `revalidate` export still supported, `params` is Promise-based (already in plan)
-- Built all 13 tasks from the implementation plan in one session
-- Shopify API client (GraphQL), types, cart store (Zustand), CartProvider + API route
-- Layout shell: Header with responsive mobile hamburger menu (plan only had desktop), Footer
-- Product components: ProductCard, ProductGrid, VariantSelector, AddToCartButton
-- Pages: Homepage (hero + featured products), Products listing (ISR), Product detail (image gallery, variants, JSON-LD), About, Contact
-- Cart drawer with line items, quantity controls, checkout redirect to Shopify
-- SEO: dynamic sitemap, metadata on all pages, structured data on product pages
-- Next.js config: Shopify CDN image domain
-- Added graceful fallbacks for missing Shopify token (pages render without products instead of crashing)
-- Build: clean, all routes compile
-- **Needs Joel**: Generate Shopify Storefront API token and add to `.env.local`
-
-### 2026-04-18 (session 2)
-- Built shared AI context layer (8 tasks): firebase-admin scripts, sync-context CLI, Firestore query CLI, MCP server, Cloud Function, portal Sync Context button
-- Consolidated Firebase projects — deleted `mlh-website-2a597`, keeping `my-living-hope`
-- Added Claude Context page to portal (3 tabs: Shared Context, Joel's Notes, Jesse's Notes)
-- Populated all 3 context files with real business data + Jesse's setup guide
-- Fixed Storage rules (added `shared/` path) and CORS for the bucket
-- Deployed portal to my-living-hope.web.app
-- Priority decision: portal polish/fixes first, then headless storefront
-
-### 2026-04-18 (session 1)
-- Initial scan: identified project structure (Shopify theme + React portal)
-- Created CLAUDE.md, brainstormed headless storefront + shared AI context layer
-- Wrote design specs and implementation plans for both subsystems
+### 2026-04-27 — Autopilot: Full Design Pass + Headless Storefront Build
+- Applied complete MLH design system to storefront, later pivoted from Next.js to React + Vite + Buy Buttons
+- See earlier session logs for full detail (trimmed for brevity)
 
 ## Key Decisions
 - Both portal and storefront use JSX (not TypeScript) — consistent stack
@@ -226,8 +211,13 @@ Add to `.claude/settings.json` on each machine:
 - Storefront deployed to Firebase Hosting (planned), checkout via Shopify Buy Button overlay
 - **Buy Button over Storefront API** — only 1 product, avoids API token issues, can revisit if catalog grows
 - **Focus on flagship product** — Joel pitching Jesse to lead with 1 card pack, others still in dev
+- **FormSubmit.co for contact form** — free, no backend, no API key. First submission requires email verification by Jesse.
+- **Storefront domain** — mylivinghope.org.nz (was .co.nz in old config). Hosted on Firebase as site `mylivinghope`, separate from portal's default site.
+- **Tailwind v4 + inline styles** — Tailwind v4 cascade layers can conflict with custom CSS classes. For responsive positioning that must work, use JS-driven inline styles (see Hero.jsx pattern).
 
 ## Known Issues
+- **Shopify SDK overlay blocks clicks** — the Buy Button SDK injects invisible fixed overlays. Any custom buttons that need to sit above it require `z-[99999]` + `stopPropagation` on mouseDown/touchStart/click. See Header.jsx cart buttons for the pattern.
 - Cloud Function `generateContext` not yet deployed (needs `firebase deploy --only functions`)
 - MCP server not yet wired into Joel's `.claude/settings.json`
 - PWA manifest icon missing (`pwa-192x192.png` — console warning on Claude page)
+- Mobile card drag untested on real device — `touch-none` removed, horizontal threshold added, but may need tuning
