@@ -35,7 +35,7 @@ export default function Header() {
       <nav className="max-w-[1400px] mx-auto px-[5%] h-[80px] md:h-[90px] flex items-center justify-between">
         <Link to="/" className="flex items-center">
           <img
-            src="/images/icon.png"
+            src="/images/icon.webp"
             alt="My Living Hope"
             className="h-[50px] md:h-[60px] w-auto"
           />

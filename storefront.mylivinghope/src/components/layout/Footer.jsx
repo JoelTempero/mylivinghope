@@ -159,7 +159,7 @@ export default function Footer() {
 
           <div className="flex flex-col items-center gap-4 pt-2">
             <img
-              src="/images/full-logo.png"
+              src="/images/full-logo.webp"
               alt="My Living Hope"
               className="h-32 w-auto"
             />
@@ -182,7 +182,7 @@ export default function Footer() {
           <div className="flex flex-row gap-14 pb-12 border-b border-white/10">
             <div className="flex-shrink-0">
               <img
-                src="/images/full-logo.png"
+                src="/images/full-logo.webp"
                 alt="My Living Hope"
                 className="h-32 w-auto"
               />

@@ -245,131 +245,154 @@ function PrayerCard({ card, zIndex, onBringToFront }) {
   )
 }
 
-function MobileCard({ card }) {
+function MobileCard({ card, expanded, onExpand, onClose }) {
   const cardRef = useRef(null)
   const [flipped, setFlipped] = useState(false)
   const [frontLoaded, setFrontLoaded] = useState(false)
   const [backLoaded, setBackLoaded] = useState(false)
-  const stateRef = useRef({ isDragging: false, hasMoved: false, startX: 0, startY: 0 })
+  const [phase, setPhase] = useState('idle')
+  const [moveTransform, setMoveTransform] = useState('')
+
+  function handleTap() {
+    if (phase === 'open') {
+      setFlipped((f) => !f)
+      return
+    }
+    if (phase !== 'idle') return
+    const rect = cardRef.current?.getBoundingClientRect()
+    if (!rect) return
+
+    const cardCenterX = rect.left + rect.width / 2
+    const cardCenterY = rect.top + rect.height / 2
+    const viewCenterX = window.innerWidth / 2
+    const viewCenterY = window.innerHeight / 2
+    const dx = viewCenterX - cardCenterX
+    const dy = viewCenterY - cardCenterY
+    const targetW = Math.min(window.innerWidth * 0.9, 400)
+    const scale = targetW / rect.width
+
+    setMoveTransform(`translate(${dx}px, ${dy}px) scale(${scale})`)
+    onExpand(card.id)
+    setPhase('captured')
+  }
 
   useEffect(() => {
-    const el = cardRef.current
-    if (!el) return
-
-    function getPos(e) {
-      if (e.touches) return { x: e.touches[0].clientX, y: e.touches[0].clientY }
-      return { x: e.clientX, y: e.clientY }
+    if (phase === 'captured') {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setPhase('open')
+          document.body.style.overflow = 'hidden'
+        })
+      })
     }
+  }, [phase])
 
-    function onStart(e) {
-      const pos = getPos(e)
-      stateRef.current = { isDragging: true, hasMoved: false, startX: pos.x, startY: pos.y }
-      document.addEventListener('mousemove', onMove)
-      document.addEventListener('mouseup', onEnd)
-      document.addEventListener('touchmove', onMove, { passive: false })
-      document.addEventListener('touchend', onEnd)
+  useEffect(() => {
+    if (phase === 'open') {
+      setFlipped(true)
     }
+  }, [phase])
 
-    function onMove(e) {
-      const s = stateRef.current
-      if (!s.isDragging) return
-      const pos = e.touches ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : { x: e.clientX, y: e.clientY }
-      const dx = pos.x - s.startX
-      const dy = pos.y - s.startY
+  function handleClose() {
+    setFlipped(false)
+    setPhase('closing')
+    setTimeout(() => {
+      document.body.style.overflow = ''
+      setPhase('idle')
+      setMoveTransform('')
+      onClose()
+    }, 500)
+  }
 
-      if (!s.hasMoved) {
-        if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return
-        if (e.touches && Math.abs(dy) > Math.abs(dx)) {
-          s.isDragging = false
-          cleanup()
-          return
-        }
-        s.hasMoved = true
-      }
-
-      if (e.preventDefault) e.preventDefault()
-      el.style.transform = `translate(${dx}px, ${dy}px)`
-      el.style.zIndex = '10'
-    }
-
-    function cleanup() {
-      document.removeEventListener('mousemove', onMove)
-      document.removeEventListener('mouseup', onEnd)
-      document.removeEventListener('touchmove', onMove)
-      document.removeEventListener('touchend', onEnd)
-    }
-
-    function onEnd() {
-      const s = stateRef.current
-      if (!s.hasMoved) setFlipped((f) => !f)
-      el.style.transform = ''
-      el.style.zIndex = ''
-      el.style.transition = 'transform 0.3s ease'
-      setTimeout(() => { el.style.transition = '' }, 300)
-      s.isDragging = false
-      cleanup()
-    }
-
-    el.addEventListener('mousedown', onStart)
-    el.addEventListener('touchstart', onStart, { passive: true })
-    return () => {
-      el.removeEventListener('mousedown', onStart)
-      el.removeEventListener('touchstart', onStart)
-      cleanup()
-    }
-  }, [])
+  const isActive = phase !== 'idle'
+  const isOpen = phase === 'open'
 
   return (
-    <div
-      ref={cardRef}
-      className="w-[85vw] max-w-[320px] cursor-grab"
-      style={{ perspective: '1200px' }}
-      role="button"
-      tabIndex={0}
-      aria-label={`Prayer card ${card.id} — tap to flip, drag to move`}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault()
-          setFlipped((f) => !f)
-        }
-      }}
-    >
+    <div className="w-[85vw] max-w-[320px]">
+      {/* Backdrop */}
+      {isActive && (
+        <div
+          className="fixed inset-0 z-[9998] bg-black"
+          style={{ opacity: isOpen ? 0.75 : 0, transition: 'opacity 0.4s ease' }}
+          onClick={handleClose}
+        />
+      )}
+
+      {/* Close button */}
+      {isActive && (
+        <button
+          onClick={handleClose}
+          className="fixed top-6 right-6 z-[10001] w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white"
+          style={{ opacity: isOpen ? 1 : 0, transition: 'opacity 0.3s ease 0.2s' }}
+          aria-label="Close"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      )}
+
+
+      {/* The single card element */}
       <div
-        className="relative w-full rounded-2xl shadow-lg"
+        ref={cardRef}
+        className="relative"
+        role="button"
+        tabIndex={0}
+        aria-label={`Prayer card ${card.id} — tap to read`}
+        onClick={handleTap}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            handleTap()
+          }
+        }}
         style={{
           aspectRatio: '16 / 9',
-          transformStyle: 'preserve-3d',
-          transition: 'transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)',
-          transform: flipped ? 'rotateY(180deg) rotate(-90deg)' : 'rotateY(0deg)',
+          perspective: '1200px',
+          zIndex: isActive ? 10000 : undefined,
+          position: isActive ? 'relative' : undefined,
+          transform: isOpen ? moveTransform : 'translate(0, 0) scale(1)',
+          transition: isActive ? 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)' : undefined,
         }}
       >
-        <div className="absolute inset-0 rounded-2xl overflow-hidden" style={{ backfaceVisibility: 'hidden' }}>
-          {frontLoaded ? (
-            <img src={card.front} alt={`Prayer card ${card.id} front`} className="w-full h-full object-cover" />
-          ) : (
-            <CardPlaceholder label={`Card ${card.id} front`} />
-          )}
-        </div>
-        <div className="absolute inset-0 rounded-2xl overflow-hidden" style={{ backfaceVisibility: 'hidden', transform: 'rotateX(180deg)' }}>
-          {backLoaded ? (
-            <img
-              src={card.back}
-              alt={`Prayer card ${card.id} back`}
-              className="absolute pointer-events-none"
-              style={{
-                width: '56.25%',
-                height: '177.78%',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%) rotate(90deg)',
-                objectFit: 'cover',
-              }}
-            />
-          ) : (
-            <CardPlaceholder label={`Card ${card.id} back`} />
-          )}
+        <div
+          className="w-full h-full rounded-2xl shadow-lg"
+          style={{
+            transformStyle: 'preserve-3d',
+            transition: 'transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)',
+            transform: flipped ? 'rotateY(180deg) rotate(-90deg)' : 'rotateY(0deg)',
+          }}
+        >
+          <div className="absolute inset-0 rounded-2xl overflow-hidden" style={{ backfaceVisibility: 'hidden' }}>
+            {frontLoaded ? (
+              <img src={card.front} alt={`Prayer card ${card.id} front`} className="w-full h-full object-cover" />
+            ) : (
+              <CardPlaceholder label={`Card ${card.id} front`} />
+            )}
+          </div>
+          <div className="absolute inset-0 rounded-2xl overflow-hidden" style={{ backfaceVisibility: 'hidden', transform: 'rotateX(180deg)' }}>
+            {backLoaded ? (
+              <img
+                src={card.back}
+                alt={`Prayer card ${card.id} back`}
+                className="absolute pointer-events-none"
+                style={{
+                  width: '56.25%',
+                  height: '177.78%',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%) rotate(90deg)',
+                  objectFit: 'cover',
+                }}
+              />
+            ) : (
+              <CardPlaceholder label={`Card ${card.id} back`} />
+            )}
+          </div>
         </div>
       </div>
+
       <img src={card.front} alt="" className="hidden" onLoad={() => setFrontLoaded(true)} />
       <img src={card.back} alt="" className="hidden" onLoad={() => setBackLoaded(true)} />
     </div>
@@ -377,6 +400,7 @@ function MobileCard({ card }) {
 }
 
 export default function InteractiveCards() {
+  const [expandedCard, setExpandedCard] = useState(null)
   const [zIndices, setZIndices] = useState(() => {
     const map = {}
     cardData.forEach((c, i) => { map[c.id] = i + 1 })
@@ -448,12 +472,16 @@ export default function InteractiveCards() {
 
         {/* Mobile card stack */}
         <div className="sm:hidden flex flex-col items-center gap-4 mb-10">
-          {cardData.map((card, i) => (
-            <ScrollReveal key={card.id} variant="fade-up" delay={i * 0.1}>
-              <MobileCard card={card} />
-            </ScrollReveal>
+          {cardData.map((card) => (
+            <MobileCard
+              key={card.id}
+              card={card}
+              expanded={expandedCard === card.id}
+              onExpand={(id) => setExpandedCard(id)}
+              onClose={() => setExpandedCard(null)}
+            />
           ))}
-          <p className="text-text-muted text-sm mt-2">Tap to flip</p>
+          <p className="text-text-muted text-sm mt-2">Tap to read</p>
         </div>
 
         <ScrollReveal variant="fade-up">

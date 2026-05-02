@@ -124,18 +124,29 @@ Add to `.claude/settings.json` on each machine:
   - Hero image: 1220px fixed width with JS-driven responsive right-slide
   - Instagram URL corrected, dev artifacts cleaned up
   - Deployed to Firebase Hosting (mylivinghope.web.app), DNS pending for custom domain
+- **Mobile card expand+flip** — single-element animation: tap card → transforms to viewport center while flipping to show scripture, tap to flip back, X to close. Pure CSS transforms, no portals or position:fixed.
+- **Image compression** — all images resized + optimized via sharp (6MB → 420KB total, 93% reduction). 3 PNGs converted to WebP (Jesse01, full-logo, icon).
+- **Sticky parallax mobile disabled** — wrapped sticky-stack CSS in `@media (min-width: 768px)`
 
 ## Next Steps
-- [ ] **Verify DNS propagation** — check that mylivinghope.org.nz resolves to Firebase IPs and SSL provisions (A records: 199.36.158.100 + 199.36.158.101)
+- [ ] **Fix DNS / domain** — nameservers point to Google Cloud DNS (ns-cloud-b1–b4.googledomains.com) despite Jesse only using Shopify. WHOIS shows Google Domains as registrar (now Squarespace). Plan: decouple domain from Shopify entirely, manage DNS elsewhere (Cloudflare or Squarespace), point to Firebase. Shopify manages products only.
 - [ ] **Jesse: activate FormSubmit.co** — first contact form submission triggers verification email to prayerprompts@outlook.com, must click to confirm
 - [ ] **Instagram embed** — explore embedding Instagram feed as a section on homepage and about page (@mylivinghopenz)
-- [ ] **Test mobile card drag on real device** — touch drag only tested in browser emulation, may need threshold/scroll tuning
 - [ ] Wire MCP server into Joel's `.claude/settings.json` for native Firestore tools
 - [ ] Deploy Cloud Function (`firebase deploy --only functions --project my-living-hope`)
 - [ ] Help Jesse get Claude Code set up on his machine
 - [ ] Joel to review portal Claude page live and fix any issues
 
 ## Session Log
+### 2026-05-03 — Mobile Polish, Image Compression & DNS Investigation
+- **Sticky parallax disabled on mobile**: Wrapped sticky-stack CSS in `@media (min-width: 768px)` — sections scroll normally on mobile, desktop unchanged
+- **Mobile card interaction rebuilt**: Removed drag-to-snap, built single-element expand+flip using CSS `transform: translate() scale()`. Tap card → transforms to viewport center while flipping. No portals, no `position: fixed` (breaks inside transform ancestors like ScrollReveal). ScrollReveal removed from mobile cards.
+- **Image compression**: All images resized via sharp — hero 4234→1400px, Jesse 1208→600px, twocards 2024→800px, logo/icon 3840→200/100px, cards to 2x retina. 3 PNGs→WebP. Total: 6MB → 420KB (93%).
+- **DNS investigation**: mylivinghope.org.nz nameservers point to Google Cloud DNS (ns-cloud-b1–b4), not Shopify. TXT verification record exists in Shopify but isn't served. WHOIS shows Google Domains (now Squarespace) as registrar. Jesse confirms he only used Shopify. Cloud DNS API not enabled on Firebase project — zone likely in Google-managed infra.
+- **Domain decision**: Proposed decoupling domain from Shopify entirely. Shopify manages products only, DNS managed separately (Cloudflare or Squarespace Domains).
+- 2 deploys to mylivinghope.web.app, build clean (1.85s)
+- Files changed: InteractiveCards.jsx, index.css, Header.jsx, Footer.jsx, About.jsx, plus 11 optimized images
+
 ### 2026-05-02 — Storefront Polish & First Deploy
 - **Contact form**: Replaced mailto: with FormSubmit.co AJAX POST, added sending/sent/error states
 - **Privacy Policy page** (`/privacy`): NZ Privacy Act 2020, plain language, covers Shopify + FormSubmit data
@@ -188,19 +199,9 @@ Add to `.claude/settings.json` on each machine:
 - Key decision: Joel to pitch Jesse on focusing on 1 flagship product for now
 - **Needs Joel:** Enable Buy Button channel in Shopify admin, get real product photos
 
-### 2026-04-28 — Council Design Audit + Autopilot Fixes
-- Ran /council-auto with 10 design-focused members (4 completed, 6 hit rate limits — filled gaps manually)
-- Members: Pixel Perfectionist, Advocate (accessibility), Device Juggler (responsive), Steve Jobs, Wes Anderson, Saul Bass, Frank Ocean, Rachel, Grandma, Picky Client
-- 20 issues identified across P0-P3 priority tiers, all fixed in one session
-- **P0 Critical:** Fixed green-on-green testimonials (WCAG contrast failures), darkened text-muted (#8a8788→#706e6f), fixed 6 touch target violations (cart button, quantity buttons, trash icon, social icons)
-- **P1 Major:** Header now transitions from transparent to solid on scroll; homepage reordered (products right after hero instead of buried under 3 sections)
-- **P2 Significant:** About page completely rewritten (was copy-paste of homepage — now has unique founder story + audience cards + mission section); removed duplicate "Get Cards" CTA; removed fake newsletter form; updated social URLs; scoped global anchor color to prevent green-on-charcoal in footer; fixed white/70 contrast on page headers
-- **P3 Polish:** Replaced emojis with SVG icons in hero; hid floating cards on small screens; unified cart badge positioning; added global focus-visible styles; added secondary CTA to bottom section
-- Build clean, lint clean, 11 files changed
-
-### 2026-04-27 — Autopilot: Full Design Pass + Headless Storefront Build
-- Applied complete MLH design system to storefront, later pivoted from Next.js to React + Vite + Buy Buttons
-- See earlier session logs for full detail (trimmed for brevity)
+### 2026-04-27–28 — Design Audit + Overhaul
+- Council design audit (20 issues fixed), full design pass, Next.js → React+Vite pivot
+- See git history for full detail (trimmed for brevity)
 
 ## Key Decisions
 - Both portal and storefront use JSX (not TypeScript) — consistent stack
@@ -214,10 +215,12 @@ Add to `.claude/settings.json` on each machine:
 - **FormSubmit.co for contact form** — free, no backend, no API key. First submission requires email verification by Jesse.
 - **Storefront domain** — mylivinghope.org.nz (was .co.nz in old config). Hosted on Firebase as site `mylivinghope`, separate from portal's default site.
 - **Tailwind v4 + inline styles** — Tailwind v4 cascade layers can conflict with custom CSS classes. For responsive positioning that must work, use JS-driven inline styles (see Hero.jsx pattern).
+- **Domain decoupled from Shopify** — Shopify for products/checkout only, domain DNS managed separately. mylivinghope.org.nz registered via Google Domains (now Squarespace Domains).
+- **CSS transforms break position:fixed** — ScrollReveal's `transform: translateY(0)` on `.in-view` creates a containing block. Use `transform: translate() scale()` instead of `position: fixed` for card expand animations. See InteractiveCards.jsx MobileCard pattern.
 
 ## Known Issues
 - **Shopify SDK overlay blocks clicks** — the Buy Button SDK injects invisible fixed overlays. Any custom buttons that need to sit above it require `z-[99999]` + `stopPropagation` on mouseDown/touchStart/click. See Header.jsx cart buttons for the pattern.
 - Cloud Function `generateContext` not yet deployed (needs `firebase deploy --only functions`)
 - MCP server not yet wired into Joel's `.claude/settings.json`
 - PWA manifest icon missing (`pwa-192x192.png` — console warning on Claude page)
-- Mobile card drag untested on real device — `touch-none` removed, horizontal threshold added, but may need tuning
+- **DNS: nameservers misaligned** — .org.nz registry delegates to Google Cloud DNS but records are managed in Shopify. Need to decouple and manage DNS elsewhere. Jesse confirmed he only used Shopify for the domain.

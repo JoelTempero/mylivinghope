@@ -431,22 +431,24 @@ html {
    Each section sticks and the next slides over it
    ============================================ */
 
-.sticky-section {
-  position: sticky;
-  top: 0;
-  box-shadow: 0 -20px 60px -10px rgba(0, 0, 0, 0.15);
-}
+@media (min-width: 768px) {
+  .sticky-section {
+    position: sticky;
+    top: 0;
+    box-shadow: 0 -20px 60px -10px rgba(0, 0, 0, 0.15);
+  }
 
-.sticky-section:first-child {
-  box-shadow: none;
-}
+  .sticky-section:first-child {
+    box-shadow: none;
+  }
 
-.sticky-stack > :nth-child(1) { z-index: 1; }
-.sticky-stack > :nth-child(2) { z-index: 2; }
-.sticky-stack > :nth-child(3) { z-index: 3; }
-.sticky-stack > :nth-child(4) { z-index: 4; }
-.sticky-stack > :nth-child(5) { z-index: 5; }
-.sticky-stack > :nth-child(6) { z-index: 6; }
+  .sticky-stack > :nth-child(1) { z-index: 1; }
+  .sticky-stack > :nth-child(2) { z-index: 2; }
+  .sticky-stack > :nth-child(3) { z-index: 3; }
+  .sticky-stack > :nth-child(4) { z-index: 4; }
+  .sticky-stack > :nth-child(5) { z-index: 5; }
+  .sticky-stack > :nth-child(6) { z-index: 6; }
+}
 
 /* ============================================
    INTERACTIVE CARDS — responsive sizing

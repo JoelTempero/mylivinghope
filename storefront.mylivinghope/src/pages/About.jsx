@@ -75,7 +75,7 @@ export default function About() {
             <div className="relative">
               <div className="relative rounded-2xl overflow-hidden shadow-lg">
                 <img
-                  src="/images/Jesse01.png"
+                  src="/images/Jesse01.webp"
                   alt="Jesse Major — Founder of My Living Hope"
                   className="w-full h-auto"
                 />
