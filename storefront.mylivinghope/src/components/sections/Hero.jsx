@@ -10,7 +10,9 @@ export default function Hero() {
       if (!image) return
       image.style.transform = `translateY(${window.scrollY * 0.15}px)`
       const vw = window.innerWidth
-      const right = Math.min(vw * 0.03, -700 + (vw - 1024) * 1.46)
+      // Start shifting at 2190px, fully pushed off by 1024px
+      const t = Math.max(0, Math.min(1, (vw - 1024) / (2190 - 1024)))
+      const right = -700 + t * 750
       image.style.right = `${right}px`
     }
     window.addEventListener('scroll', update, { passive: true })

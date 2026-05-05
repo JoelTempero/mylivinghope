@@ -3,7 +3,7 @@
 ## Overview
 - **Client**: My Living Hope (greeting card business, Jesse Major founder)
 - **Type**: Shopify Storefront + Firebase Admin Portal
-- **Status**: Portal functional, storefront deployed to mylivinghope.web.app (DNS pending for mylivinghope.org.nz)
+- **Status**: Portal functional, storefront live at mylivinghope.org.nz (Firebase Hosting, DNS via Cloudflare)
 
 ## Project Structure
 - `mylivinghope/` — Shopify theme (Liquid templates, synced by Shopify)
@@ -127,17 +127,29 @@ Add to `.claude/settings.json` on each machine:
 - **Mobile card expand+flip** — single-element animation: tap card → transforms to viewport center while flipping to show scripture, tap to flip back, X to close. Pure CSS transforms, no portals or position:fixed.
 - **Image compression** — all images resized + optimized via sharp (6MB → 420KB total, 93% reduction). 3 PNGs converted to WebP (Jesse01, full-logo, icon).
 - **Sticky parallax mobile disabled** — wrapped sticky-stack CSS in `@media (min-width: 768px)`
+- **Custom domain live** — mylivinghope.org.nz pointing to Firebase Hosting via Cloudflare DNS (grey cloud / DNS-only)
+- **Instagram feed section** — `InstagramFeed.jsx` component with 4 embedded posts from @mylivinghopenz on Home (above CTA) and About (above footer). Uses Instagram embed.js, no API keys.
+- **Hero image responsive fix** — JS positioning formula starts shifting at 2190px viewport width for earlier text/image separation
+- **CTA mobile image uncropped** — removed fixed height, object-cover, and scale transform so full image displays naturally
 
 ## Next Steps
-- [ ] **Fix DNS / domain** — nameservers point to Google Cloud DNS (ns-cloud-b1–b4.googledomains.com) despite Jesse only using Shopify. WHOIS shows Google Domains as registrar (now Squarespace). Plan: decouple domain from Shopify entirely, manage DNS elsewhere (Cloudflare or Squarespace), point to Firebase. Shopify manages products only.
+- [ ] **Add www.mylivinghope.org.nz** — CNAME added in Cloudflare but also needs adding as custom domain in Firebase Hosting console
 - [ ] **Jesse: activate FormSubmit.co** — first contact form submission triggers verification email to prayerprompts@outlook.com, must click to confirm
-- [ ] **Instagram embed** — explore embedding Instagram feed as a section on homepage and about page (@mylivinghopenz)
 - [ ] Wire MCP server into Joel's `.claude/settings.json` for native Firestore tools
 - [ ] Deploy Cloud Function (`firebase deploy --only functions --project my-living-hope`)
 - [ ] Help Jesse get Claude Code set up on his machine
 - [ ] Joel to review portal Claude page live and fix any issues
 
 ## Session Log
+### 2026-05-05 — Custom Domain Fix, Instagram Feed & Image Responsive Fixes
+- **Custom domain fixed**: mylivinghope.org.nz was showing "Site Not Found" despite DOMAIN_ACTIVE status in Firebase API. DNS moved to Cloudflare (grey cloud). Fresh deploy resolved stale CDN state.
+- **Instagram feed**: Built `InstagramFeed.jsx` — 4 embedded posts in a single row (1600px wide container), added to Home (above CTA) and About (above footer). Uses Instagram embed.js with curated post URLs, no API keys.
+- **Hero image**: Rewrote JS positioning formula — image starts shifting right at 2190px viewport width (was 1600px), preventing text overlap on mid-size screens.
+- **CTA mobile image**: Removed `h-[630px] object-cover scale(1.3)` crop — image now displays at full natural size.
+- Firebase account: deploys use `leojfx@gmail.com` (project owner); `joel@tempero.nz` lacks Hosting API permissions.
+- 3 deploys to mylivinghope.org.nz, build clean (2.12s)
+- Files changed: InstagramFeed.jsx (new), Home.jsx, About.jsx, Hero.jsx, CTA.jsx
+
 ### 2026-05-03 — Mobile Polish, Image Compression & DNS Investigation
 - **Sticky parallax disabled on mobile**: Wrapped sticky-stack CSS in `@media (min-width: 768px)` — sections scroll normally on mobile, desktop unchanged
 - **Mobile card interaction rebuilt**: Removed drag-to-snap, built single-element expand+flip using CSS `transform: translate() scale()`. Tap card → transforms to viewport center while flipping. No portals, no `position: fixed` (breaks inside transform ancestors like ScrollReveal). ScrollReveal removed from mobile cards.
@@ -184,23 +196,8 @@ Add to `.claude/settings.json` on each machine:
 - Build: 1.76s clean, lint clean. 29 files changed, +1555 -434 lines.
 - **Needs Joel:** Drop 3D card renders, product photos, and box video into the scaffolded directories
 
-### 2026-05-01 — Buy Button Pivot (Autopilot)
-- Brainstormed and approved pivot from Next.js + Shopify Storefront API to React + Vite + Buy Buttons
-- Motivation: Next.js lag on Windows, Storefront API token issues, massive overkill for 1 product
-- Wrote design spec (`docs/superpowers/specs/2026-05-01-storefront-buy-button-pivot-design.md`)
-- Wrote implementation plan (`docs/superpowers/plans/2026-05-01-storefront-buy-button-pivot.md`)
-- Executed all 8 tasks: scaffold, CSS/router, layout, sections, Buy Button, pages, SEO, cleanup
-- Deleted all Next.js/Shopify API code (29 files, ~2000 lines removed)
-- Ported all design work from TSX to JSX — identical visual output
-- New stack: React 19 + Vite 7 + React Router v7 + Tailwind CSS v4 + Lucide React
-- Commerce: Shopify Buy Button SDK (placeholder until Jesse enables the channel)
-- 3 pages: Home (6 sections), About (founder + audiences + mission), Contact (info + mailto form)
-- Build: 1.75s clean, 177 packages. Dev server on port 3854.
-- Key decision: Joel to pitch Jesse on focusing on 1 flagship product for now
-- **Needs Joel:** Enable Buy Button channel in Shopify admin, get real product photos
-
-### 2026-04-27–28 — Design Audit + Overhaul
-- Council design audit (20 issues fixed), full design pass, Next.js → React+Vite pivot
+### 2026-05-01 — Buy Button Pivot + Creative Overhaul
+- Pivoted from Next.js to React+Vite+Buy Buttons. Creative council audit + full design overhaul.
 - See git history for full detail (trimmed for brevity)
 
 ## Key Decisions
@@ -217,10 +214,13 @@ Add to `.claude/settings.json` on each machine:
 - **Tailwind v4 + inline styles** — Tailwind v4 cascade layers can conflict with custom CSS classes. For responsive positioning that must work, use JS-driven inline styles (see Hero.jsx pattern).
 - **Domain decoupled from Shopify** — Shopify for products/checkout only, domain DNS managed separately. mylivinghope.org.nz registered via Google Domains (now Squarespace Domains).
 - **CSS transforms break position:fixed** — ScrollReveal's `transform: translateY(0)` on `.in-view` creates a containing block. Use `transform: translate() scale()` instead of `position: fixed` for card expand animations. See InteractiveCards.jsx MobileCard pattern.
+- **DNS via Cloudflare** — domain moved from Google Cloud DNS to Cloudflare. A record must be grey cloud (DNS-only) for Firebase Hosting to work — Cloudflare proxy breaks Firebase's domain matching.
+- **Instagram posts via embed.js** — curated post URLs with Instagram's official embed script, no API keys or third-party services. Posts are manually updated in `InstagramFeed.jsx` POSTS array.
 
 ## Known Issues
 - **Shopify SDK overlay blocks clicks** — the Buy Button SDK injects invisible fixed overlays. Any custom buttons that need to sit above it require `z-[99999]` + `stopPropagation` on mouseDown/touchStart/click. See Header.jsx cart buttons for the pattern.
 - Cloud Function `generateContext` not yet deployed (needs `firebase deploy --only functions`)
 - MCP server not yet wired into Joel's `.claude/settings.json`
 - PWA manifest icon missing (`pwa-192x192.png` — console warning on Claude page)
-- **DNS: nameservers misaligned** — .org.nz registry delegates to Google Cloud DNS but records are managed in Shopify. Need to decouple and manage DNS elsewhere. Jesse confirmed he only used Shopify for the domain.
+- **www subdomain** — CNAME added in Cloudflare but not yet registered as custom domain in Firebase Hosting. Visiting www.mylivinghope.org.nz will fail until added.
+- **Firebase deploy permissions** — `joel@tempero.nz` gets 403 on Hosting API; must use `leojfx@gmail.com` for deploys. Run `firebase login:use leojfx@gmail.com` in storefront dir before deploying.

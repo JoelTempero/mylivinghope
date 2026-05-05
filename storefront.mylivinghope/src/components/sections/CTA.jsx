@@ -88,13 +88,12 @@ export default function CTA() {
 
             <div
               data-tuner="cta-mobile"
-              className="xl:hidden mt-12 overflow-hidden rounded-2xl"
+              className="xl:hidden mt-12 rounded-2xl"
             >
               <img
                 src="/images/twocards.webp"
                 alt="Hand holding two Prayer Portals cards"
-                className="w-full h-[630px] object-cover"
-                style={{ objectPosition: '45% 0%', transform: 'scale(1.3)', transformOrigin: '45% 0%' }}
+                className="w-full h-auto rounded-2xl"
               />
             </div>
           </div>

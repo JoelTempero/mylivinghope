@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import ScrollReveal from '../components/ScrollReveal'
 import CardTilt from '../components/CardTilt'
 import { addToCart } from '../components/BuyButton'
+import InstagramFeed from '../components/sections/InstagramFeed'
 
 const audiences = [
   {
@@ -178,6 +179,8 @@ export default function About() {
           </ScrollReveal>
         </div>
       </div>
+
+      <InstagramFeed sticky={false} />
     </div>
   )
 }
