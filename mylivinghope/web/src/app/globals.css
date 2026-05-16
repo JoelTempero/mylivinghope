@@ -1,0 +1,152 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CSS Variables for dynamic theming */
+:root {
+  --charcoal: #212021;
+  --charcoal-light: #3a3839;
+  --soft-blush: #F5D7CF;
+  --blush-light: #FBE9E4;
+  --blush-dark: #E8C4BA;
+  --forest-green: #336F49;
+  --green-light: #4A8A5F;
+  --green-dark: #265438;
+  --cream: #FDF8F5;
+  --text-primary: #212021;
+  --text-secondary: #5a5758;
+  --text-muted: #8a8788;
+}
+
+/* Base styles */
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  @apply font-body text-text-primary bg-cream;
+  line-height: 1.7;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  @apply font-heading font-bold text-charcoal;
+  line-height: 1.2;
+}
+
+h1 { font-size: clamp(2.5rem, 5vw, 4rem); }
+h2 { font-size: clamp(2rem, 4vw, 3rem); }
+h3 { font-size: clamp(1.5rem, 3vw, 2rem); }
+h4 { font-size: clamp(1.25rem, 2vw, 1.5rem); }
+
+a {
+  @apply text-forest transition-colors duration-150;
+}
+
+a:hover {
+  @apply text-forest-dark;
+}
+
+/* Skip link for accessibility */
+.skip-link {
+  @apply absolute top-[-100px] left-0 bg-forest text-white px-4 py-2 z-[10000] transition-all duration-300;
+}
+
+.skip-link:focus {
+  @apply top-0;
+}
+
+/* Container utility */
+.container-custom {
+  @apply max-w-container mx-auto px-[5%];
+}
+
+/* Section utility */
+.section {
+  @apply py-24;
+}
+
+/* Section header */
+.section-header {
+  @apply max-w-[700px] mx-auto mb-12 text-center;
+}
+
+/* Section tag */
+.section-tag {
+  @apply inline-block font-body text-xs font-semibold tracking-[0.15em] uppercase text-forest mb-4 px-4 py-1 bg-forest/10 rounded-full;
+}
+
+/* Button base styles */
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-8 py-4 font-body text-[0.9375rem] font-semibold tracking-wide no-underline border-2 border-transparent rounded-full cursor-pointer transition-all duration-300;
+  }
+
+  .btn-primary {
+    @apply bg-forest text-white border-forest hover:bg-forest-dark hover:border-forest-dark hover:-translate-y-0.5 hover:shadow-lg;
+  }
+
+  .btn-secondary {
+    @apply bg-transparent text-charcoal border-charcoal hover:bg-charcoal hover:text-white hover:-translate-y-0.5;
+  }
+
+  .btn-outline-white {
+    @apply bg-transparent text-white border-white hover:bg-white hover:text-forest;
+  }
+
+  .btn-large {
+    @apply px-10 py-5 text-base;
+  }
+
+  .btn-small {
+    @apply px-6 py-3 text-sm;
+  }
+}
+
+/* Reveal animation */
+.reveal {
+  @apply opacity-0 translate-y-8 transition-all duration-700;
+  transition-timing-function: cubic-bezier(0.5, 0, 0, 1);
+}
+
+.reveal.active {
+  @apply opacity-100 translate-y-0;
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .reveal {
+    @apply opacity-100 translate-y-0;
+  }
+}
+
+/* Form inputs */
+.form-input {
+  @apply w-full px-4 py-3 border-2 border-blush-light rounded-lg font-body text-base text-charcoal bg-cream transition-all duration-150;
+}
+
+.form-input:focus {
+  @apply outline-none border-forest shadow-[0_0_0_4px_rgba(51,111,73,0.1)];
+}
+
+/* Product card hover effects */
+.product-card-image {
+  @apply transition-transform duration-500;
+}
+
+.product-card:hover .product-card-image {
+  @apply scale-105;
+}

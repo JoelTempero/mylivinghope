@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell -Command:*)",
+      "Bash(python -c:*)",
+      "Bash(npm create:*)",
+      "Bash(robocopy:*)",
+      "Bash(npm install)",
+      "Bash(npm install:*)",
+      "Bash(npx tailwindcss:*)",
+      "Bash(node:*)",
+      "Bash(npm run build)",
+      "Bash(npx firebase-tools:*)",
+      "Bash(firebase deploy:*)",
+      "Bash(npx firebase deploy)"
+    ]
+  }
+}

@@ -1,0 +1,239 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700&display=swap');
+
+/* Enable class-based dark mode for Tailwind v4 */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Custom theme extensions */
+@theme {
+  /* Brand colors */
+  --color-primary-50: #fef7ee;
+  --color-primary-100: #fdedd6;
+  --color-primary-200: #f9d7ac;
+  --color-primary-300: #f5ba78;
+  --color-primary-400: #f09442;
+  --color-primary-500: #ec771d;
+  --color-primary-600: #dd5c13;
+  --color-primary-700: #b74412;
+  --color-primary-800: #923717;
+  --color-primary-900: #762f16;
+  --color-primary-950: #401509;
+
+  --color-secondary-50: #f0f9ff;
+  --color-secondary-100: #e0f2fe;
+  --color-secondary-200: #bae6fd;
+  --color-secondary-300: #7dd3fc;
+  --color-secondary-400: #38bdf8;
+  --color-secondary-500: #0ea5e9;
+  --color-secondary-600: #0284c7;
+  --color-secondary-700: #0369a1;
+  --color-secondary-800: #075985;
+  --color-secondary-900: #0c4a6e;
+  --color-secondary-950: #082f49;
+
+  --color-hope-light: #FFF8F0;
+  --color-hope-warm: #F5E6D3;
+  --color-hope-gold: #D4A574;
+  --color-hope-deep: #8B4513;
+
+  /* Dark mode surface colors */
+  --color-dark-bg: #0f0f0f;
+  --color-dark-surface: #1a1a1a;
+  --color-dark-surface-2: #242424;
+  --color-dark-border: #2e2e2e;
+
+  /* Fonts */
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-display: 'Poppins', system-ui, sans-serif;
+}
+
+/* Base styles - Light mode */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-gray-50);
+  color: var(--color-gray-900);
+  -webkit-font-smoothing: antialiased;
+  margin: 0;
+  min-height: 100vh;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Dark mode base */
+html.dark body {
+  background-color: var(--color-dark-bg);
+  color: var(--color-gray-100);
+}
+
+/* Utility classes - Light mode */
+.btn-primary {
+  background-color: var(--color-primary-500);
+  color: white;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-600);
+}
+
+.btn-primary:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-primary-500), 0 0 0 4px white;
+}
+
+html.dark .btn-primary:focus {
+  box-shadow: 0 0 0 2px var(--color-primary-500), 0 0 0 4px var(--color-dark-surface);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background-color: var(--color-secondary-500);
+  color: white;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-secondary-600);
+}
+
+.btn-outline {
+  border: 2px solid var(--color-gray-300);
+  color: var(--color-gray-700);
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: border-color 0.2s, color 0.2s;
+  background-color: transparent;
+}
+
+.btn-outline:hover {
+  border-color: var(--color-gray-400);
+}
+
+html.dark .btn-outline {
+  border-color: var(--color-dark-border);
+  color: var(--color-gray-300);
+}
+
+html.dark .btn-outline:hover {
+  border-color: var(--color-gray-500);
+  color: var(--color-gray-200);
+}
+
+.input-field {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--color-gray-300);
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+  background-color: white;
+  color: var(--color-gray-900);
+}
+
+.input-field::placeholder {
+  color: var(--color-gray-400);
+}
+
+.input-field:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-primary-500);
+  border-color: transparent;
+}
+
+html.dark .input-field {
+  background-color: var(--color-dark-surface);
+  border-color: var(--color-dark-border);
+  color: var(--color-gray-100);
+}
+
+html.dark .input-field::placeholder {
+  color: var(--color-gray-500);
+}
+
+.card {
+  background-color: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--color-gray-100);
+  padding: 1.5rem;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+html.dark .card {
+  background-color: var(--color-dark-surface);
+  border-color: var(--color-dark-border);
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+  font-family: var(--font-display);
+}
+
+html.dark .page-title {
+  color: var(--color-gray-100);
+}
+
+@media (min-width: 768px) {
+  .page-title {
+    font-size: 1.875rem;
+  }
+}
+
+.page-subtitle {
+  color: var(--color-gray-500);
+  margin-top: 0.25rem;
+}
+
+html.dark .page-subtitle {
+  color: var(--color-gray-400);
+}
+
+/* Scrollbar styling */
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background-color: var(--color-gray-100);
+  border-radius: 9999px;
+}
+
+html.dark .scrollbar-thin::-webkit-scrollbar-track {
+  background-color: var(--color-dark-surface-2);
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: var(--color-gray-300);
+  border-radius: 9999px;
+}
+
+html.dark .scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: var(--color-gray-600);
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-gray-400);
+}
+
+html.dark .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-gray-500);
+}

@@ -1,0 +1,62 @@
+{% comment %}
+  Custom HTML Section
+  Allows raw HTML, CSS, and JavaScript to be added
+{% endcomment %}
+
+{% if section.settings.custom_css != blank %}
+<style>
+{{ section.settings.custom_css }}
+</style>
+{% endif %}
+
+<section class="custom-html-section {% if section.settings.full_width %}custom-html-section--full{% endif %}">
+  {% unless section.settings.full_width %}
+  <div class="container">
+  {% endunless %}
+  
+    {{ section.settings.custom_html }}
+  
+  {% unless section.settings.full_width %}
+  </div>
+  {% endunless %}
+</section>
+
+{% if section.settings.custom_js != blank %}
+<script>
+{{ section.settings.custom_js }}
+</script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Custom HTML",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Full width",
+      "default": false
+    },
+    {
+      "type": "html",
+      "id": "custom_html",
+      "label": "Custom HTML"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS (without style tags)"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_js",
+      "label": "Custom JavaScript (without script tags)"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom HTML"
+    }
+  ]
+}
+{% endschema %}

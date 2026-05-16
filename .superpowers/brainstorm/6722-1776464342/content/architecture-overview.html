@@ -1,0 +1,82 @@
+<h2>My Living Hope — Architecture Overview</h2>
+<p class="subtitle">Two independent subsystems sharing Firebase as the backbone</p>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 32px 0;">
+
+  <!-- Subsystem 1 -->
+  <div style="background: linear-gradient(135deg, #1a2332 0%, #0f1923 100%); border: 1px solid #336F49; border-radius: 12px; padding: 24px; position: relative;">
+    <div style="position: absolute; top: -12px; left: 16px; background: #336F49; color: white; font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 6px; letter-spacing: 0.5px;">SUBSYSTEM 1</div>
+    <h3 style="color: #F5D7CF; margin-top: 8px; font-size: 18px;">Headless Storefront</h3>
+    <p style="color: #8899aa; font-size: 13px; margin-bottom: 20px;">Replace Shopify Liquid with custom Next.js site</p>
+
+    <div style="space-y: 8px;">
+      <div style="background: #0d1520; border-radius: 8px; padding: 12px; margin-bottom: 8px;">
+        <div style="color: #66bb6a; font-size: 11px; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 4px;">FRONTEND</div>
+        <div style="color: #ccd6e0; font-size: 13px;">Next.js + React + Tailwind</div>
+        <div style="color: #667788; font-size: 12px;">Full creative control, SSR for SEO</div>
+      </div>
+      <div style="background: #0d1520; border-radius: 8px; padding: 12px; margin-bottom: 8px;">
+        <div style="color: #42a5f5; font-size: 11px; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 4px;">COMMERCE API</div>
+        <div style="color: #ccd6e0; font-size: 13px;">Shopify Storefront API (GraphQL)</div>
+        <div style="color: #667788; font-size: 12px;">Products, collections, cart, checkout</div>
+      </div>
+      <div style="background: #0d1520; border-radius: 8px; padding: 12px; margin-bottom: 8px;">
+        <div style="color: #ab47bc; font-size: 11px; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 4px;">HOSTING</div>
+        <div style="color: #ccd6e0; font-size: 13px;">Vercel or Firebase Hosting</div>
+        <div style="color: #667788; font-size: 12px;">mylivinghope.org.nz</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Subsystem 2 -->
+  <div style="background: linear-gradient(135deg, #1a2332 0%, #0f1923 100%); border: 1px solid #ab47bc; border-radius: 12px; padding: 24px; position: relative;">
+    <div style="position: absolute; top: -12px; left: 16px; background: #ab47bc; color: white; font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 6px; letter-spacing: 0.5px;">SUBSYSTEM 2</div>
+    <h3 style="color: #F5D7CF; margin-top: 8px; font-size: 18px;">Shared AI Context Layer</h3>
+    <p style="color: #8899aa; font-size: 13px; margin-bottom: 20px;">Give both machines' Claude Code shared business intelligence</p>
+
+    <div style="space-y: 8px;">
+      <div style="background: #0d1520; border-radius: 8px; padding: 12px; margin-bottom: 8px;">
+        <div style="color: #66bb6a; font-size: 11px; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 4px;">SHARED CONTEXT</div>
+        <div style="color: #ccd6e0; font-size: 13px;">MLH-CONTEXT.md in Firebase Storage</div>
+        <div style="color: #667788; font-size: 12px;">Session logs, decisions, priorities</div>
+      </div>
+      <div style="background: #0d1520; border-radius: 8px; padding: 12px; margin-bottom: 8px;">
+        <div style="color: #42a5f5; font-size: 11px; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 4px;">ON-DEMAND DATA</div>
+        <div style="color: #ccd6e0; font-size: 13px;">MCP Server + CLI scripts</div>
+        <div style="color: #667788; font-size: 12px;">Query Firestore collections as needed</div>
+      </div>
+      <div style="background: #0d1520; border-radius: 8px; padding: 12px; margin-bottom: 8px;">
+        <div style="color: #ef5350; font-size: 11px; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 4px;">SYNC TRIGGER</div>
+        <div style="color: #ccd6e0; font-size: 13px;">Portal "Sync Context" button</div>
+        <div style="color: #667788; font-size: 12px;">Cloud Function → Storage upload</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Shared backbone -->
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 1px solid #ff9800; border-radius: 12px; padding: 20px; margin-top: 8px; text-align: center;">
+  <div style="color: #ff9800; font-size: 11px; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 8px;">SHARED BACKBONE</div>
+  <div style="display: flex; justify-content: center; gap: 32px; flex-wrap: wrap;">
+    <div style="text-align: center;">
+      <div style="color: #ccd6e0; font-size: 14px; font-weight: 500;">Firebase</div>
+      <div style="color: #667788; font-size: 12px;">Auth · Firestore · Storage · Hosting</div>
+    </div>
+    <div style="color: #334455; font-size: 20px;">|</div>
+    <div style="text-align: center;">
+      <div style="color: #ccd6e0; font-size: 14px; font-weight: 500;">Shopify</div>
+      <div style="color: #667788; font-size: 12px;">Products · Inventory · Checkout · Orders</div>
+    </div>
+    <div style="color: #334455; font-size: 20px;">|</div>
+    <div style="text-align: center;">
+      <div style="color: #ccd6e0; font-size: 14px; font-weight: 500;">Portal (React + Vite)</div>
+      <div style="color: #667788; font-size: 12px;">Existing admin CRUD · portal.mylivinghope.org.nz</div>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top: 24px; padding: 16px; background: #0d1520; border-radius: 8px; border-left: 3px solid #336F49;">
+  <p style="color: #8899aa; font-size: 13px; margin: 0;">
+    <strong style="color: #ccd6e0;">Key principle:</strong> Each subsystem is independently buildable and deployable. The storefront doesn't depend on the AI context layer, and vice versa. Firebase is the connective tissue.
+  </p>
+</div>

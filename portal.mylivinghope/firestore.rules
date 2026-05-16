@@ -1,0 +1,122 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Helper function to get user role
+    function getUserRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    // Helper function to check if user is admin
+    function isAdmin() {
+      return isAuthenticated() && getUserRole() == 'admin';
+    }
+
+    // Helper function to check if user is editor or admin
+    function canEdit() {
+      return isAuthenticated() && getUserRole() in ['admin', 'editor'];
+    }
+
+    // Users collection
+    match /users/{userId} {
+      // Anyone authenticated can read user profiles
+      allow read: if isAuthenticated();
+      // Users can create their own profile, OR admins can create for others
+      allow create: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      // Users can update their own profile (except role), admins can update anyone
+      allow update: if isAuthenticated() && (
+        (request.auth.uid == userId && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role'])) ||
+        isAdmin()
+      );
+      allow delete: if isAdmin();
+    }
+
+    // Contacts collection
+    match /contacts/{contactId} {
+      allow read: if isAuthenticated();
+      allow create, update: if canEdit();
+      allow delete: if isAdmin();
+    }
+
+    // Products collection
+    match /products/{productId} {
+      allow read: if isAuthenticated();
+      allow create, update: if canEdit();
+      allow delete: if isAdmin();
+    }
+
+    // Tasks collection
+    match /tasks/{taskId} {
+      allow read: if isAuthenticated();
+      allow create, update: if canEdit();
+      allow delete: if isAdmin();
+    }
+
+    // Campaigns collection
+    match /campaigns/{campaignId} {
+      allow read: if isAuthenticated();
+      allow create, update: if canEdit();
+      allow delete: if isAdmin();
+    }
+
+    // Artists collection
+    match /artists/{artistId} {
+      allow read: if isAuthenticated();
+      allow create, update: if canEdit();
+      allow delete: if isAdmin();
+    }
+
+    // Emotions collection (legacy)
+    match /emotions/{emotionId} {
+      allow read: if isAuthenticated();
+      allow create, update: if canEdit();
+      allow delete: if isAdmin();
+    }
+
+    // Card Sets collection
+    match /cardSets/{setId} {
+      allow read: if isAuthenticated();
+      allow create, update: if canEdit();
+      allow delete: if isAdmin();
+    }
+
+    // Cards collection
+    match /cards/{cardId} {
+      allow read: if isAuthenticated();
+      allow create, update: if canEdit();
+      allow delete: if isAdmin();
+    }
+
+    // Brainstorm ideas collection
+    match /brainstormIdeas/{ideaId} {
+      allow read: if isAuthenticated();
+      allow create, update: if canEdit();
+      allow delete: if isAdmin();
+    }
+
+    // Inspiration collection
+    match /inspiration/{itemId} {
+      allow read: if isAuthenticated();
+      allow create, update: if canEdit();
+      allow delete: if isAdmin();
+    }
+
+    // Business checklist collection
+    match /businessChecklist/{itemId} {
+      allow read: if isAuthenticated();
+      allow create, update: if canEdit();
+      allow delete: if isAdmin();
+    }
+
+    // Invites collection (for team invitations)
+    match /invites/{inviteId} {
+      allow read: if isAuthenticated();
+      allow create, update, delete: if isAdmin();
+    }
+  }
+}

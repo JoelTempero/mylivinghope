@@ -1,0 +1,465 @@
+{% comment %}
+  Interactive Prayer Cards Section
+  With customizable starting positions for each card
+{% endcomment %}
+
+<style>
+.interactive-cards-section {
+  padding: 6rem 0;
+  position: relative;
+  z-index: 10;
+  background: var(--cream, #FDF8F5);
+}
+
+.interactive-cards__area {
+  position: relative;
+  height: 450px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.interactive-cards__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  color: var(--text-muted, #8a8788);
+  font-style: italic;
+}
+
+.prayer-card {
+  position: absolute;
+  width: {{ section.settings.card_width }}px;
+  height: {{ section.settings.card_height }}px;
+  cursor: grab;
+  perspective: 1000px;
+  user-select: none;
+  touch-action: none;
+  z-index: 1;
+}
+
+.prayer-card:active {
+  cursor: grabbing;
+}
+
+.prayer-card--dragging {
+  z-index: 100 !important;
+}
+
+.prayer-card__inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease;
+  border-radius: {{ section.settings.card_radius }}px;
+  box-shadow: 0 10px 30px rgba(33, 32, 33, 0.2);
+}
+
+.prayer-card--flipped .prayer-card__inner {
+  transform: rotateY(180deg) rotate(-90deg);
+}
+
+.prayer-card__front,
+.prayer-card__back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: {{ section.settings.card_radius }}px;
+  overflow: hidden;
+  background: var(--soft-blush, #F5D7CF);
+}
+
+.prayer-card__front img,
+.prayer-card__back img {
+  width: 100%;
+  height: 100%;
+  object-fit: {{ section.settings.image_fit }};
+  object-position: {{ section.settings.image_position }};
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+.prayer-card__back {
+  transform: rotateY(180deg);
+  background: var(--forest-green, #336F49);
+}
+
+.prayer-card__placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body, 'Montserrat', sans-serif);
+  font-size: 0.875rem;
+  color: var(--text-muted, #8a8788);
+  background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+}
+
+.interactive-cards__hint {
+  text-align: center;
+  margin-top: 2rem;
+  color: var(--text-muted, #8a8788);
+  font-size: 0.9375rem;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .prayer-card {
+    width: calc({{ section.settings.card_width }}px * 0.75);
+    height: calc({{ section.settings.card_height }}px * 0.75);
+  }
+  
+  .interactive-cards__area {
+    height: 380px;
+  }
+}
+
+@media (max-width: 768px) {
+  .prayer-card {
+    width: calc({{ section.settings.card_width }}px * 0.55);
+    height: calc({{ section.settings.card_height }}px * 0.55);
+  }
+  
+  .interactive-cards__area {
+    height: 320px;
+  }
+}
+
+@media (max-width: 480px) {
+  .prayer-card {
+    width: calc({{ section.settings.card_width }}px * 0.45);
+    height: calc({{ section.settings.card_height }}px * 0.45);
+  }
+  
+  .interactive-cards__area {
+    height: 280px;
+  }
+}
+</style>
+
+<section class="section interactive-cards-section" id="try-cards">
+  <div class="container">
+    <header class="section-header">
+      <span class="section-tag">{{ section.settings.tag }}</span>
+      <h2>{{ section.settings.heading }}</h2>
+      <p style="color: var(--text-muted);">{{ section.settings.description }}</p>
+    </header>
+
+    <div class="interactive-cards__area" id="cardsArea">
+      {% if section.blocks.size > 0 %}
+        {% for block in section.blocks %}
+          <div 
+            class="prayer-card" 
+            data-index="{{ forloop.index0 }}"
+            style="left: {{ block.settings.start_x }}%; top: {{ block.settings.start_y }}%;"
+            {{ block.shopify_attributes }}
+          >
+            <div class="prayer-card__inner">
+              <div class="prayer-card__front">
+                {% if block.settings.front_image %}
+                  <img 
+                    src="{{ block.settings.front_image | image_url: width: 900 }}" 
+                    alt="Prayer card front" 
+                    draggable="false"
+                    loading="lazy"
+                  >
+                {% else %}
+                  <div class="prayer-card__placeholder">
+                    Add front image
+                  </div>
+                {% endif %}
+              </div>
+              <div class="prayer-card__back">
+                {% if block.settings.back_image %}
+                  <img 
+                    src="{{ block.settings.back_image | image_url: width: 900 }}" 
+                    alt="Prayer card back" 
+                    draggable="false"
+                    loading="lazy"
+                  >
+                {% else %}
+                  <div class="prayer-card__placeholder">
+                    Add back image
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="interactive-cards__empty">
+          <p>Add cards using the "Add Card" button in the sidebar</p>
+        </div>
+      {% endif %}
+    </div>
+
+    {% if section.blocks.size > 0 %}
+      <p class="interactive-cards__hint">
+        {{ section.settings.hint_text }}
+      </p>
+    {% endif %}
+  </div>
+</section>
+
+<script>
+(function() {
+  var cards = document.querySelectorAll('.prayer-card');
+  if (!cards.length) return;
+
+  var state = {
+    isDragging: false,
+    currentCard: null,
+    currentIndex: -1,
+    startMouseX: 0,
+    startMouseY: 0,
+    startCardX: 0,
+    startCardY: 0,
+    hasMoved: false,
+    highestZ: 10
+  };
+
+  // Initialize cards
+  for (var i = 0; i < cards.length; i++) {
+    cards[i].style.zIndex = i + 1;
+    setupCard(cards[i], i);
+  }
+
+  function setupCard(card, index) {
+    card.addEventListener('mousedown', function(e) {
+      onStart(e, index);
+    });
+    card.addEventListener('touchstart', function(e) {
+      onStart(e, index);
+    }, { passive: false });
+  }
+
+  function onStart(e, index) {
+    e.preventDefault();
+    
+    state.currentCard = cards[index];
+    state.currentIndex = index;
+    state.isDragging = true;
+    state.hasMoved = false;
+
+    // Bring to front
+    state.highestZ++;
+    state.currentCard.style.zIndex = state.highestZ;
+    state.currentCard.classList.add('prayer-card--dragging');
+
+    // Get mouse/touch position
+    if (e.type === 'touchstart') {
+      state.startMouseX = e.touches[0].clientX;
+      state.startMouseY = e.touches[0].clientY;
+    } else {
+      state.startMouseX = e.clientX;
+      state.startMouseY = e.clientY;
+    }
+
+    // Get card's current position
+    state.startCardX = state.currentCard.offsetLeft;
+    state.startCardY = state.currentCard.offsetTop;
+
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onEnd);
+    document.addEventListener('touchmove', onMove, { passive: false });
+    document.addEventListener('touchend', onEnd);
+  }
+
+  function onMove(e) {
+    if (!state.isDragging || !state.currentCard) return;
+    e.preventDefault();
+
+    var clientX, clientY;
+    if (e.type === 'touchmove') {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else {
+      clientX = e.clientX;
+      clientY = e.clientY;
+    }
+
+    var deltaX = clientX - state.startMouseX;
+    var deltaY = clientY - state.startMouseY;
+
+    if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) {
+      state.hasMoved = true;
+    }
+
+    var newX = state.startCardX + deltaX;
+    var newY = state.startCardY + deltaY;
+
+    state.currentCard.style.left = newX + 'px';
+    state.currentCard.style.top = newY + 'px';
+  }
+
+  function onEnd() {
+    if (!state.currentCard) return;
+
+    document.removeEventListener('mousemove', onMove);
+    document.removeEventListener('mouseup', onEnd);
+    document.removeEventListener('touchmove', onMove);
+    document.removeEventListener('touchend', onEnd);
+
+    state.currentCard.classList.remove('prayer-card--dragging');
+
+    if (!state.hasMoved) {
+      state.currentCard.classList.toggle('prayer-card--flipped');
+    }
+
+    state.isDragging = false;
+    state.currentCard = null;
+    state.currentIndex = -1;
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Interactive Cards",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Text"
+    },
+    {
+      "type": "text",
+      "id": "tag",
+      "label": "Tag",
+      "default": "Try It Out"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Experience Prayer Portals"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Drag the cards around. Click one to flip it over and see how it works."
+    },
+    {
+      "type": "text",
+      "id": "hint_text",
+      "label": "Hint text",
+      "default": "Drag cards to move them • Click to flip and reveal Scripture"
+    },
+    {
+      "type": "header",
+      "content": "Card Dimensions"
+    },
+    {
+      "type": "range",
+      "id": "card_width",
+      "label": "Card width",
+      "min": 200,
+      "max": 600,
+      "step": 10,
+      "default": 420,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_height",
+      "label": "Card height",
+      "min": 150,
+      "max": 500,
+      "step": 10,
+      "default": 300,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Corner radius",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Image Settings"
+    },
+    {
+      "type": "select",
+      "id": "image_fit",
+      "label": "Image fit",
+      "options": [
+        { "value": "cover", "label": "Cover (crop to fill)" },
+        { "value": "contain", "label": "Contain (show full image)" },
+        { "value": "fill", "label": "Stretch to fill" }
+      ],
+      "default": "cover"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image position",
+      "options": [
+        { "value": "center", "label": "Center" },
+        { "value": "top", "label": "Top" },
+        { "value": "bottom", "label": "Bottom" },
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "front_image",
+          "label": "Front image"
+        },
+        {
+          "type": "image_picker",
+          "id": "back_image",
+          "label": "Back image"
+        },
+        {
+          "type": "header",
+          "content": "Starting Position"
+        },
+        {
+          "type": "range",
+          "id": "start_x",
+          "label": "Horizontal position",
+          "min": 0,
+          "max": 80,
+          "step": 5,
+          "default": 35,
+          "unit": "%"
+        },
+        {
+          "type": "range",
+          "id": "start_y",
+          "label": "Vertical position",
+          "min": 0,
+          "max": 70,
+          "step": 5,
+          "default": 20,
+          "unit": "%"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Interactive Cards",
+      "blocks": []
+    }
+  ]
+}
+{% endschema %}

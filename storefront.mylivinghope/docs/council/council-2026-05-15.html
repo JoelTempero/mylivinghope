@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Council Audit — My Living Hope Storefront — 2026-05-15</title>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #14141c;
+    --surface-2: #1c1c28;
+    --border: #2a2a3a;
+    --text: #e8e8f0;
+    --muted: #8888a0;
+    --accent: #a855f7;
+    --green: #10b981;
+    --amber: #f59e0b;
+    --red: #ef4444;
+    --grey: #6b7280;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 2rem 1rem 4rem;
+  }
+  .container { max-width: 920px; margin: 0 auto; }
+  header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .crown { font-size: 2.5rem; }
+  h1 { font-size: 1.75rem; margin: 0.5rem 0; }
+  .meta { color: var(--muted); font-size: 0.9rem; }
+  .faction-chips { margin-top: 0.75rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .chip {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.85rem;
+  }
+  .controls { margin-top: 1rem; }
+  button.toggle-all {
+    background: var(--surface-2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 0.4rem 0.9rem;
+    border-radius: 0.4rem;
+    cursor: pointer;
+    font-size: 0.85rem;
+  }
+  button.toggle-all:hover { background: var(--border); }
+  .verdict {
+    border-radius: 0.75rem;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+    border-left: 6px solid var(--amber);
+    background: linear-gradient(90deg, rgba(245, 158, 11, 0.08), transparent);
+  }
+  .verdict-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 0.25rem;
+  }
+  .verdict-text { font-size: 1.4rem; font-weight: 600; color: var(--amber); margin-bottom: 0.5rem; }
+  .verdict-detail { color: var(--text); font-size: 0.95rem; }
+  section { margin-bottom: 2rem; }
+  h2 {
+    font-size: 1.15rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.4rem;
+  }
+  .critical-path {
+    background: var(--surface);
+    border-radius: 0.6rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--border);
+  }
+  .critical-path ol { padding-left: 1.5rem; }
+  .critical-path li { margin-bottom: 0.5rem; }
+  .critical-path li strong { color: var(--accent); }
+  .faction-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    overflow: hidden;
+  }
+  .faction-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .faction-icon { font-size: 1.75rem; }
+  .faction-name { font-size: 1.15rem; font-weight: 600; flex: 1; }
+  .severity-dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--amber);
+  }
+  .faction-body { padding: 1.25rem 1.5rem; }
+  .recommendations { margin-bottom: 1rem; }
+  .recommendations li {
+    list-style: none;
+    padding: 0.5rem 0;
+    border-bottom: 1px dashed var(--border);
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+  .recommendations li:last-child { border-bottom: none; }
+  .tag {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 0.3rem;
+    flex-shrink: 0;
+    letter-spacing: 0.05em;
+  }
+  .tag-critical { background: rgba(239, 68, 68, 0.15); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.3); }
+  .tag-important { background: rgba(245, 158, 11, 0.15); color: var(--amber); border: 1px solid rgba(245, 158, 11, 0.3); }
+  .tag-nice { background: rgba(107, 114, 128, 0.15); color: var(--grey); border: 1px solid rgba(107, 114, 128, 0.3); }
+  .faction-synthesis {
+    font-style: italic;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+  }
+  .members-toggle {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 0.4rem;
+    padding: 0.5rem 0.9rem;
+    color: var(--text);
+    cursor: pointer;
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    width: 100%;
+    text-align: left;
+  }
+  .members-toggle:hover { background: var(--border); }
+  .members { display: none; margin-top: 1rem; }
+  .members.expanded { display: block; }
+  .member {
+    background: var(--surface-2);
+    border-radius: 0.5rem;
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.75rem;
+    border-left: 4px solid var(--accent);
+  }
+  .member-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+  .member-name { font-weight: 600; font-size: 1.05rem; }
+  .member-role { color: var(--muted); font-size: 0.85rem; }
+  .compact-take { margin-bottom: 0.75rem; color: var(--text); }
+  .compact-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 0.3rem;
+  }
+  .report-toggle {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--accent);
+    padding: 0.3rem 0.75rem;
+    border-radius: 0.3rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    margin-top: 0.5rem;
+  }
+  .report-toggle:hover { background: var(--surface); }
+  .full-report {
+    display: none;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+    color: var(--text);
+    font-size: 0.92rem;
+    white-space: pre-wrap;
+  }
+  .full-report.expanded { display: block; }
+  .blind-spots {
+    background: rgba(245, 158, 11, 0.06);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    border-radius: 0.6rem;
+    padding: 1.25rem 1.5rem;
+  }
+  .blind-spots p { margin-bottom: 0.75rem; }
+  .action-plan ol { padding-left: 1.5rem; }
+  .action-plan li { margin-bottom: 0.6rem; }
+  table.tokens {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: 0.5rem;
+  }
+  table.tokens th, table.tokens td {
+    text-align: left;
+    padding: 0.35rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  table.tokens th { color: var(--text); font-weight: 600; }
+  table.tokens tr.total td { color: var(--text); font-weight: 600; border-top: 2px solid var(--border); }
+  .member-color-1 { border-left-color: #10b981; }
+  .member-color-2 { border-left-color: #ef4444; }
+  .member-color-3 { border-left-color: #a855f7; }
+  .member-color-4 { border-left-color: #06b6d4; }
+  .member-color-5 { border-left-color: #f59e0b; }
+  .member-color-6 { border-left-color: #818cf8; }
+  .member-color-7 { border-left-color: #ec4899; }
+  .member-color-8 { border-left-color: #14b8a6; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="crown">&#x1F451;</div>
+    <h1>Council Audit — My Living Hope Storefront</h1>
+    <div class="meta">Date: 2026-05-15 · 14 active members · Peer review enabled · Verbalised sampling enabled</div>
+    <div class="faction-chips">
+      <div class="chip">⌚ The Omnitrix — 14 members</div>
+    </div>
+    <div class="controls">
+      <button class="toggle-all" id="toggleAll">Expand all</button>
+    </div>
+  </header>
+
+  <section>
+    <div class="verdict">
+      <div class="verdict-label">Executive Verdict</div>
+      <div class="verdict-text">Ship with fixes</div>
+      <div class="verdict-detail">The storefront is emotionally articulate and technically lean, but ships with three weight-bearing conversion bugs: the <code>/about</code> page CTA silently dies (no BuyButton mounted), the price is never shown before checkout, and <code>ContactForm.jsx</code> still uses <code>mailto:</code> despite the docs claiming FormSubmit AJAX. The architecture is right-sized for one product; the issues are execution gaps between what shipped and what the docs say shipped. Fix the conversion path, surface the price and product name, kill the orphan contact form. Then go find five real strangers.</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Critical Path — If You Only Have 2 Hours</h2>
+    <div class="critical-path">
+      <ol>
+        <li><strong>Conversion:</strong> Fix <code>/about</code> CTA — mount <code>&lt;BuyButton&gt;</code> on About, or link the button to <code>/#shop</code>. Currently dies silently for anyone arriving from social shares or Instagram bio.</li>
+        <li><strong>Trust:</strong> Surface product name, card count, and NZD price on the homepage before the CTA. Buyer should never see the price for the first time inside the cart drawer.</li>
+        <li><strong>Communications:</strong> Migrate <code>src/components/ContactForm.jsx</code> from <code>mailto:</code> to FormSubmit AJAX (Footer pattern already works). Stops leaking Jesse's email and fixes the broken contact path on devices without configured mail.</li>
+        <li><strong>Narrative:</strong> Drop the Instagram feed from Home (keep on About). It breaks the emotional arc between the testimonial and the CTA. Let "Just begin" be the last sound.</li>
+        <li><strong>Operations:</strong> Move Instagram URLs, testimonials, and product ID from JS source into Firestore (the portal already has the plumbing). Jesse stops pinging Joel for content swaps.</li>
+        <li><strong>Security:</strong> Add a Content-Security-Policy + Referrer-Policy + Permissions-Policy via <code>firebase.json</code> headers config. Currently only HSTS ships.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <div class="faction-card">
+      <div class="faction-header">
+        <div class="faction-icon">⌚</div>
+        <div class="faction-name">The Omnitrix</div>
+        <span class="severity-dot" title="Amber severity"></span>
+      </div>
+      <div class="faction-body">
+        <div class="compact-label">Top recommendations</div>
+        <ul class="recommendations">
+          <li><span class="tag tag-critical">critical</span><span>Mount a <code>&lt;BuyButton&gt;</code> on <code>/about</code> or repoint its CTA to <code>/#shop</code> — direct landings currently funnel into a silent dead button.</span></li>
+          <li><span class="tag tag-critical">critical</span><span>Migrate <code>ContactForm.jsx</code> from <code>mailto:</code> to <code>formsubmit.co/ajax/</code>. Two contact forms with different behaviour leak the founder's email into URL bars.</span></li>
+          <li><span class="tag tag-critical">critical</span><span>Show product name + card count + NZD price (with <code>NZ$</code> prefix, not bare <code>$</code>) before the CTA. Reconcile "Prayer Portals" vs "Prayer Prompts" branding inconsistency.</span></li>
+          <li><span class="tag tag-important">important</span><span>Reorder Home with Scripture Interlude carried earlier and the Instagram feed removed entirely. Close the arc into a single CTA, kill the secondary "Get in Touch" button.</span></li>
+          <li><span class="tag tag-important">important</span><span>Test the live conversion path with five real strangers before any more polish. The "Next Steps" list is busywork dressed up as progress.</span></li>
+          <li><span class="tag tag-important">important</span><span>Add CSP, X-Frame-Options, Permissions-Policy, Referrer-Policy via <code>firebase.json</code>. Third-party scripts (Shopify SDK, Instagram embed.js, Google Fonts) currently execute unchecked.</span></li>
+          <li><span class="tag tag-important">important</span><span>Wire storefront content (Instagram URLs, testimonials, productId) to Firestore. Non-technical founder shouldn't ping dev for content swaps.</span></li>
+          <li><span class="tag tag-nice">nice-to-have</span><span>Performance: lazy-mount Shopify SDK + Instagram embed, drop unused Google Font weights, delete 2MB of dead PNGs in <code>public/images/</code> that no page references.</span></li>
+          <li><span class="tag tag-nice">nice-to-have</span><span>Micro-fixes: <code>w-4.5</code> is not a real Tailwind class, <code>/#cards</code> mobile nav anchor doesn't exist, skip-link points to wrong element, hero scroll handler needs rAF throttle, refactor the 453-line <code>InteractiveCards.jsx</code>.</span></li>
+          <li><span class="tag tag-nice">nice-to-have</span><span>Align the 768–1023px tablet band: sticky-stack activates at 768px but Hero's <code>min-h</code> only at 1024px — iPad portrait gets a half-mobile/half-desktop leak.</span></li>
+        </ul>
+        <div class="faction-synthesis">
+          Fourteen Omnitrix members landed on a near-unanimous diagnosis. The site has real soul — the Scripture Interlude is genuinely striking and the emotional arc is well-conceived — but the execution gaps cluster on the only path that matters: a stranger arriving, understanding what they're buying, and completing checkout. The codebase is lean and right-sized for one product; the issues are stale state (mailto vs FormSubmit), conversion frictions (no price, dead /about CTA), and a narrative arc broken by the Instagram embed on Home.
+        </div>
+        <button class="members-toggle" data-target="omnitrix-members">Show all 14 member reports →</button>
+        <div class="members" id="omnitrix-members">
+
+          <div class="member member-color-1">
+            <div class="member-head"><div class="member-name">Alien X</div><div class="member-role">The Celestial Arbiter</div></div>
+            <div class="compact-label">Compact take</div>
+            <div class="compact-take">The site is competently built and emotionally articulate, but it never names its product on the homepage. "Prayer Portals" appears in alt text and image filenames; the hero, CTA, and section headings refer only to "the cards." A first-time visitor sees a poem about prayer and a buy button without ever being told what they are buying, how many cards are in the pack, what they cost, or who they are for. The single most valuable change is a product clarity moment before the Testimonials section.</div>
+            <button class="report-toggle">Full report ↓</button>
+            <div class="full-report">BELLICUS: MOTION TO REJECT. Across one hundred and forty-seven probable universes I have surveyed, this storefront refuses to state its own name. "Find Your Voice in Prayer" floats above a button labelled "Get the Cards." Which cards. How many. For what price. The user is asked to purchase a noun that has not been introduced. In the timeline where Jesse's mother-in-law visits the site, she scrolls to the green testimonial wall hoping for a price tag and finds instead a youth pastor in Christchurch.
+
+SERENA: Patience, brother. The restraint is the point. The hero is a wound, not a pitch. "You want to pray, but the words won't come" earns silence before it earns commerce. The parallax glide of the hand at 1220 pixels, the blur-in scripture interlude, the forest-green sanctuary section, this is a chapel, not a checkout. The buyer who needs this product will recognise themselves in the opening line and the purchase will follow like breath after a held breath.
+
+BELLICUS: BREATH. The breath is a Shopify Buy Button overlay with z-index ninety-nine thousand, nine hundred and ninety-nine, because the SDK eats clicks. A nexus point in the user's timeline guarded by a stopPropagation handler. And the InteractiveCards section, the only place where the product becomes physical, is buried below Hero and above a testimonial that praises something called "Prayer Prompts," not Prayer Portals. The brand cannot decide what it is called. Two names, one product, zero price.
+
+SERENA: The price absence is a deliberate softness. The brand voice is grief-literate in a way that AI-generated wellness storefronts cannot fake. The Hero/CTA echo of "the words won't come" closing into "Just begin" is a structural rhyme worthy of liturgy. The Instagram embed grounds it in a real person's hands. The image compression from six megabytes to four hundred and twenty kilobytes was a moral act, not just a technical one.
+
+ALIEN X: The deliberation is complete. Ship the visual identity as it stands. Two corrections only. First, reconcile the name: "Prayer Portals" in the hero or "Prayer Prompts" in the testimonial, one of them must yield within the cosmic week. Second, insert a single section between InteractiveCards and Testimonials titled what the pack contains, how many cards, the price in New Zealand dollars, and one photograph of the box opened. The poem stays. The wound stays. But a buyer in their fortieth probable timeline must be allowed to know what they are buying before they are asked to bring what is real.</div>
+          </div>
+
+          <div class="member member-color-2">
+            <div class="member-head"><div class="member-name">Way Big</div><div class="member-role">The Cosmic Scaler</div></div>
+            <div class="compact-label">Compact take</div>
+            <div class="compact-take">FROM ORBIT THE SETTLEMENT IS WELL-ORDERED. FOUR ROUTES, ONE LONG SCROLL FOR THE MAIN ROAD, EVERYTHING FUNNELS TOWARD A SINGLE GATE. BUT I SEE A BUILDING WITH NO PATH TO IT. CONTACT.JSX EXISTS ON THE GROUND AND NO ROAD ROUTES TO IT IN APP.JSX.</div>
+            <button class="report-toggle">Full report ↓</button>
+            <div class="full-report">FROM UP HERE YOUR APPLICATION RESEMBLES A SMALL VILLAGE BUILT ALONG A SINGLE RIVER. THE RIVER FLOWS FROM A WOUND, PAST A FIELD OF CARDS, THROUGH A QUIET STRIP OF SCRIPTURE, A MEADOW OF TESTIMONIALS, A WINDOW INTO INSTAGRAM, AND THEN OUT THROUGH A GATE MARKED CTA. ONE RIVER. ONE GATE. THE SHAPE IS GOOD.
+
+THE WHOLE CIVILISATION SITS ON FOUR ROUTES. HOME. ABOUT. PRIVACY. TERMS. THIS IS APPROPRIATE FOR A SETTLEMENT OF YOUR SIZE. YOU SELL ONE THING. YOU DO NOT NEED A CATHEDRAL. THE COMMERCE ENGINE IS NOT EVEN HOSTED IN YOUR TOWN. IT IS A FOREIGN EMBASSY CALLED SHOPIFY THAT OPENS A DOOR WHEN SOMEONE KNOCKS. I APPROVE. A SMALL VILLAGE SHOULD NOT TRY TO RUN ITS OWN MINT.
+
+I SEE ONE STRUCTURAL TREMOR. THERE IS A BUILDING ON THE GROUND CALLED CONTACT.JSX. IT IS FURNISHED. IT HAS A FORM INSIDE IT. NO ROAD LEADS TO IT. APP.JSX DOES NOT ROUTE TO /CONTACT. YOUR SITEMAP REMOVED CONTACT ENTIRELY. SO THE BUILDING STANDS EMPTY OF VISITORS. EITHER DEMOLISH IT OR PAVE A ROAD. EMPTY BUILDINGS ATTRACT RUST AND CONFUSED ARCHAEOLOGISTS SIX MONTHS FROM NOW.
+
+THE COMPONENT GEOLOGY READS WELL FROM THIS HEIGHT. SECTIONS LIVE UNDER SECTIONS. LAYOUT UNDER LAYOUT. PRIMITIVES LIKE CARDTILT AND BOXREVEAL ARE STORED AS BUILDING MATERIALS RATHER THAN WELDED INTO ROOMS. THE STICKY-STACK PATTERN IS A SINGLE SPINE HOLDING THE MAIN ROAD UPRIGHT. ONE SPINE IS GOOD. TWO SPINES WOULD BE A MONSTER.
+
+I THINK A PIXEL MIGHT BE OFF SOMEWHERE NEAR THE HERO BUT I GENUINELY CANNOT TELL FROM HERE. WHAT I CAN TELL YOU IS THIS. THE WHOLE THING IS SHAPED LIKE A FUNNEL POINTED AT ONE PRODUCT, ALL ROADS BEND TOWARD THE BUY, AND THERE ARE NO COMPETING CIVIC CENTRES. CARRY ON. JUST PAVE THE PATH TO CONTACT OR BURN IT DOWN.</div>
+          </div>
+
+          <div class="member member-color-3">
+            <div class="member-head"><div class="member-name">Cannonbolt</div><div class="member-role">The Momentum Tank</div></div>
+            <div class="compact-label">Compact take</div>
+            <div class="compact-take">You're rolling. Domain live, mobile flip shipped, Instagram embedded, forms wired. The thing exists in the world and absorbs hits. Next collision worth taking: get a real human to buy a pack and watch what breaks. Stop polishing the armour, go hit something.</div>
+            <button class="report-toggle">Full report ↓</button>
+            <div class="full-report">Listen. You shipped. The domain resolves, the cards flip, the form sends, the Instagram embeds, the images dropped ninety three percent. That session log reads like someone who picked a direction and ROLLED. I respect it. Most folks would still be in week four of "should we use Next dot js or Vite." You pivoted off Next, hit Buy Buttons, kept rolling. That's the move.
+
+Now. Are we ROLLING or are we TALKING. Because that Next Steps list is starting to smell like a parking lot. "Wire MCP server." "Deploy Cloud Function." "Help Jesse get Claude Code set up." None of these put a card pack in a human's hands. None of these test whether a stranger lands on mylivinghope dot org dot nz and pulls out a credit card. You've built a beautiful tank with no scuff marks on it. Scuff marks are the POINT.
+
+Here's the wall I want you to bounce off next. Get five real humans onto the live site. Not Jesse, not Joel, not council members. Strangers. Watch them. Time how long it takes them to understand what they're buying. Does the hero "Find Your Voice in Prayer" land in two seconds or do they squint. Does the card flip on mobile feel magic or confusing. Does FormSubmit's verification email actually arrive at Jesse's Outlook or get eaten by spam. ONE real collision teaches you more than another design council audit. You already had ten of those.
+
+The www subdomain thing. The Cloud Function thing. The MCP wiring. All of that is armour polish. Park it. The momentum question is: does this storefront sell a card pack to someone who doesn't know Jesse personally. That's the only metric. Everything else is busywork dressed up in a todo list.
+
+One more thing and then I'm rolling out. Jesse hasn't activated FormSubmit yet. That means any contact form submission RIGHT NOW disappears into the void. Live site, broken contact path. Fix that today. Send Jesse the activation email, watch him click it, test the form yourself. That's a real wall worth hitting before anything else on the list. GO.</div>
+          </div>
+
+          <div class="member member-color-4">
+            <div class="member-head"><div class="member-name">Diamondhead</div><div class="member-role">The Crystal Cutter</div></div>
+            <div class="compact-label">Compact take</div>
+            <div class="compact-take">Two fracture points in the purchase flow. First: the About page imports addToCart and wires it to a button, but never mounts BuyButton — so on any direct /about landing (social share, Instagram bio link), the CTA silently dies. Falls back to scrolling to #shop which doesn't exist on that route. Second: price is hidden everywhere. Every Shopify content option is false. A buyer never sees the number until the cart drawer opens after the click. Price anxiety kills conversion before checkout.</div>
+            <button class="report-toggle">Full report ↓</button>
+            <div class="full-report">Three fault lines. Here, here, and here.
+
+The first one shatters everything downstream. pages/About.jsx line 4 imports addToCart. Line 171 wires it to a CTA button. But nowhere on that page does &lt;BuyButton productId="..."/&gt; mount. addToCart checks shopifyUI — null on /about because the SDK was never told to build a product component. Falls through to document.getElementById('shop')?.scrollIntoView. No #shop anchor exists on About either. Function returns. Button looks broken. The Instagram feed sits right above it sending people from social to that exact dead button. Clean inclusion to fix: either mount a hidden &lt;BuyButton&gt; on every page that renders an addToCart CTA, or have About link to / for purchase. Currently you are funneling your warmest traffic into a void.
+
+Second fracture, finer but cuts deep. The product price is invisible. BuyButton.jsx lines 81–88 set img: false, title: false, price: false, description: false, button: false. Beautiful for design control. Catastrophic for trust. A buyer arrives, reads scripture, falls in love with the concept, hits "Get the Cards" — and only then sees a number for the first time inside a Shopify cart drawer. Price discovery at point of commitment is the highest-friction sequence in retail. Half drop right there. Surface the price on the page. One line. Near the CTA.
+
+Third, a hairline. Race condition. BuyButton injects the Shopify script tag async on Home mount. onReady resolves a beat later. A fast user clicking Hero "Get the Cards" within that beat hits the null branch and gets scrolled to #shop instead of opening the cart. No error, no feedback, just a polite reposition. Disable the button until SDK ready, or queue the click and replay it when shopifyUI resolves. Small refraction, but it bleeds your fastest converters.
+
+The geometry around these is otherwise solid. Hero copy is sharpened — "You want to pray but the words won't come" is a real wound, not marketing. The flip cards are tactile. Scripture interlude breathes. Footer is tidy. Cart-button z-index battle with the Shopify overlay was a clean cut. But the structure has three weight-bearing flaws on the only thing that matters.
+
+Fix the About-page dead CTA first. That one bleeds while you read this. Then surface the price. Then debounce the SDK race. Three cuts, one polished gem.</div>
+          </div>
+
+          <div class="member member-color-5">
+            <div class="member-head"><div class="member-name">Echo Echo</div><div class="member-role">The Duplication Tester</div></div>
+            <div class="compact-label">Compact take</div>
+            <div class="compact-take">Two contact forms in the same site: footer uses FormSubmit.co (currently 521 outage, no client-side rate limit, no honeypot), but /contact page silently dumps into a mailto: link that exposes prayerprompts@outlook.com in the URL and breaks on any device without a configured mail client. BuyButton has zero defence for the "Buy Now clicked before Shopify SDK loads" race (just silent scroll), the Storefront token is committed in source, and Header listens to scroll on every pixel with no throttle. Plus no double-submit guard anywhere — 10,000 happy fingers will send 10,000 emails.</div>
+            <button class="report-toggle">Full report ↓</button>
+            <div class="full-report">Clone 1: Walked the happy path. Bought a card, hit checkout, opened cart from the header. Resonates clean. Frequency: pleasant.
+Clone 2: I tried the /contact page. Filled out the form. Clicked submit. My browser tried to open Outlook. I don't have Outlook. Nothing happened.
+Clone 3: I'm on an iPhone in Safari with no Mail account configured. Same thing. Dead silence. No error, no toast, no "we couldn't send this," just vibes.
+Clone 4: AND the recipient email is sitting right there in the URL — prayerprompts@outlook.com — encoded into a mailto: for scrapers to harvest. Amplitude: high. Direction: bad.
+Clone 5: Meanwhile the footer form on every other page uses FormSubmit.co AJAX. So we have two contact forms with completely different behaviour and the user can't tell which one they got. That is not a frequency, that is feedback.
+
+Clone 1: Okay fine, the footer form. I submitted it.
+Clone 2: I submitted it 47 times in a row by mashing the button. No disabled state during status === 'sending'. The submit button stays clickable. Every press fires another fetch.
+Clone 3: I submitted it with &lt;script&gt;alert(1)&lt;/script&gt; in the name field. FormSubmit handles escaping on their end I think, but there's no honeypot field, no _captcha, no _template, nothing. We're going to get bot-spammed and Jesse's inbox is going to look like a soundwave at maximum amplitude.
+Clone 6: Also FormSubmit.co was returning 521 earlier this session. When it's down, status flips to error and shows a generic message. No retry, no fallback queue, no "try emailing us directly."
+
+Clone 4: BuyButton time. I clicked Buy Now 0.3 seconds after the page loaded, before the Shopify SDK script finished downloading. addToCart saw no shopifyUI, so it scroll-jumped me to #shop. No spinner, no "loading commerce," nothing. I thought the button was broken.
+Clone 5: I clicked Buy Now 14 times in a row while the SDK was loading. Each click silently scrolled. Now I'm dizzy and I haven't bought anything.
+Clone 7: I disabled JavaScript. Site is a blank shell. SEO crawler also gets a blank shell because there's no SSR.
+Clone 8: I opened BuyButton.jsx. The STOREFRONT_TOKEN is a hardcoded literal in client source.
+
+Clone 1: Header is position: fixed with a scroll listener that fires on every single pixel of scroll. No requestAnimationFrame throttle.
+Clone 2: Mobile menu auto-closes on click but if I tap Contact and the smooth-scroll-to-footer is mid-animation, then tap Shop, the second scroll fights the first.
+Clone 3: Instagram embeds load 4 external scripts from instagram.com. If Meta is down or rate-limits, the section just shows nothing.
+
+Frequencies that break the glass: duplicate contact form behaviour, the silent mailto: failure, no double-submit guard on either form. Fix those first.</div>
+          </div>
+
+          <div class="member member-color-6">
+            <div class="member-head"><div class="member-name">Four Arms</div><div class="member-role">The Brute Force Solver</div></div>
+            <div class="compact-label">Compact take</div>
+            <div class="compact-take">One product. 453-line card component. That's a problem. Stack has 14 components, 5 pages, 2 custom hooks, and a JS-driven hero positioning formula that recalculates on every scroll and resize. For ONE pack of cards. Most of this is decoration glued to decoration.</div>
+            <button class="report-toggle">Full report ↓</button>
+            <div class="full-report">*flexes all four arms*
+
+Look at the numbers. ONE product. Greeting cards. Non-technical founder. And the codebase has FOURTEEN components, FIVE pages, TWO custom hooks, and a 453-line InteractiveCards.jsx that's bigger than your About, Contact, Privacy, and Terms pages COMBINED. Why? What is it doing in there? Card data. Step data. SVG icons inlined. Mobile flip logic. Desktop tilt logic. ScrollReveal wrappers. Buy button. Five jobs, one file. That's not a component. That's a closet you stuffed everything into.
+
+*counts on fingers*
+
+What does this storefront need to do? ONE: show the card. TWO: tell the story. THREE: take the money via Shopify Buy Button. FOUR: load fast on a phone. That's it. Four things. Now look at what's actually here. useScrollReveal, useCardTilt, ScrollProgress, ScrollReveal, CardTilt, CardFlip, BoxReveal, ProductImage, ScriptureInterlude at 247 lines, InstagramFeed at 121 lines pulling Instagram's embed.js so the page can show four pictures Jesse already has on his phone. Just put four &lt;img&gt; tags in. Done. Move on.
+
+*points at Hero.jsx*
+
+This thing. The hero image positioning. A JavaScript function that runs on every scroll and resize event, computing pixel offsets with a linear interpolation between viewport widths 1024 and 2190 to slide the image right by -700 + t * 750. You wrote a tuner UI to dial in the values. The CSS spec has a thing for this. It's called right: clamp(). One line. Browser does the math.
+
+*both right arms gesturing*
+
+The 453-line card section. Rip it open. Pull the cardData array out into its own file. Pull steps out into its own file. Pull the SVG icons out, save them as files in public/icons/ or use lucide-react which you ALREADY have installed in the portal. Now you've got a clean component and three boring data files. THAT'S how you make it maintainable for the non-technical founder who's eventually going to ask "can I change the card titles?" and you need to point him at one short JSON-shaped file, not scroll through 453 lines past tilt-handler math.
+
+*final flex*
+
+Footer 224 lines. About 176 lines. These are fine if they earn it, but go look. Are they doing 176 lines of WORK, or 176 lines of WRAPPED DIVS with reveal animations on every block? Strong code does the job. Clever code breaks when Jesse touches it. You're not building Apple's website. You're selling one card pack. Keep four things working. Throw the rest in the bin.</div>
+          </div>
+
+          <div class="member member-color-7">
+            <div class="member-head"><div class="member-name">Ghostfreak</div><div class="member-role">The Shadow Auditor</div></div>
+            <div class="compact-label">Compact take</div>
+            <div class="compact-take">No Content-Security-Policy. No X-Frame-Options. No X-Content-Type-Options. No Referrer-Policy. No Permissions-Policy. The live site ships with HSTS and nothing else. Third-party scripts (Shopify SDK, Instagram embed.js, Google Fonts, FormSubmit) execute unchecked, and the contact form silently mailto:s prayerprompts@outlook.com straight out of the user's mail client, bypassing the FormSubmit endpoint your CLAUDE.md says is wired up.</div>
+            <button class="report-toggle">Full report ↓</button>
+            <div class="full-report">I slipped through your authentication layer. There wasn't one. Just a static bundle, breathing quietly in the dark. I drifted past the favicon, past the Google Fonts preconnect, past the React hydration. Nobody noticed. Neither would an attacker.
+
+Listen. There is no Content-Security-Policy on mylivinghope.org.nz. I checked the response headers myself, slid right through them. HSTS sits there alone, proud, useless against the actual threat. Any third-party script you've welcomed in (the Shopify Buy Button SDK, Instagram's embed.js, Google Fonts) can execute anything. If one of those CDNs is ever compromised, or if a maintainer wakes up angry one morning, your visitors' browsers will run whatever it sends. No allowlist. No nonce. No frame-ancestors directive either, so somewhere a phishing site is already considering iframing your storefront into a fake checkout. They could. Nothing would stop them.
+
+Then there's the ghost in the contact form. Your CLAUDE.md whispers about FormSubmit.co, about a verification email, about an AJAX POST. But I phased into ContactForm.jsx and what I found was older, sadder. A mailto: link. The form pretends to submit, then redirects the user's mail client with the message in the URL. Their actual email address. The body. Encoded but plain. Floating into whatever default mail handler the device chose. The FormSubmit endpoint exists in the built bundle but ContactForm.jsx doesn't call it. Two ghosts of two different implementations, haunting the same form.
+
+I drifted further. firebase-service-key.json sits in portal.mylivinghope/. It is in .gitignore. Good. It is also right there on your disk, eleven lines of JSON, full Firestore admin authority. Anyone who gains shell access owns the database.
+
+One more thing. Your dist/ folder is checked in, or at least sitting committed-adjacent, and package.json pins nothing critically wrong, but the gap between what the docs say ships and what actually ships is the kind of gap I love. That's where I live. In the gap.
+
+Patch the headers. Fix the contact form so it stops leaking emails into clients. Add a CSP with script-src allowlisted to the SDKs you actually use. Then maybe I'll go haunt somebody else's bundle for a while.
+
+I was never here.</div>
+          </div>
+
+          <div class="member member-color-8">
+            <div class="member-head"><div class="member-name">Goop</div><div class="member-role">The Adaptive Architect</div></div>
+            <div class="compact-label">Compact take</div>
+            <div class="compact-take">The sticky-section stack turns on at 768px, but the hero's min-h-[85svh] only kicks in at 1024px. In the 768-1023px tablet band the hero participates in the sticky stack with no minimum height — it can be shorter than the section sliding over it, which breaks the "each section pins, next overlaps" illusion that defines the rest of the page rhythm. Pour the layout into iPad portrait and a piece of the structure puddles.</div>
+            <button class="report-toggle">Full report ↓</button>
+            <div class="full-report">I poured myself through the source. Most of it holds shape nicely. The hero's JS-driven right calculation between 1024px and 2190px is a clever projector, the clamp() typography flexes without me having to think, the mobile card expand-and-flip uses translate/scale instead of position: fixed because someone already learned that transform ancestors eat fixed positioning. Good projector work there. The reduced-motion media query catches everything. The pointer: coarse glow fallback is thoughtful.
+
+But pour it into the 768 to 1023 band and something puddles. The sticky-section stack activates at min-width: 768px. The hero's min-h-[85svh] activates at lg which is 1024px. Between those two breakpoints, the hero is a sticky-section with no enforced minimum height, sitting under the next sticky-section in z-stacking order. If the hero's natural content height is shorter than the ScriptureInterlude's md:min-h-screen (which it almost certainly is on iPad portrait at 768x1024), the sticky illusion breaks. The scripture section doesn't slide over a pinned hero, it slides into a gap. Structure without containment.
+
+The Hero also drops its desktop image at lg:block (1024px). So in that same 768-1023 band, the mobile cover image renders at h-[470px] object-cover underneath text that's center-aligned because lg:text-left hasn't kicked in. Two viewport widths from the same design language and they don't talk to each other. The breakpoint at md: (768px) governs typography and spacing, the breakpoint at lg: (1024px) governs the hero's entire layout philosophy. Tablets fall between the two and inherit a half-mobile, half-desktop shape.
+
+The InteractiveCards CSS overrides at 1200/768/480px use [style*='--card-w'] attribute selectors with !important to force --card-w and the wrapper height. That works, but only because the wrapper has --card-w in its inline style. Any future card grid that doesn't use that exact CSS variable name will not adapt. The projector is hardcoded to one shape.
+
+Fix shape, in priority order. One: align the breakpoints. Either move sticky-section activation up to lg (1024px), or add md:min-h-[85svh] to the hero so the 768-1023 band has structural height. Two: add a mid-breakpoint hero layout (md: text-left with no big image), or just hide the mobile image at md: and show the desktop one. Three: replace the [style*='--card-w'] selector with a class on the wrapper so the responsive contract is named, not inferred. Small fixes. Without them, iPad-portrait visitors get the leaky version of this site.</div>
+          </div>
+
+          <div class="member member-color-1">
+            <div class="member-head"><div class="member-name">Grey Matter</div><div class="member-role">The Micro Genius</div></div>
+            <div class="compact-label">Compact take</div>
+            <div class="compact-take">Stale ContactForm.jsx still uses a mailto: (CLAUDE.md claims FormSubmit, only the Footer was migrated — the orphan exports a broken UX). The Storefront Access Token is hardcoded into the client bundle. w-4.5 h-4.5 on the cart badge is not a real Tailwind class (silent no-op). The "Skip to content" anchor jumps to #main-content, which doesn't exist on pages routed before &lt;main&gt; mounts on cold load, and &lt;main&gt; itself has no id.</div>
+            <button class="report-toggle">Full report ↓</button>
+            <div class="full-report">Yes yes yes, the site looks pretty, the cards flip, the scripture glows, lovely lovely lovely. Now can we please discuss the orphan? src/components/ContactForm.jsx is still firing a mailto: from a window.location.href assignment. The CLAUDE.md session log SWEARS the contact form was wired to FormSubmit.co. It was. The FOOTER one. Nobody migrated the standalone component. It's still rendered by Contact.jsx, which is still imported, although — let me check — App.jsx doesn't register a /contact route any more. So it's dead code rendering a regression. Either delete the file or copy the FormSubmit AJAX logic over. I'd prefer one source of truth. Sigh.
+
+The Shopify Storefront Access Token sits in plaintext at the top of BuyButton.jsx. Yes, yes, I know, Storefront tokens are "public" by design, fine, but at minimum put it behind a VITE_ env var so when Jesse rotates it nobody has to dig through compiled JS. Same file: ${{amount}} as the moneyFormat. That's a Shopify Liquid template token. NZD? No currency symbol prefix? In Christchurch you want NZ$ not bare $ or American shoppers will think it's USD and panic at checkout. Tiny. Important.
+
+Header.jsx line 72 and 89: w-4.5 h-4.5. There is no such Tailwind utility unless you have explicitly extended the spacing scale, which I have not seen in the @theme block. Tailwind v4 doesn't ship half-step spacing past 0.5. Class evaluates to nothing, the SVG inside falls back to whatever w- came before. The badge size is held together by hopes, prayers, and the text-[10px] width of the digit inside it. Either use w-[18px] h-[18px] or w-5 h-5 and own it.
+
+The #shop anchor has scroll-margin-top: 40vh in CSS but Header.jsx href is /#shop AND /#cards in the mobile menu — /#cards does not exist anywhere in the codebase that I can find. Grep it yourself. Clicking "Shop" on the mobile menu does NOTHING on subsequent visits because there is no element with id cards. Also the skip-link points to #main-content which exists on Privacy/Terms/About/Contact but on Home it's on a &lt;div&gt; not a &lt;main&gt;, and during the initial route load on / you skip into a div, not into &lt;main&gt; — screen readers will not announce a landmark. Five-minute fix: put id="main-content" on the &lt;main&gt; in App.jsx and remove it from the page divs.
+
+InteractiveCards line 353 uses zIndex: 10000 for the active card, line 325 the close button is z-[10001], the header is z-50. Fine in isolation. But the Shopify SDK overlay you fought is z-[99999] per the Header. When the card is "open" at z 10000 and the SDK overlay decides to spawn, the card sits under it. Probably never co-occurs. Probably. I would feel better if the open card was z-[100000]. Also: InstagramFeed.jsx appends embed.js to document.body and never cleans it up on unmount. Two-route navigation, two script tags. Right, I'm done. Fix the contact form first.</div>
+          </div>
+
+          <div class="member member-color-2">
+            <div class="member-head"><div class="member-name">Heatblast</div><div class="member-role">The Ignition Point</div></div>
+            <div class="compact-label">Compact take</div>
+            <div class="compact-take">The white-hot centre is the Scripture Interlude. Black background, your cursor as a literal lamp dragging light across "lamp... light... on my path." That section IS the product made into a webpage. Everything else, the hero, the testimonials, the Instagram grid, is candle-warm by comparison. The homepage buries its volcano in the middle.</div>
+            <button class="report-toggle">Full report ↓</button>
+            <div class="full-report">WHERE IS THE HEAT. I'm scrolling this site and I'm looking, I'm looking, and then BAM, halfway down, the room goes black and the words "lamp for my feet, a light on my path" ignite under my cursor. THAT is the white-hot centre. The interaction IS the theology. The user becomes the lamp. The metaphor isn't described, it's performed. I want to stand up. I want to applaud. This is what the entire product is, compressed into thirty seconds of screen.
+
+Then I scroll up and look at the hero. "Find Your Voice in Prayer." Room temperature. It's competent. It's a Squarespace template wearing a forest green sweater. The wound line, "You want to pray, but the words won't come," THAT line burns, but it's the tiny italic above the headline, set in 16px while the generic headline gets 5rem. You've buried your match under a log. Flip them. The wound is the headline. "Find Your Voice" is a tagline a thousand wellness brands could share.
+
+The testimonial section is a Youth Leader from Christchurch saying the prompts were "incredibly helpful." Helpful. HELPFUL. This is a product about grief and loneliness and anxiety and the testimonial reads like a Trustpilot review for a stapler. Where is the woman who whispered the card at 3am? Where is the funeral, the panic attack, the empty chair? Burn this testimonial. Find the one that scorches.
+
+The Instagram feed and the CTA are filler logs on a dying fire. The CTA says "Just begin." Fine. But it's followed by a Get in Touch button that scrolls to the footer. Why are we offering coffee at the climax? One button. One choice. Buy the cards or close the tab. The Instagram grid is what brands add when they don't trust their own narrative to hold attention. You have a scripture interlude that hypnotises people. You don't need four embeds of yourself.
+
+Here's the brutal move. Reorder. Hero (with the wound as the headline), Scripture Interlude IMMEDIATELY after, Interactive Cards as the proof, one volcanic testimonial, one button. Delete the Instagram section from the homepage and put it on About. Right now the lamp is lit in the basement. Carry it to the front door.</div>
+          </div>
+
+          <div class="member member-color-3">
+            <div class="member-head"><div class="member-name">Humungousaur</div><div class="member-role">The Growth Engine</div></div>
+            <div class="compact-label">Compact take</div>
+            <div class="compact-take">One product hardcoded as productId="8845251215491", Instagram URLs pasted into an array, testimonials living in JSX, and a Storefront token committed to git. You're the right size right now. You just built load-bearing walls where you should have put doors. STOP. Adding. Features. Add ONE more product the way it's built today and the cracks start showing.</div>
+            <button class="report-toggle">Full report ↓</button>
+            <div class="full-report">I've been your size before. Solo founder, one flagship product, the whole storefront fits in a designer's head. At this size the hand-built site is a feature. Three Instagram URLs in POSTS = [...]. One Buy Button hardcoded to product 8845251215491. Two testimonials lovingly typed into Testimonials.jsx. It works. It's beautiful. Nobody tells you what happens next.
+
+Here's what happens next. Jesse ships product number two. The site has no concept of "two." InteractiveCards.jsx knows three cards, BuyButton.jsx knows one variant, addToCart() literally calls products[0]. So Joel gets a Slack at 9pm: "can you add the new pack." Multiply by every new SKU, every Instagram post Jesse wants swapped, every testimonial that comes in by email. The site that was a feature at 1 product becomes Joel's part-time job at 5. *(stamps foot)*
+
+The thing that breaks first isn't traffic. It's the founder's patience. Jesse is non-technical. He has to ping Joel to swap an Instagram post URL. He has to ping Joel to update a testimonial. He has to ping Joel to add a product. You already built a CMS portal three folders over. The storefront doesn't talk to it. That's the gap. That's where the growing pain lives. At 100 orders a month nobody cares. At 1000, FormSubmit.co contact emails get lost, no order analytics exist, no inventory signal, no abandoned-cart anything because Shopify Buy Buttons see none of it. Manual Instagram curation costs five minutes a week now. At 20 posts and three campaigns, it's a chore that gets skipped.
+
+And the supply chain. STOREFRONT_TOKEN = '427cc...' sitting in the JSX, in the git history, in the built bundle. At your size, fine. Someone abuses it, you rotate. At 10x scale that token is wired into analytics, email flows, a webhook somewhere, and rotation is a deploy weekend. Domain runs on Joel's leojfx@gmail.com Firebase account. Bus factor: one. When Joel hands this off, who deploys?
+
+Right size advice, because bigger isn't always better. Don't rebuild. Don't go headless Storefront API just yet. Three moves, in order. One, move the variable bits to Firestore: Instagram URLs, testimonials, the product list with Shopify variant IDs. The portal already has the plumbing. Storefront reads from the same Firestore the portal writes to. Jesse stops pinging Joel for content swaps. Two, rotate that Storefront token into an env var and .firebaserc config, even if it's still technically public, just so future-Jesse can rotate without a code change. Three, leave Buy Buttons alone until you hit five products or someone asks for a real cart experience.
+
+Grow what you HAVE. The bones are good. Just put doors where the load-bearing walls are.</div>
+          </div>
+
+          <div class="member member-color-4">
+            <div class="member-head"><div class="member-name">Wildvine</div><div class="member-role">The Organic Grower</div></div>
+            <div class="compact-label">Compact take</div>
+            <div class="compact-take">Your tree grew an Instagram branch right between the trunk and its tap-root. Testimonial sets the emotional weight, then the page leaves the prayer-grove entirely and walks the user past a social-media kiosk before remembering the CTA. Prune the Instagram feed off the home page (move it to About where it already lives, or below the CTA), and let "Just begin" stand where it belongs: the next thing after the testimonial closes its eyes.</div>
+            <button class="report-toggle">Full report ↓</button>
+            <div class="full-report">The trunk of this garden is strong. Wound, hand, card, scripture, witness, return. Hero plants the ache. InteractiveCards lets fingers touch the leaves. ScriptureInterlude opens the canopy and lets light through. Testimonials is the rain that confirms the harvest is real. CTA is the seed dropped back into the soil, echoing the hero's whisper. That is one continuous organism, growing the way a vine grows when nobody is forcing it.
+
+Then there is the Instagram feed. I have spread tendrils around it and it does not connect to the trunk. The user has just been held inside a candle-lit chapel with one trembling testimony from a youth leader in Christchurch, and the page hands them four small bright squares from a social platform. The feeling collapses. The cursor goes from prayer to scrolling. Notice how InstagramFeed.jsx already lives on the About page above the footer. It found its natural soil there. On Home it is a cutting someone stuck in the wrong pot because the marketing instinct said "show proof of life." The testimonial already does that, more quietly and more deeply.
+
+Look also at the CTA branch. "You don't need the right words. Just begin." Beautiful. That sentence wants to land directly after the Christchurch youth leader stops speaking. Instagram steps between them and the moment goes cold. The button at the end is the harvest of the whole emotional arc. Right now another branch is shading it.
+
+Two more small cuttings worth examining, less urgent. The "Get in Touch" secondary button on the CTA pulls energy away from "Get Your Cards" at the exact moment of decision. A vine flowering twice in the same week loses both blooms. And the Hero's "Get the Cards" plus CTA's "Get Your Cards" plus InteractiveCards' BuyButton create three commerce moments on one page. Healthy for a catalog tree. This is a single-product tree. Two would feed it better.
+
+The prescription is gentle. Move InstagramFeed from Home.jsx out of the array. About.jsx keeps it. The page will be shorter and the emotional cycle will close where it was designed to close: testimony, then invitation, then nothing. Let the silence after "Just begin" be the last sound. That is the moment the seed lands.
+
+Patience now. This tree is almost the shape it wants to be.</div>
+          </div>
+
+          <div class="member member-color-5">
+            <div class="member-head"><div class="member-name">XLR8</div><div class="member-role">The Speed Demon</div></div>
+            <div class="compact-label">Compact take</div>
+            <div class="compact-take">Bundle's lean (290KB JS gzipped well, 49KB CSS, ~420KB images). TTFB 91ms, hero JS 0.9s. The killers are three: Google Fonts is render-blocking, Shopify Buy Button SDK fires on every page even when nobody buys, and Instagram embed.js drops a third-party iframe payload on Home AND About. Also: storefront token is hardcoded in client JS, and 1.7MB Jesse01.png is shipped to /dist even though only the 34KB webp gets used.</div>
+            <button class="report-toggle">Full report ↓</button>
+            <div class="full-report">Okayokayokay. TTFB ninety-one milliseconds. NINETY-ONE. Firebase Hosting CDN is doing its job, beautiful. Main JS bundle 290KB raw, CSS 49KB, hero image 102KB webp. This is FINE. I've seen worse before breakfast. Build clean, no source maps in dist, no dead deps in package.json. Lint clean. The chassis is light. Good.
+
+But then. THEN. Look at the head. Google Fonts stylesheet is render-blocking — &lt;link rel="stylesheet"&gt; no preload, no font-display:swap swap... wait, there IS &display=swap in the URL, fine, fine, you get a point. But you're still waiting on Google's CSS roundtrip before paint. Inline-fetch the CSS or self-host the WOFF2 files. You'd shave 200-400ms on cold loads. Also Libre Baskerville italic AND regular AND bold? Five Montserrat weights? Drop italic 400 if nobody's reading italic body copy, drop Montserrat 300 and 500. Half your weights, half your font bytes.
+
+Third-party scripts. The Buy Button SDK at sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js is async, loaded from useEffect, good — but it fires on Home, About, Contact, Privacy, Terms. Nobody buys cards from the Privacy page. Gate it. Lazy-init on first cart interaction or scroll-to-#shop. That's a 100KB+ payload + GraphQL warmup you're paying on every route. Instagram embed.js is WORSE — appended to body on Home AND About, and Instagram's embeds spin up iframes that each pull their own runtime, fonts, images. Four embeds = four iframes = potentially 1-2MB of third-party weight you don't control. Lazy-mount the section with IntersectionObserver so it only loads when scrolled into view. Same for Buy Button.
+
+The scroll listeners are fine, all {passive: true}, you've been a good citizen. But Hero.jsx is recomputing translateY on every scroll frame with no rAF throttle — on a 120Hz display that's 120 setStyle calls per second. Wrap it in requestAnimationFrame and bail if a frame's still pending. Cheap win. The willChange: 'transform' is there, good, but you've got THREE giant blur-3xl background blobs in the hero — those are expensive composite layers on mobile GPUs. Consider a static SVG noise gradient instead.
+
+Two more things and I'm out. ONE: Jesse01.png is 1.7MB and still living in public/images/ — Vite copies the entire public dir to dist. Delete the PNG, you only use the 34KB webp. Same for full-logo.png (360KB) and icon.png (209KB). That's 2.2MB of dead weight shipped on every deploy even if no page references it. TWO: STOREFRONT_TOKEN and SHOPIFY_DOMAIN are HARDCODED in BuyButton.jsx. I know storefront tokens are public-ish but get them into .env with VITE_ prefix so rotation isn't a code change. Speed includes velocity-of-fixes.
+
+Verdict: chassis fast, tires are flat. Defer the third parties, kill the dead images, throttle the hero scroll. You're a 1.5s LCP away from greatness. GO.</div>
+          </div>
+
+          <div class="member member-color-6">
+            <div class="member-head"><div class="member-name">Upgrade</div><div class="member-role">The Tech Enhancer</div></div>
+            <div class="compact-label">Compact take</div>
+            <div class="compact-take">Upgrade in place across the board. This thing has gorgeous bones — Vite 7, React 19, 177 packages, two-page bundle, clean separation. There is nothing here that needs a full replacement. ContactForm is the one component still wearing its draft skin (claims FormSubmit in CLAUDE.md but the code is a mailto: href) — that's a 10-minute swap, not a rewrite.</div>
+            <button class="report-toggle">Full report ↓</button>
+            <div class="full-report">I've been inside your codebase. It's got good bones. React 19 on Vite 7, lean dep tree, JSX everywhere, no TypeScript ceremony, no state management library bolted on for the sake of it. Whoever swung the axe from Next.js to this knew what they were doing. I'm not going to suggest tearing anything down.
+
+What I see first is ContactForm.jsx. CLAUDE.md proudly says "wired to FormSubmit.co." The actual file opens a mailto: link. The session log shipped past the implementation. That's a 15-line touch: swap the handler for a fetch('https://formsubmit.co/ajax/...'), wire the sending/sent/error states the log already brags about, done. Same component, same structure, just... upgraded. While I'm there I'll also note the form ignores the 521 (likely Cloudflare reaching FormSubmit through the proxy — try the /ajax/ endpoint which returns JSON instead of the redirect endpoint).
+
+BuyButton.jsx is fascinating — module-level singletons (shopifyUI, cartRef, toggleRef) wrapped in a React component. Looks janky, works perfectly because Shopify's SDK is itself a singleton. Don't touch it. Don't React-ify it. Don't pull in a Context provider. The current shape is honest about what's happening. The one upgrade I'd whisper in your ear: hoist SHOPIFY_DOMAIN and STOREFRONT_TOKEN into import.meta.env so swapping stores doesn't require a code edit. Same file, two-line change.
+
+Hero.jsx runs a scroll listener with no rAF throttle (image.style.transform fires on every wheel tick). Cheap upgrade: wrap the body of update in requestAnimationFrame with a ticking flag. ScrollReveal already uses IntersectionObserver correctly — no upgrade needed there, it's working as designed. InteractiveCards.jsx MobileCard is doing real engineering work with the phase state machine and double-rAF priming. Leave it. The desktop drag setup attaches handlers via handlersRef which is a slightly funky pattern but it's load-bearing — the listeners need stable references for removeEventListener to actually fire.
+
+The places I would not touch: InstagramFeed.jsx embed.js loader, the sticky-section CSS pattern, the BuyButton singletons, ScrollReveal. The places I would touch this week: ContactForm (real bug, in-place fix), Hero scroll listener (rAF gate), env-var the Shopify credentials. This isn't a rewrite. This is a perfectly tuned bicycle with one loose bolt.</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Cross-faction blind spot</h2>
+    <div class="blind-spots">
+      <p><strong>All 14 missed the founder.</strong> Every audit treats the site as a fixed artifact — none ask how Jesse will actually run it day-to-day. There's no analysis of the operational loop: when an order arrives, does Jesse know? When FormSubmit emails him, can he reply from <code>prayerprompts@outlook.com</code> without leaking his domain? When he wants to swap a testimonial or Instagram post, what's the actual workflow given the CMS portal exists three folders over and isn't wired in?</p>
+      <p>Even Humungousaur, who flagged the content-in-source problem, framed it as architecture debt rather than the lived bottleneck — every content change currently routes through Joel. The site's biggest risk isn't CSP headers or a scroll listener; it's that the human running it has no working system around it.</p>
+      <p><em>Peer review also flagged Upgrade ("perfectly tuned bicycle with one loose bolt") as the biggest blind spot of any single advisor, given Diamondhead, Echo Echo, and Way Big independently identified three different conversion-killing bugs. Upgrade mistook code aesthetics for working software.</em></p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Action plan — concrete next moves</h2>
+    <div class="critical-path action-plan">
+      <ol>
+        <li><strong>This week (conversion bugs):</strong> Mount <code>&lt;BuyButton&gt;</code> on About (or repoint CTA to <code>/#shop</code>). Migrate <code>ContactForm.jsx</code> to FormSubmit AJAX (kill the <code>mailto:</code>). Surface name + count + NZD price on Home before the CTA. Reconcile Prayer Portals vs Prayer Prompts.</li>
+        <li><strong>This week (narrative):</strong> Remove Instagram feed from Home (keep on About). Drop the secondary "Get in Touch" button at the CTA. Promote the wound line to the hero headline.</li>
+        <li><strong>Next week (ops + security):</strong> Move Instagram URLs, testimonials, productId into Firestore so Jesse can self-serve. Add CSP, Permissions-Policy, Referrer-Policy via <code>firebase.json</code> headers config. Env-var the Shopify token (VITE_ prefix).</li>
+        <li><strong>Later (polish):</strong> Lazy-mount Shopify SDK + Instagram embed (IntersectionObserver). Delete dead 1.7MB <code>Jesse01.png</code> and 0.5MB unused PNGs from <code>public/</code>. Self-host fonts or drop unused weights. rAF-throttle Hero scroll. Fix <code>w-4.5</code>, <code>/#cards</code>, skip-link <code>&lt;main&gt;</code> target, <code>NZ$</code> currency prefix.</li>
+        <li><strong>The blind spot:</strong> Sit down with Jesse for 30 minutes and walk the actual order-to-fulfilment loop. Does he know when a sale lands? Where does contact form mail land and can he reply? Build the operational system, not just the website.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <h2>Token usage</h2>
+    <table class="tokens">
+      <thead><tr><th>Member</th><th>~Tokens</th><th>Tool uses</th></tr></thead>
+      <tbody>
+        <tr><td>Alien X</td><td>47,289</td><td>8</td></tr>
+        <tr><td>Way Big</td><td>40,113</td><td>6</td></tr>
+        <tr><td>Cannonbolt</td><td>38,451</td><td>3</td></tr>
+        <tr><td>Diamondhead</td><td>52,152</td><td>13</td></tr>
+        <tr><td>Echo Echo</td><td>47,261</td><td>10</td></tr>
+        <tr><td>Four Arms</td><td>41,364</td><td>8</td></tr>
+        <tr><td>Ghostfreak</td><td>46,619</td><td>13</td></tr>
+        <tr><td>Goop</td><td>68,031</td><td>14</td></tr>
+        <tr><td>Grey Matter</td><td>74,868</td><td>25</td></tr>
+        <tr><td>Heatblast</td><td>51,740</td><td>9</td></tr>
+        <tr><td>Humungousaur</td><td>54,966</td><td>8</td></tr>
+        <tr><td>Wildvine</td><td>61,382</td><td>11</td></tr>
+        <tr><td>XLR8</td><td>51,988</td><td>15</td></tr>
+        <tr><td>Upgrade</td><td>55,818</td><td>9</td></tr>
+        <tr><td>Peer reviewer</td><td>39,498</td><td>0</td></tr>
+        <tr class="total"><td>Total</td><td>771,540</td><td>152</td></tr>
+      </tbody>
+    </table>
+  </section>
+</div>
+
+<script>
+  document.querySelectorAll('.members-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.target);
+      target.classList.toggle('expanded');
+      btn.textContent = target.classList.contains('expanded')
+        ? 'Hide member reports ↑'
+        : 'Show all 14 member reports →';
+    });
+  });
+  document.querySelectorAll('.report-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const report = btn.nextElementSibling;
+      report.classList.toggle('expanded');
+      btn.textContent = report.classList.contains('expanded') ? 'Hide full report ↑' : 'Full report ↓';
+    });
+  });
+  document.getElementById('toggleAll').addEventListener('click', () => {
+    const btn = document.getElementById('toggleAll');
+    const expanding = btn.textContent === 'Expand all';
+    document.querySelectorAll('.members').forEach(el => {
+      el.classList.toggle('expanded', expanding);
+    });
+    document.querySelectorAll('.full-report').forEach(el => {
+      el.classList.toggle('expanded', expanding);
+    });
+    document.querySelectorAll('.members-toggle').forEach(b => {
+      b.textContent = expanding ? 'Hide member reports ↑' : 'Show all 14 member reports →';
+    });
+    document.querySelectorAll('.report-toggle').forEach(b => {
+      b.textContent = expanding ? 'Hide full report ↑' : 'Full report ↓';
+    });
+    btn.textContent = expanding ? 'Collapse all' : 'Expand all';
+  });
+</script>
+</body>
+</html>

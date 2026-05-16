@@ -1,0 +1,159 @@
+{% comment %}
+  Hero Section
+{% endcomment %}
+
+<section class="hero" id="hero">
+  <div class="hero__bg">
+    <div class="hero__pattern" aria-hidden="true"></div>
+    <div class="hero__glow" aria-hidden="true"></div>
+  </div>
+
+  <div class="hero__content">
+    <div class="hero__text">
+      <p class="hero__tagline">{{ section.settings.tagline | default: "Light in the Darkness" }}</p>
+      <h1 class="hero__title">
+        {{ section.settings.heading_line_1 | default: "Go Deeper" }}<br>
+        {{ section.settings.heading_line_2_prefix | default: "With" }} <span class="hero__title-accent">{{ section.settings.heading_line_2_accent | default: "Jesus" }}</span>
+      </h1>
+      <p class="hero__description">{{ section.settings.description | default: "Prayer Portals are beautifully designed cards that help you bring both your joys and struggles to God. Connect your emotions with Scripture and discover new ways to pray." }}</p>
+      <div class="hero__buttons">
+        {% if section.settings.button_1_link != blank %}
+          <a href="{{ section.settings.button_1_link }}" class="btn btn--primary btn--large">
+            {{ section.settings.button_1_text | default: "Explore Cards" }}
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+        {% endif %}
+        {% if section.settings.button_2_link != blank %}
+          <a href="{{ section.settings.button_2_link }}" class="btn btn--secondary btn--large">
+            {{ section.settings.button_2_text | default: "Learn More" }}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="hero__image">
+      {% if section.settings.main_image %}
+        <img 
+          src="{{ section.settings.main_image | image_url: width: 800 }}"
+          alt="{{ section.settings.main_image.alt | default: 'Prayer Portal cards' }}"
+          class="hero__image-main"
+          width="800"
+          height="600"
+          loading="eager"
+          fetchpriority="high"
+        >
+      {% endif %}
+      {% if section.settings.float_image_1 %}
+        <img 
+          src="{{ section.settings.float_image_1 | image_url: width: 400 }}"
+          alt="{{ section.settings.float_image_1.alt | default: 'Prayer card detail' }}"
+          class="hero__image-float hero__image-float--1"
+          width="400"
+          height="300"
+          loading="eager"
+        >
+      {% endif %}
+      {% if section.settings.float_image_2 %}
+        <img 
+          src="{{ section.settings.float_image_2 | image_url: width: 400 }}"
+          alt="{{ section.settings.float_image_2.alt | default: 'Prayer card detail' }}"
+          class="hero__image-float hero__image-float--2"
+          width="400"
+          height="300"
+          loading="lazy"
+        >
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero",
+  "class": "hero-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "Light in the Darkness"
+    },
+    {
+      "type": "text",
+      "id": "heading_line_1",
+      "label": "Heading line 1",
+      "default": "Go Deeper"
+    },
+    {
+      "type": "text",
+      "id": "heading_line_2_prefix",
+      "label": "Heading line 2 prefix",
+      "default": "With"
+    },
+    {
+      "type": "text",
+      "id": "heading_line_2_accent",
+      "label": "Heading line 2 accent (italic)",
+      "default": "Jesus"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Prayer Portals are beautifully designed cards that help you bring both your joys and struggles to God. Connect your emotions with Scripture and discover new ways to pray."
+    },
+    {
+      "type": "header",
+      "content": "Buttons"
+    },
+    {
+      "type": "text",
+      "id": "button_1_text",
+      "label": "Button 1 text",
+      "default": "Explore Cards"
+    },
+    {
+      "type": "url",
+      "id": "button_1_link",
+      "label": "Button 1 link"
+    },
+    {
+      "type": "text",
+      "id": "button_2_text",
+      "label": "Button 2 text",
+      "default": "Learn More"
+    },
+    {
+      "type": "url",
+      "id": "button_2_link",
+      "label": "Button 2 link"
+    },
+    {
+      "type": "header",
+      "content": "Images"
+    },
+    {
+      "type": "image_picker",
+      "id": "main_image",
+      "label": "Main image"
+    },
+    {
+      "type": "image_picker",
+      "id": "float_image_1",
+      "label": "Floating image 1 (bottom left)"
+    },
+    {
+      "type": "image_picker",
+      "id": "float_image_2",
+      "label": "Floating image 2 (top right)"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero"
+    }
+  ]
+}
+{% endschema %}

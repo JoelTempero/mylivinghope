@@ -1,0 +1,117 @@
+{% comment %}
+  About Section
+{% endcomment %}
+
+<section class="section about" id="about">
+  <div class="container">
+    <div class="about__shape" aria-hidden="true"></div>
+    <div class="about__grid">
+      <div class="about__image-wrapper reveal">
+        {% if section.settings.image %}
+          <img 
+            src="{{ section.settings.image | image_url: width: 800 }}"
+            alt="{{ section.settings.image.alt | default: 'Prayer cards in use' }}"
+            class="about__image"
+            width="800"
+            height="600"
+            loading="lazy"
+          >
+        {% endif %}
+        <div class="about__accent" aria-hidden="true"></div>
+      </div>
+
+      <div class="about__content reveal">
+        <h2>{{ section.settings.heading | default: "Helping You <span>Pray</span> Without Shame or Confusion" }}</h2>
+        
+        {% for block in section.blocks %}
+          {% case block.type %}
+            {% when 'text' %}
+              <p>{{ block.settings.text }}</p>
+            {% when 'verse' %}
+              <blockquote class="about__verse">
+                <p class="about__verse-text">{{ block.settings.verse_text }}</p>
+                <cite class="about__verse-cite">— {{ block.settings.verse_reference }}</cite>
+              </blockquote>
+          {% endcase %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "About",
+  "class": "about-section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "html",
+      "id": "heading",
+      "label": "Heading (HTML allowed)",
+      "default": "Helping You <span>Pray</span> Without Shame or Confusion"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "text",
+      "name": "Paragraph",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text"
+        }
+      ]
+    },
+    {
+      "type": "verse",
+      "name": "Scripture Verse",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "verse_text",
+          "label": "Verse text",
+          "default": "\"Your word is a lamp for my feet, a light on my path.\""
+        },
+        {
+          "type": "text",
+          "id": "verse_reference",
+          "label": "Reference",
+          "default": "Psalm 119:105"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "About",
+      "blocks": [
+        {
+          "type": "text",
+          "settings": {
+            "text": "Prayer Portals were born from a simple observation: many of us want to connect with God but struggle to find the words. Whether you're feeling overwhelmed, grateful, confused, or hopeful—these cards meet you where you are."
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "text": "Each card connects an emotion or need with relevant Scripture and a prayer starter. They won't pray for you, but they'll help you begin. Created in Christchurch, New Zealand, for youth ministries, small groups, and anyone seeking a deeper prayer life."
+          }
+        },
+        {
+          "type": "verse",
+          "settings": {
+            "verse_text": "\"Your word is a lamp for my feet, a light on my path.\"",
+            "verse_reference": "Psalm 119:105"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
