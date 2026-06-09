@@ -146,3 +146,40 @@ export const statusColors = {
 export function getStatusColor(status) {
   return statusColors[status] || 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-300'
 }
+
+/**
+ * Convert a string to a URL-safe slug
+ * @param {string} str - Input string
+ * @returns {string} Slugified string
+ */
+export function slugify(str) {
+  return str
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+
+/**
+ * Convert a dollar value (string or number) to integer cents
+ * @param {string|number} value - Dollar amount
+ * @returns {number|null} Integer cents, or null for empty/invalid input
+ */
+export function dollarsToCents(value) {
+  if (value === '' || value === null || value === undefined) return null
+  const parsed = parseFloat(value)
+  if (isNaN(parsed)) return null
+  return Math.round(parsed * 100)
+}
+
+/**
+ * Convert integer cents to a dollar string with 2 decimal places
+ * @param {number|null} cents - Integer cents
+ * @returns {string} Dollar string (e.g. '25.00'), or '' for null/undefined
+ */
+export function centsToDollars(cents) {
+  if (cents === null || cents === undefined) return ''
+  return (cents / 100).toFixed(2)
+}

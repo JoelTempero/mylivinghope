@@ -118,5 +118,13 @@ service cloud.firestore {
       allow read: if isAuthenticated();
       allow create, update, delete: if isAdmin();
     }
+
+    // Store products — public catalog (Phase 1)
+    match /storeProducts/{productId} {
+      // Public can read ONLY published products; editors/admins read all
+      allow read: if resource.data.status == 'published' || canEdit();
+      allow create, update: if canEdit();
+      allow delete: if isAdmin();
+    }
   }
 }
