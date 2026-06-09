@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState } from 'react'
 import ScrollReveal from '../ScrollReveal'
 import BuyButton from '../BuyButton'
+import { useProducts, centsToDollars } from '../../hooks/useProducts'
 
 const cardData = [
   {
@@ -408,6 +409,14 @@ export default function InteractiveCards() {
   })
   const highestZ = useRef(cardData.length)
 
+  const { products } = useProducts()
+  const flagship = products[0] ?? null
+
+  // Resolved display values — fall back to hard-coded static content when no product loaded
+  const productTitle = flagship?.title ?? 'Prayer Portals'
+  const productSubtitle = flagship?.subtitle ?? 'For personal devotion, youth groups, and ministry.'
+  const productPrice = flagship ? `$${centsToDollars(flagship.priceNZD)}` : null
+
   function bringToFront(id) {
     highestZ.current += 1
     setZIndices((prev) => ({ ...prev, [id]: highestZ.current }))
@@ -419,7 +428,7 @@ export default function InteractiveCards() {
 
         <ScrollReveal variant="fade-up" className="text-center mb-8">
           <h2 className="text-[clamp(2.5rem,5vw,4rem)] font-bold leading-tight">
-            Prayer Portals
+            {productTitle}
           </h2>
         </ScrollReveal>
 
@@ -487,8 +496,11 @@ export default function InteractiveCards() {
         <ScrollReveal variant="fade-up">
           <div id="shop" className="max-w-2xl mx-auto text-center">
             <p className="font-heading italic text-lg text-text-secondary mb-6">
-              For personal devotion, youth groups, and ministry.
+              {productSubtitle}
             </p>
+            {productPrice && (
+              <p className="text-2xl font-bold text-forest-green mb-4">{productPrice} NZD</p>
+            )}
             <BuyButton productId="8845251215491" />
           </div>
         </ScrollReveal>
