@@ -3,6 +3,7 @@ import { useAuth } from '../../hooks/useAuth'
 import {
   LayoutDashboard,
   Package,
+  ShoppingBag,
   CheckSquare,
   Users,
   Megaphone,
@@ -21,6 +22,7 @@ import {
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Products', href: '/products', icon: Package },
+  { name: 'Store', href: '/store-products', icon: ShoppingBag },
   { name: 'Tasks', href: '/tasks', icon: CheckSquare },
   { name: 'Contacts', href: '/contacts', icon: Users },
   { name: 'Campaigns', href: '/campaigns', icon: Megaphone },

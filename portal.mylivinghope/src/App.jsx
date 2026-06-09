@@ -13,6 +13,7 @@ import ForgotPassword from './pages/auth/ForgotPassword'
 // App pages
 import Dashboard from './pages/Dashboard'
 import Products from './pages/Products'
+import StoreProducts from './pages/StoreProducts'
 import Tasks from './pages/Tasks'
 import Contacts from './pages/Contacts'
 import Campaigns from './pages/Campaigns'
@@ -40,6 +41,7 @@ function App() {
           <Route element={<AppLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/products" element={<Products />} />
+            <Route path="/store-products" element={<StoreProducts />} />
             <Route path="/tasks" element={<Tasks />} />
             <Route path="/contacts" element={<Contacts />} />
             <Route path="/campaigns" element={<Campaigns />} />
