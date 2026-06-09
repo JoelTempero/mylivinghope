@@ -131,8 +131,15 @@ Add to `.claude/settings.json` on each machine:
 - **Instagram feed section** — `InstagramFeed.jsx` component with 4 embedded posts from @mylivinghopenz on Home (above CTA) and About (above footer). Uses Instagram embed.js, no API keys.
 - **Hero image responsive fix** — JS positioning formula starts shifting at 2190px viewport width for earlier text/image separation
 - **CTA mobile image uncropped** — removed fixed height, object-cover, and scale transform so full image displays naturally
+- **Commerce migration started (off Shopify → Stripe + own CMS)** — branch `feature/commerce-migration`
+  - Spec: `docs/superpowers/specs/2026-06-09-commerce-migration-design.md` (full 5-phase plan: Catalog CMS → Cart+Checkout+Stripe → Order mgmt → Tracking+emails → Cutover)
+  - Decisions: Stripe **Checkout Sessions** (hosted), Firestore = catalog source of truth / Stripe = money, guest checkout + email tracking, **Resend** for email, flat-rate shipping (provisional), launch flagship product (data-driven for more)
+  - **Phase 1 (Catalog CMS) — code complete:** `storeProducts` collection + rules + composite index (status+sortOrder) deployed; portal "Store" CMS page (`StoreProducts.jsx`) with image upload/draft-publish; storefront reads flagship from Firestore (`useProducts.js`, `InteractiveCards.jsx`) with fallback to static markup; Buy Button left intact. Storefront gained read-only Firebase client.
 
 ## Next Steps
+- [ ] **Phase 1 manual verify (Joel):** `portal.mylivinghope npm run dev` → Store → create the flagship product (real price/images/copy), publish; then `storefront.mylivinghope npm run dev` → confirm it renders from Firestore (draft should NOT show)
+- [ ] **Jesse confirmations for Phase 2/4:** flat-rate shipping $ + free-over threshold; GST registration (prices GST-inclusive?); Resend account + verify `mylivinghope.org.nz` sending domain
+- [ ] **Phase 2:** cart (Zustand) + Stripe Checkout `createCheckoutSession` + `stripeWebhook` Cloud Functions + success/cancel pages (write the Phase 2 plan first)
 - [ ] **Add www.mylivinghope.org.nz** — CNAME added in Cloudflare but also needs adding as custom domain in Firebase Hosting console
 - [ ] **Jesse: activate FormSubmit.co** — first contact form submission triggers verification email to prayerprompts@outlook.com, must click to confirm
 - [ ] Wire MCP server into Joel's `.claude/settings.json` for native Firestore tools
@@ -141,6 +148,17 @@ Add to `.claude/settings.json` on each machine:
 - [ ] Joel to review portal Claude page live and fix any issues
 
 ## Session Log
+### 2026-06-09 — Commerce Migration Kickoff: Spec + Phase 1 (Catalog CMS)
+- **Brainstormed + spec'd** the full move off Shopify to a self-hosted stack (Stripe Checkout + own product CMS + order tracking). Spec at `docs/superpowers/specs/2026-06-09-commerce-migration-design.md`, Phase 1 plan at `docs/superpowers/plans/2026-06-09-phase1-catalog-cms.md`. Working on branch `feature/commerce-migration`.
+- **Key decisions:** Stripe Checkout Sessions (hosted, NZD, inline price_data — no Stripe catalog sync); Firestore = catalog source of truth, Stripe webhook = order source of truth; guest checkout + email order tracking; Resend for transactional email; flat-rate shipping (provisional); launch one flagship product but data-driven for many.
+- **Phase 1 implemented (subagent-driven, 3 implementer dispatches + inline review):**
+  - `storeProducts` Firestore collection: security rules (public read where `status==published`, editor/admin write) + composite index (`status` + `sortOrder`) — both deployed via `leojfx@gmail.com`.
+  - Portal: `slugify`/`dollarsToCents`/`centsToDollars` utils; `StoreProducts.jsx` CMS (CRUD, multi-image upload to Storage, draft/publish, price dollars↔cents, slug auto-gen + dedupe, ∞ inventory); route `/store-products` + "Store" sidebar nav.
+  - Storefront: added `firebase` SDK + read-only `lib/firebase.js`; `useProducts.js` hook (one-time getDocs of published, ordered); `InteractiveCards.jsx` renders flagship title/subtitle/price from Firestore with graceful fallback to existing static markup. Buy Button untouched (replaced in Phase 2).
+  - Money stored as integer cents everywhere. Build + lint clean on both apps.
+- **Gotcha caught in review:** published+sortOrder query needs a composite index (verified it errors without one; index deployed).
+- Commits: `21b407c` (docs), `b64cc8f` (rules+utils), `9853a9f` (CMS page), `a003e35` (storefront), `2aa3a64` (index).
+
 ### 2026-05-05 — Custom Domain Fix, Instagram Feed & Image Responsive Fixes
 - **Custom domain fixed**: mylivinghope.org.nz was showing "Site Not Found" despite DOMAIN_ACTIVE status in Firebase API. DNS moved to Cloudflare (grey cloud). Fresh deploy resolved stale CDN state.
 - **Instagram feed**: Built `InstagramFeed.jsx` — 4 embedded posts in a single row (1600px wide container), added to Home (above CTA) and About (above footer). Uses Instagram embed.js with curated post URLs, no API keys.
