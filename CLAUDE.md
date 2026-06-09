@@ -134,12 +134,14 @@ Add to `.claude/settings.json` on each machine:
 - **Commerce migration started (off Shopify → Stripe + own CMS)** — branch `feature/commerce-migration`
   - Spec: `docs/superpowers/specs/2026-06-09-commerce-migration-design.md` (full 5-phase plan: Catalog CMS → Cart+Checkout+Stripe → Order mgmt → Tracking+emails → Cutover)
   - Decisions: Stripe **Checkout Sessions** (hosted), Firestore = catalog source of truth / Stripe = money, guest checkout + email tracking, **Resend** for email, flat-rate shipping (provisional), launch flagship product (data-driven for more)
-  - **Phase 1 (Catalog CMS) — code complete:** `storeProducts` collection + rules + composite index (status+sortOrder) deployed; portal "Store" CMS page (`StoreProducts.jsx`) with image upload/draft-publish; storefront reads flagship from Firestore (`useProducts.js`, `InteractiveCards.jsx`) with fallback to static markup; Buy Button left intact. Storefront gained read-only Firebase client.
+  - **Phase 1 (Catalog CMS) — DONE + verified live by Joel:** `storeProducts` collection + rules + composite index (status+sortOrder) deployed; portal "Store" CMS page (`StoreProducts.jsx`) with image upload/draft-publish; storefront reads flagship from Firestore (`useProducts.js`, `InteractiveCards.jsx`) with fallback to static markup; Buy Button left intact. Storefront gained read-only Firebase client. Joel confirmed: created/published a product in the portal, text rendered on the storefront.
+  - **Phase 2 (Buy Now + Payments) — plan ready, build paused:** plan at `docs/superpowers/plans/2026-06-09-phase2-checkout-payments.md`. Scoped to a **direct "Buy Now" → Stripe Checkout** (no cart, since single product). Blocked on Jesse creating a Stripe account (test-mode key needed).
 
 ## Next Steps
-- [ ] **Phase 1 manual verify (Joel):** `portal.mylivinghope npm run dev` → Store → create the flagship product (real price/images/copy), publish; then `storefront.mylivinghope npm run dev` → confirm it renders from Firestore (draft should NOT show)
+- [ ] **BLOCKER — Jesse: create a Stripe account** (test mode). Joel sets the secret via `firebase functions:secrets:set STRIPE_SECRET_KEY`. Phase 2 build is ready to go the moment we have a test key.
+- [ ] **Execute Phase 2** (`docs/superpowers/plans/2026-06-09-phase2-checkout-payments.md`): `createCheckoutSession` + `stripeWebhook` Cloud Functions, orders/counters rules, storefront Buy Now → Stripe + success/cancel pages, test-mode E2E. (Provisional flat shipping `$7` until Jesse confirms.)
 - [ ] **Jesse confirmations for Phase 2/4:** flat-rate shipping $ + free-over threshold; GST registration (prices GST-inclusive?); Resend account + verify `mylivinghope.org.nz` sending domain
-- [ ] **Phase 2:** cart (Zustand) + Stripe Checkout `createCheckoutSession` + `stripeWebhook` Cloud Functions + success/cancel pages (write the Phase 2 plan first)
+- [ ] Branch `feature/commerce-migration` (8 commits) — merge to main once Phase 2 lands & is tested
 - [ ] **Add www.mylivinghope.org.nz** — CNAME added in Cloudflare but also needs adding as custom domain in Firebase Hosting console
 - [ ] **Jesse: activate FormSubmit.co** — first contact form submission triggers verification email to prayerprompts@outlook.com, must click to confirm
 - [ ] Wire MCP server into Joel's `.claude/settings.json` for native Firestore tools
@@ -157,7 +159,9 @@ Add to `.claude/settings.json` on each machine:
   - Storefront: added `firebase` SDK + read-only `lib/firebase.js`; `useProducts.js` hook (one-time getDocs of published, ordered); `InteractiveCards.jsx` renders flagship title/subtitle/price from Firestore with graceful fallback to existing static markup. Buy Button untouched (replaced in Phase 2).
   - Money stored as integer cents everywhere. Build + lint clean on both apps.
 - **Gotcha caught in review:** published+sortOrder query needs a composite index (verified it errors without one; index deployed).
-- Commits: `21b407c` (docs), `b64cc8f` (rules+utils), `9853a9f` (CMS page), `a003e35` (storefront), `2aa3a64` (index).
+- **Joel verified Phase 1 live:** created + published a product in the portal Store CMS, confirmed it rendered on the storefront from Firestore. (Stale-bundle gotcha: a hard refresh was needed to load the new build.)
+- **Phase 2 planned + scoped:** wrote the Phase 2 plan, then trimmed it from a full cart to a **direct Buy Now → Stripe Checkout** (single-product). Build paused pending Jesse's Stripe account.
+- Commits: `21b407c` (docs), `b64cc8f` (rules+utils), `9853a9f` (CMS page), `a003e35` (storefront), `2aa3a64` (index), `c3257e9` (docs), `03b4960`+`14164a5` (phase 2 plan). All on `feature/commerce-migration`.
 
 ### 2026-05-05 — Custom Domain Fix, Instagram Feed & Image Responsive Fixes
 - **Custom domain fixed**: mylivinghope.org.nz was showing "Site Not Found" despite DOMAIN_ACTIVE status in Firebase API. DNS moved to Cloudflare (grey cloud). Fresh deploy resolved stale CDN state.
@@ -219,6 +223,10 @@ Add to `.claude/settings.json` on each machine:
 - See git history for full detail (trimmed for brevity)
 
 ## Key Decisions
+- **Going fully off Shopify** → own catalog CMS (Firestore) + Stripe Checkout (hosted) + own order system. Full spec: `docs/superpowers/specs/2026-06-09-commerce-migration-design.md`. Firestore = catalog source of truth; Stripe webhook = order source of truth; prices stored as integer cents.
+- **Stripe Checkout Sessions (hosted), not Payment Element** — least PCI surface, handles wallets/shipping/dynamic methods; inline `price_data` from Firestore (no Stripe product sync).
+- **Single product → direct "Buy Now" (no cart)** — cart/drawer is YAGNI for one product; the checkout function already takes multiple line items, so a cart is a clean add when the catalog grows.
+- **Guest checkout + email order tracking** (no customer accounts); **Resend** for transactional email (Phase 4).
 - Both portal and storefront use JSX (not TypeScript) — consistent stack
 - Zustand for portal state management; storefront has no state management (Buy Button handles cart)
 - Single Firebase project (`my-living-hope`) for everything — portal + live storefront as separate web apps
