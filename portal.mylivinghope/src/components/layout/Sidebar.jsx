@@ -16,13 +16,15 @@ import {
   Sparkles,
   Bot,
   Flame,
+  PackageCheck,
   X,
 } from 'lucide-react'
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Products', href: '/products', icon: Package },
-  { name: 'Store', href: '/store-products', icon: ShoppingBag },
+  { name: 'Store · Products', href: '/store-products', icon: ShoppingBag },
+  { name: 'Store · Orders', href: '/store-orders', icon: PackageCheck },
   { name: 'Tasks', href: '/tasks', icon: CheckSquare },
   { name: 'Contacts', href: '/contacts', icon: Users },
   { name: 'Campaigns', href: '/campaigns', icon: Megaphone },
