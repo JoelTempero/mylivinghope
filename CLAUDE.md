@@ -200,52 +200,17 @@ Add to `.claude/settings.json` on each machine:
 - 2 deploys to mylivinghope.web.app, build clean (1.85s)
 - Files changed: InteractiveCards.jsx, index.css, Header.jsx, Footer.jsx, About.jsx, plus 11 optimized images
 
-### 2026-05-02 — Storefront Polish & First Deploy
-- **Contact form**: Replaced mailto: with FormSubmit.co AJAX POST, added sending/sent/error states
-- **Privacy Policy page** (`/privacy`): NZ Privacy Act 2020, plain language, covers Shopify + FormSubmit data
-- **Terms & Conditions page** (`/terms`): Consumer Guarantees Act 1993, 14-day returns, NZ governing law
-- **Footer**: Added privacy/terms links in copyright bar (mobile + desktop), fixed Instagram URL to @mylivinghopenz
-- **Favicon**: Generated ico/16/32/180 from lantern icon via sharp, wired into index.html
-- **SEO**: Sitemap updated (removed /contact, added /privacy + /terms), domain → mylivinghope.org.nz, og:url added
-- **Hero image fix**: 1220px fixed width, JS-driven `right` calculation that slides image right as viewport shrinks (prevents text overlap). Used tuner UI for Joel to dial in exact values.
-- **Firebase Hosting**: Configured as site `mylivinghope` on project `my-living-hope`, deployed to mylivinghope.web.app
-- **DNS**: A records pointed to Firebase (199.36.158.100 + .101), TXT verification in place, waiting for propagation + SSL
-- 12 commits this session, build clean (1.88s)
-
-### 2026-05-02 — Mobile Polish + Cart Button Fix
-- **Scripture interlude mobile**: Split verse into 6 lines (from 3) with separate fit-to-width sizing (0.9x scale), desktop layout unchanged. Disabled glow hover on mobile (screen width check).
-- **Footer mobile redesign**: Reordered to contact form → contact details/socials → centered logo (h-32) + copyright. Quick links hidden on mobile. Removed Facebook icon (client doesn't have it).
-- **Mobile card interaction**: Added mouse+touch drag to MobileCard with 8px threshold, horizontal-only (vertical scrolls page), tap-to-flip via onClick, smooth snap-back animation.
-- **Cart button fix (major)**: Header cart button was unresponsive. Root cause: Shopify Buy Button SDK injects invisible overlay blocking clicks. Fix: `z-[99999]` on button + `stopPropagation()` on mouseDown/touchStart/click to prevent SDK event interception. Also added `pointer-events: none` to scroll progress bar.
-- Files changed: Header.jsx, BuyButton.jsx, ScriptureInterlude.jsx, Footer.jsx, InteractiveCards.jsx, index.css
-
-### 2026-05-01 — Creative Council Audit + Overhaul (Autopilot)
-- Ran /council-auto with 10 design-focused members: Pixel Perfectionist, Steve Jobs, Wes Anderson, Saul Bass, Frank Ocean, Banksy, Hook Writer, Storyteller, Device Juggler, Rachel
-- Unanimous verdict: functional but generic — needs soul, visual identity, and narrative restructure
-- Created 3 design docs: `CREATIVE.md` (direction), `DESIGN.md` (system), `ANIMATIONS.md` (motion)
-- **Implemented creative overhaul (10 tasks):**
-  - Animation system: useScrollReveal hook (IntersectionObserver), useCardTilt hook (3D perspective), 6 reveal variants (fade-up, slide-left/right, scale-up, blur-in, fade-in), stagger delays, hero entrance sequence, card deal animation
-  - New components: ScrollReveal, CardTilt, CardFlip, BoxReveal, ProductImage, ScrollProgress, ScriptureInterlude
-  - Homepage restructured: Hero (wound) → Origin story → Scripture interlude → Product + How It Works (merged) → Testimonials → CTA (echoes wound)
-  - Hero redesigned: "You want to pray but the words won't come" → "Find Your Voice in Prayer", flippable demo card (Loneliness front/Scripture back), card deal entrance, scroll indicator
-  - Product showcase: 4 interactive emotion cards with tilt, merged how-it-works (Feel/Read/Pray), single focused Buy CTA
-  - All sections wired with scroll-triggered reveals (varied per section, not all fade-up)
-  - Micro-interactions: btn-interactive (scale+shadow hover, bounce click), form focus glow, scroll progress bar, staggered mobile menu
-  - Responsive fixes: svh hero height, viewport-fit=cover, safe-area padding, 48px hamburger tap target, footer link spacing
-  - Deleted HowItWorks.jsx (merged into ProductShowcase)
-  - Asset directories scaffolded: public/images/{cards,product,box}/, public/video/
-- Build: 1.76s clean, lint clean. 29 files changed, +1555 -434 lines.
-- **Needs Joel:** Drop 3D card renders, product photos, and box video into the scaffolded directories
-
-### 2026-05-01 — Buy Button Pivot + Creative Overhaul
-- Pivoted from Next.js to React+Vite+Buy Buttons. Creative council audit + full design overhaul.
-- See git history for full detail (trimmed for brevity)
+### 2026-05-02 and earlier — Storefront polish/deploy, mobile fixes, creative overhaul
+- Trimmed for brevity — see git history. Highlights: FormSubmit contact form, Privacy/Terms pages, favicon/SEO, first Firebase Hosting deploy, cart button z-index fix, creative council overhaul (animation system, narrative restructure).
 
 ## Key Decisions
 - **Going fully off Shopify** → own catalog CMS (Firestore) + Stripe Checkout (hosted) + own order system. Full spec: `docs/superpowers/specs/2026-06-09-commerce-migration-design.md`. Firestore = catalog source of truth; Stripe webhook = order source of truth; prices stored as integer cents.
 - **Stripe Checkout Sessions (hosted), not Payment Element** — least PCI surface, handles wallets/shipping/dynamic methods; inline `price_data` from Firestore (no Stripe product sync).
 - **Single product → direct "Buy Now" (no cart)** — cart/drawer is YAGNI for one product; the checkout function already takes multiple line items, so a cart is a clean add when the catalog grows.
 - **Guest checkout + email order tracking** (no customer accounts); **Resend** for transactional email (Phase 4).
+- **No GST v1** — MLH not GST-registered; no GST line on receipts. Revisit if/when registered.
+- **$7 flat NZ shipping** — confirmed 2026-06-11 (`SHIPPING_FLAT_CENTS` in functions/index.js).
+- **Portal order edits are field-restricted by rules** — editors may update only `status`/`fulfillment`/`notes`/`updatedAt` (`diff().affectedKeys().hasOnly()`); money/items/customer fields can only be written by Cloud Functions.
 - Both portal and storefront use JSX (not TypeScript) — consistent stack
 - Zustand for portal state management; storefront has no state management (Buy Button handles cart)
 - Single Firebase project (`my-living-hope`) for everything — portal + live storefront as separate web apps
@@ -264,7 +229,6 @@ Add to `.claude/settings.json` on each machine:
 
 ## Known Issues
 - **Shopify SDK overlay blocks clicks** — the Buy Button SDK injects invisible fixed overlays. Any custom buttons that need to sit above it require `z-[99999]` + `stopPropagation` on mouseDown/touchStart/click. See Header.jsx cart buttons for the pattern.
-- Cloud Function `generateContext` not yet deployed (needs `firebase deploy --only functions`)
 - MCP server not yet wired into Joel's `.claude/settings.json`
 - PWA manifest icon missing (`pwa-192x192.png` — console warning on Claude page)
 - **www subdomain** — CNAME added in Cloudflare but not yet registered as custom domain in Firebase Hosting. Visiting www.mylivinghope.org.nz will fail until added.
