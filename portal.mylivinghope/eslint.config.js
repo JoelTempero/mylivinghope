@@ -6,8 +6,20 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
   globalIgnores(['dist']),
+  // Node CJS/CLI code — not part of the React app
+  {
+    files: ['functions/**/*.js', 'scripts/**/*.js', 'mcp-server/**/*.js'],
+    languageOptions: {
+      globals: globals.node,
+      sourceType: 'commonjs',
+    },
+    rules: {
+      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]', caughtErrors: 'none' }],
+    },
+  },
   {
     files: ['**/*.{js,jsx}'],
+    ignores: ['functions/**', 'scripts/**', 'mcp-server/**'],
     extends: [
       js.configs.recommended,
       reactHooks.configs.flat.recommended,
