@@ -126,5 +126,16 @@ service cloud.firestore {
       allow create, update: if canEdit();
       allow delete: if isAdmin();
     }
+
+    // Orders — no public access; portal admins/editors read, only Cloud Functions write
+    match /orders/{orderId} {
+      allow read: if canEdit();
+      allow write: if false;
+    }
+
+    // Counters — Cloud Functions only
+    match /counters/{counterId} {
+      allow read, write: if false;
+    }
   }
 }
