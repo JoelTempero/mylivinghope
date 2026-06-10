@@ -135,21 +135,31 @@ Add to `.claude/settings.json` on each machine:
   - Spec: `docs/superpowers/specs/2026-06-09-commerce-migration-design.md` (full 5-phase plan: Catalog CMS → Cart+Checkout+Stripe → Order mgmt → Tracking+emails → Cutover)
   - Decisions: Stripe **Checkout Sessions** (hosted), Firestore = catalog source of truth / Stripe = money, guest checkout + email tracking, **Resend** for email, flat-rate shipping (provisional), launch flagship product (data-driven for more)
   - **Phase 1 (Catalog CMS) — DONE + verified live by Joel:** `storeProducts` collection + rules + composite index (status+sortOrder) deployed; portal "Store" CMS page (`StoreProducts.jsx`) with image upload/draft-publish; storefront reads flagship from Firestore (`useProducts.js`, `InteractiveCards.jsx`) with fallback to static markup; Buy Button left intact. Storefront gained read-only Firebase client. Joel confirmed: created/published a product in the portal, text rendered on the storefront.
-  - **Phase 2 (Buy Now + Payments) — plan ready, build paused:** plan at `docs/superpowers/plans/2026-06-09-phase2-checkout-payments.md`. Scoped to a **direct "Buy Now" → Stripe Checkout** (no cart, since single product). Blocked on Jesse creating a Stripe account (test-mode key needed).
+  - **Phase 2 (Buy Now + Payments) — DONE + E2E verified (test mode):** `createCheckoutSession` + `stripeWebhook` Cloud Functions deployed; orders/counters rules deployed; storefront Buy Now → Stripe Checkout + `/checkout/success` + `/checkout/cancel` pages built (NOT yet deployed to hosting). Test purchase verified: order `MLH-1001` written, idempotency + inventory decrement confirmed. Secrets per env: `STRIPE_SECRET_KEY` (test key, v2) + `STRIPE_WEBHOOK_SECRET` (v3) in Secret Manager. Live keys + Shopify/BuyButton removal come in Phase 5 cutover.
 
 ## Next Steps
-- [ ] **BLOCKER — Jesse: create a Stripe account** (test mode). Joel sets the secret via `firebase functions:secrets:set STRIPE_SECRET_KEY`. Phase 2 build is ready to go the moment we have a test key.
-- [ ] **Execute Phase 2** (`docs/superpowers/plans/2026-06-09-phase2-checkout-payments.md`): `createCheckoutSession` + `stripeWebhook` Cloud Functions, orders/counters rules, storefront Buy Now → Stripe + success/cancel pages, test-mode E2E. (Provisional flat shipping `$7` until Jesse confirms.)
-- [ ] **Jesse confirmations for Phase 2/4:** flat-rate shipping $ + free-over threshold; GST registration (prices GST-inclusive?); Resend account + verify `mylivinghope.org.nz` sending domain
-- [ ] Branch `feature/commerce-migration` (8 commits) — merge to main once Phase 2 lands & is tested
+- [ ] **DECISION — deploy storefront to hosting:** deploying puts test-mode Stripe checkout live (replaces Shopify Buy Button) until Phase 5 flips to live keys. Joel to call when.
+- [ ] **Phase 3 — Order management** (portal orders page: list/detail, fulfillment status, tracking number entry) per spec §6
+- [ ] **Jesse confirmations for Phase 4:** GST registration (prices GST-inclusive?); Resend account + verify `mylivinghope.org.nz` sending domain. (Shipping confirmed: $7 flat NZ-wide.)
+- [ ] Branch `feature/commerce-migration` (13 commits) — merge to main once storefront deploy decision is made
 - [ ] **Add www.mylivinghope.org.nz** — CNAME added in Cloudflare but also needs adding as custom domain in Firebase Hosting console
 - [ ] **Jesse: activate FormSubmit.co** — first contact form submission triggers verification email to prayerprompts@outlook.com, must click to confirm
 - [ ] Wire MCP server into Joel's `.claude/settings.json` for native Firestore tools
-- [ ] Deploy Cloud Function (`firebase deploy --only functions --project my-living-hope`)
 - [ ] Help Jesse get Claude Code set up on his machine
 - [ ] Joel to review portal Claude page live and fix any issues
 
 ## Session Log
+### 2026-06-11 — Phase 2: Buy Now + Stripe Checkout + Webhook (E2E verified)
+- **Stripe unblocked:** Jesse created the account; test secret key set via Secret Manager. Shipping confirmed $7 flat.
+- **`createCheckoutSession` callable:** re-validates product/price/stock against Firestore (never trusts client), inline NZD `price_data`, adjustable qty, $7 flat shipping, NZ-only address, phone collection.
+- **`stripeWebhook` (raw HTTPS):** signature-verified; on `checkout.session.completed` writes `orders` doc (transaction: order number `MLH-{n}` from `counters/orderNumber`), idempotent on `stripeSessionId`, best-effort inventory decrement.
+- **Rules:** `orders` read = portal editors/admins, write = functions only; `counters` functions only. Deployed.
+- **Storefront:** `BuyButton` replaced with Buy Now button (loading/error states) in `InteractiveCards.jsx`; Shopify cart removed from `Header.jsx`; new `lib/checkout.js`, `/checkout/success`, `/checkout/cancel` routes. Build + lint clean. **Not yet deployed** — deploying puts test-mode checkout live (Joel's call).
+- **All functions deployed** (incl. backlog `generateContext`). Webhook endpoint registered via Stripe API (`we_1Tgt2w...`), signing secret captured from creation response — no dashboard needed.
+- **E2E verified (test mode):** real test purchase by Joel → order `MLH-1001` (`status: paid`, $40 + $7 = $47 NZD, full customer/address), inventory 250→249, webhook event re-sent → no duplicate order (idempotency ✓).
+- **Gotcha — PowerShell pipes append `\r\n`:** `"key" | firebase functions:secrets:set --data-file -` stored a trailing newline → Stripe SDK threw `ERR_INVALID_CHAR` in the Authorization header (surfaced as `StripeConnectionError`). Fix: write the value with `[IO.File]::WriteAllText()` (no newline) and pass the file to `--data-file`.
+- **Lint fix:** pre-existing `set-state-in-effect` error in `MobileCard` — flip now triggered alongside `setPhase('open')` instead of a separate effect.
+- Commits: `6245385` (checkout fn), `d16a5b0` (webhook fn), `5c6efe5` (rules), `9992c1b` (storefront). Node 20 functions runtime is deprecated (decommission 2026-10-30) — upgrade before then.
 ### 2026-06-09 — Commerce Migration Kickoff: Spec + Phase 1 (Catalog CMS)
 - **Brainstormed + spec'd** the full move off Shopify to a self-hosted stack (Stripe Checkout + own product CMS + order tracking). Spec at `docs/superpowers/specs/2026-06-09-commerce-migration-design.md`, Phase 1 plan at `docs/superpowers/plans/2026-06-09-phase1-catalog-cms.md`. Working on branch `feature/commerce-migration`.
 - **Key decisions:** Stripe Checkout Sessions (hosted, NZD, inline price_data — no Stripe catalog sync); Firestore = catalog source of truth, Stripe webhook = order source of truth; guest checkout + email order tracking; Resend for transactional email; flat-rate shipping (provisional); launch one flagship product but data-driven for many.
