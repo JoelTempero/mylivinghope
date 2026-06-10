@@ -138,10 +138,10 @@ Add to `.claude/settings.json` on each machine:
   - **Phase 2 (Buy Now + Payments) — DONE + E2E verified (test mode):** `createCheckoutSession` + `stripeWebhook` Cloud Functions deployed; orders/counters rules deployed; storefront Buy Now → Stripe Checkout + `/checkout/success` + `/checkout/cancel` pages built (NOT yet deployed to hosting). Test purchase verified: order `MLH-1001` written, idempotency + inventory decrement confirmed. Secrets per env: `STRIPE_SECRET_KEY` (test key, v2) + `STRIPE_WEBHOOK_SECRET` (v3) in Secret Manager. Live keys + Shopify/BuyButton removal come in Phase 5 cutover.
 
 ## Next Steps
-- [ ] **DECISION — deploy storefront to hosting:** deploying puts test-mode Stripe checkout live (replaces Shopify Buy Button) until Phase 5 flips to live keys. Joel to call when.
-- [ ] **Phase 3 — Order management** (portal orders page: list/detail, fulfillment status, tracking number entry) per spec §6
-- [ ] **Jesse confirmations for Phase 4:** GST registration (prices GST-inclusive?); Resend account + verify `mylivinghope.org.nz` sending domain. (Shipping confirmed: $7 flat NZ-wide.)
-- [ ] Branch `feature/commerce-migration` (13 commits) — merge to main once storefront deploy decision is made
+- [ ] **HOLD — storefront deploy:** waits for Phase 5 live-key cutover; Joel to run the Stripe live-account switch with Jesse first. Until then prod keeps the Shopify Buy Button.
+- [ ] **Phase 4 — Tracking + emails:** blocked on **Resend account** (Jesse) + sending-domain DNS verification. Then: confirmation email on paid, shipped email on tracking entry, storefront `/track-order` + `trackOrder` function. Test order `MLH-1001` is reset to `paid` with empty fulfillment, ready for email testing.
+- [ ] **Phase 5 — Cutover:** live Stripe keys, delete BuyButton.jsx + SDK workarounds, Privacy/Terms updates (currently mention Shopify — must add Stripe), live smoke purchase + refund, decommission Shopify
+- [ ] **Maintenance:** functions runtime Node 20 deprecated (decommission 2026-10-30) — bump to 22; portal has 16 pre-existing lint errors (useAuth/useTheme fast-refresh, useCollection set-state-in-effect, unused vars in old pages)
 - [ ] **Add www.mylivinghope.org.nz** — CNAME added in Cloudflare but also needs adding as custom domain in Firebase Hosting console
 - [ ] **Jesse: activate FormSubmit.co** — first contact form submission triggers verification email to prayerprompts@outlook.com, must click to confirm
 - [ ] Wire MCP server into Joel's `.claude/settings.json` for native Firestore tools
@@ -149,6 +149,15 @@ Add to `.claude/settings.json` on each machine:
 - [ ] Joel to review portal Claude page live and fix any issues
 
 ## Session Log
+### 2026-06-11 — Phase 3: Order Management (same session as Phase 2)
+- **Business decisions:** no GST at this stage (not registered — no GST line on receipts v1); storefront deploy HELD until live-key cutover with Jesse; still waiting on Resend for Phase 4.
+- **Phase 2 merged to main** (fast-forward, branch deleted). Local main ahead of origin — not pushed.
+- **Rules:** `orders` update now allowed for editors restricted to `status`/`fulfillment`/`notes`/`updatedAt` via `diff().affectedKeys().hasOnly()` — money/items/customer stay function-only. Deployed.
+- **`StoreOrders.jsx`** (new, follows StoreProducts pattern): searchable list (order #/name/email) + status filter; detail modal with items/totals/customer/address/copyable Stripe IDs; status flow paid → Mark Fulfilled → tracking entry (carrier select + number) → Mark Shipped (sets `fulfillment` + `shippedAt`); notes with save; cancelled/refunded override with confirm step (records status only — real refunds in Stripe dashboard). Route `/store-orders`, sidebar "Store · Products" / "Store · Orders".
+- **ESLint config fix:** `functions/`, `scripts/`, `mcp-server/` now linted as Node CJS (were browser/module → 15 bogus errors). 16 pre-existing errors remain in old app code (noted in Maintenance).
+- **Deployed portal hosting**, Joel verified live: order visible, Mark Fulfilled worked. Order reset to `paid` for Phase 4 email testing.
+- Plan: `docs/superpowers/plans/2026-06-11-phase3-order-management.md`. Commits: `15dad19` (rules), `51cbbdc` (orders page), `52c21bd` (route+nav).
+
 ### 2026-06-11 — Phase 2: Buy Now + Stripe Checkout + Webhook (E2E verified)
 - **Stripe unblocked:** Jesse created the account; test secret key set via Secret Manager. Shipping confirmed $7 flat.
 - **`createCheckoutSession` callable:** re-validates product/price/stock against Firestore (never trusts client), inline NZD `price_data`, adjustable qty, $7 flat shipping, NZ-only address, phone collection.
