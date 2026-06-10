@@ -7,6 +7,8 @@ import Home from './pages/Home'
 import About from './pages/About'
 import Privacy from './pages/Privacy'
 import Terms from './pages/Terms'
+import CheckoutSuccess from './pages/CheckoutSuccess'
+import CheckoutCancel from './pages/CheckoutCancel'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -28,6 +30,8 @@ export default function App() {
           <Route path="/about" element={<About />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
+          <Route path="/checkout/success" element={<CheckoutSuccess />} />
+          <Route path="/checkout/cancel" element={<CheckoutCancel />} />
         </Routes>
       </main>
       <Footer />

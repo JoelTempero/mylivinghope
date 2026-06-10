@@ -1,20 +1,16 @@
 import { Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
-import { Menu, X, ShoppingBag } from 'lucide-react'
-import { openCart, onCartCount } from '../BuyButton'
+import { Menu, X } from 'lucide-react'
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const [cartCount, setCartCount] = useState(0)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10)
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
-
-  useEffect(() => onCartCount(setCartCount), [])
 
   return (
     <header
@@ -61,36 +57,9 @@ export default function Header() {
           >
             Contact
           </a>
-          <button
-            onMouseDown={(e) => e.stopPropagation()}
-            onClick={(e) => { e.stopPropagation(); openCart() }}
-            className="relative text-white/90 hover:text-white transition-colors p-2 cursor-pointer z-[99999]"
-            aria-label={`Cart${cartCount > 0 ? `, ${cartCount} items` : ''}`}
-          >
-            <ShoppingBag className="w-5 h-5" />
-            {cartCount > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 bg-soft-blush text-charcoal text-[10px] font-bold w-4.5 h-4.5 flex items-center justify-center rounded-full">
-                {cartCount}
-              </span>
-            )}
-          </button>
         </div>
 
         <div className="md:hidden flex items-center gap-1">
-          <button
-            onMouseDown={(e) => e.stopPropagation()}
-            onTouchStart={(e) => e.stopPropagation()}
-            onClick={(e) => { e.stopPropagation(); openCart() }}
-            className="relative text-white/90 hover:text-white transition-colors p-3 cursor-pointer z-[99999]"
-            aria-label={`Cart${cartCount > 0 ? `, ${cartCount} items` : ''}`}
-          >
-            <ShoppingBag className="w-5 h-5" />
-            {cartCount > 0 && (
-              <span className="absolute top-1.5 right-1.5 bg-soft-blush text-charcoal text-[10px] font-bold w-4.5 h-4.5 flex items-center justify-center rounded-full">
-                {cartCount}
-              </span>
-            )}
-          </button>
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
             className="text-white p-3"

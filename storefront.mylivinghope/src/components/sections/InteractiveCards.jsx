@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from 'react'
 import ScrollReveal from '../ScrollReveal'
-import BuyButton from '../BuyButton'
 import { useProducts, centsToDollars } from '../../hooks/useProducts'
+import { startCheckout } from '../../lib/checkout'
 
 const cardData = [
   {
@@ -282,15 +282,10 @@ function MobileCard({ card, expanded, onExpand, onClose }) {
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           setPhase('open')
+          setFlipped(true)
           document.body.style.overflow = 'hidden'
         })
       })
-    }
-  }, [phase])
-
-  useEffect(() => {
-    if (phase === 'open') {
-      setFlipped(true)
     }
   }, [phase])
 
@@ -402,6 +397,8 @@ function MobileCard({ card, expanded, onExpand, onClose }) {
 
 export default function InteractiveCards() {
   const [expandedCard, setExpandedCard] = useState(null)
+  const [buying, setBuying] = useState(false)
+  const [buyError, setBuyError] = useState(null)
   const [zIndices, setZIndices] = useState(() => {
     const map = {}
     cardData.forEach((c, i) => { map[c.id] = i + 1 })
@@ -420,6 +417,19 @@ export default function InteractiveCards() {
   function bringToFront(id) {
     highestZ.current += 1
     setZIndices((prev) => ({ ...prev, [id]: highestZ.current }))
+  }
+
+  async function handleBuyNow() {
+    if (!flagship || buying) return
+    setBuying(true)
+    setBuyError(null)
+    try {
+      await startCheckout(flagship)
+    } catch (err) {
+      console.error('Checkout failed:', err)
+      setBuyError('Something went wrong starting checkout. Please try again.')
+      setBuying(false)
+    }
   }
 
   return (
@@ -501,7 +511,21 @@ export default function InteractiveCards() {
             {productPrice && (
               <p className="text-2xl font-bold text-forest-green mb-4">{productPrice} NZD</p>
             )}
-            <BuyButton productId="8845251215491" />
+            <button
+              onClick={handleBuyNow}
+              disabled={!flagship || buying}
+              className="btn-interactive inline-flex items-center gap-2 bg-forest-green hover:bg-green-dark text-white font-semibold px-10 py-4 rounded-full text-base group disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {buying ? 'Heading to checkout…' : 'Buy Now'}
+              {!buying && (
+                <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              )}
+            </button>
+            {buyError && (
+              <p className="mt-4 text-sm text-red-600" role="alert">{buyError}</p>
+            )}
           </div>
         </ScrollReveal>
 
