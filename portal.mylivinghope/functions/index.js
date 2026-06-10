@@ -1,4 +1,5 @@
-const { onCall } = require('firebase-functions/v2/https')
+const { onCall, onRequest, HttpsError } = require('firebase-functions/v2/https')
+const { defineSecret } = require('firebase-functions/params')
 const { initializeApp } = require('firebase-admin/app')
 const { getFirestore } = require('firebase-admin/firestore')
 const { getStorage } = require('firebase-admin/storage')
@@ -6,6 +7,56 @@ const { getStorage } = require('firebase-admin/storage')
 initializeApp()
 const db = getFirestore()
 const bucket = getStorage().bucket()
+
+const STRIPE_SECRET_KEY = defineSecret('STRIPE_SECRET_KEY')
+const STRIPE_WEBHOOK_SECRET = defineSecret('STRIPE_WEBHOOK_SECRET')
+
+const SHIPPING_FLAT_CENTS = 700 // flat NZ shipping, confirmed by Jesse 2026-06-11
+const STOREFRONT_URL = 'https://mylivinghope.org.nz' // use dev URL when testing locally
+
+exports.createCheckoutSession = onCall({ secrets: [STRIPE_SECRET_KEY], cors: true }, async (request) => {
+  const stripe = require('stripe')(STRIPE_SECRET_KEY.value())
+  const items = request.data?.items
+  if (!Array.isArray(items) || items.length === 0) throw new HttpsError('invalid-argument', 'No items')
+
+  // Re-resolve every line against Firestore — never trust client prices
+  const line_items = []
+  for (const line of items) {
+    const snap = await db.collection('storeProducts').doc(line.productId).get()
+    if (!snap.exists) throw new HttpsError('not-found', `Product ${line.productId} not found`)
+    const p = snap.data()
+    if (p.status !== 'published') throw new HttpsError('failed-precondition', `${p.title} is unavailable`)
+    const qty = Math.max(1, parseInt(line.qty, 10) || 1)
+    if (p.inventory != null && p.inventory < qty) throw new HttpsError('failed-precondition', `Not enough stock for ${p.title}`)
+    line_items.push({
+      quantity: qty,
+      adjustable_quantity: { enabled: true, minimum: 1 },
+      price_data: {
+        currency: 'nzd',
+        unit_amount: p.priceNZD,
+        product_data: { name: p.title, description: p.subtitle || undefined, images: (p.images || []).slice(0, 1) },
+      },
+    })
+  }
+
+  const session = await stripe.checkout.sessions.create({
+    mode: 'payment',
+    line_items,
+    shipping_address_collection: { allowed_countries: ['NZ'] },
+    shipping_options: [{
+      shipping_rate_data: {
+        type: 'fixed_amount',
+        fixed_amount: { amount: SHIPPING_FLAT_CENTS, currency: 'nzd' },
+        display_name: 'Standard NZ shipping',
+      },
+    }],
+    phone_number_collection: { enabled: true },
+    success_url: `${STOREFRONT_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${STOREFRONT_URL}/checkout/cancel`,
+    metadata: { items: items.map((l) => `${l.productId}:${l.qty || 1}`).join(',') },
+  })
+  return { url: session.url }
+})
 
 exports.generateContext = onCall(async (request) => {
   if (!request.auth) {
