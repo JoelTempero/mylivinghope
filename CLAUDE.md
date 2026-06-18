@@ -2,13 +2,19 @@
 
 ## Overview
 - **Client**: My Living Hope (greeting card business, Jesse Major founder)
-- **Type**: Shopify Storefront + Firebase Admin Portal
-- **Status**: Portal functional, storefront live at mylivinghope.org.nz (Firebase Hosting, DNS via Cloudflare)
+- **Type**: Headless storefront (React/Vite) + Firebase Admin Portal — migrating commerce off Shopify to Stripe
+- **Status**: Portal functional; storefront live at mylivinghope.org.nz (Firebase Hosting, DNS via Cloudflare). **Prod still checks out via the Shopify Buy Button**; the new Stripe Checkout path is built + E2E-verified in test mode, awaiting live-key cutover with Jesse.
+
+## ⚠️ Where We Are (read this first)
+- **Home branch: `main`.** All real dev lives here. `sidequest-backup` is an auto-backup branch that sits *behind* main with no unique commits — **do not develop on it.** (Lost a session to this confusion on 2026-06-19 — Stripe work looked "missing" because we were on the backup branch.)
+- **Local `main` is ~55 commits ahead of `origin/main`** — commerce work is committed but not pushed.
+- **Active work: commerce migration (off Shopify → Stripe).** Phases 1–3 done & deployed; Phases 4–5 are blocked on Jesse.
+- **Next session is with Jesse** — two unblock items: (1) activate the **live Stripe account** (business verification + bank) → live keys for the Phase 5 cutover; (2) create a **Resend account** + verify sending-domain DNS for Phase 4 emails. See `## Next Steps`.
 
 ## Project Structure
-- `mylivinghope/` — Shopify theme (Liquid templates, synced by Shopify)
-- `portal.mylivinghope/` — React admin portal (Vite + Firebase)
-- `storefront.mylivinghope/` — React + Vite storefront (Shopify Buy Buttons)
+- `mylivinghope/` — legacy Shopify theme (Liquid templates) — being decommissioned at cutover
+- `portal.mylivinghope/` — React admin portal (Vite + Firebase); also hosts the Cloud Functions (`functions/`)
+- `storefront.mylivinghope/` — React + Vite storefront (Stripe Checkout built; Buy Button still live in prod until cutover)
 
 ## Playbooks In Use
 Read from Brain at session start. Do not copy into this project.
@@ -33,8 +39,10 @@ Brain path: `D:/Sidequest Digital/Dev Projects/Brain/playbooks/`
 - `playbooks/Analytics.md` — storefront analytics
 
 ## Tech Stack
-- **Storefront (new)**: React 19 + Vite 7 + Tailwind CSS v4 + Shopify Buy Buttons
-- **Storefront (legacy)**: Shopify Liquid theme — being replaced by headless
+- **Storefront (new)**: React 19 + Vite 7 + Tailwind CSS v4 + Stripe Checkout (Buy Button live in prod until Phase 5 cutover)
+- **Commerce**: Stripe Checkout Sessions (hosted) via Cloud Functions; Firestore = catalog source of truth
+- **Email**: Resend (transactional — Phase 4, pending Jesse's account)
+- **Storefront (legacy)**: Shopify Liquid theme — being decommissioned at cutover
 - **Portal Frontend**: React 19 + Vite 7 + Tailwind CSS v4
 - **Portal State**: Zustand
 - **Portal Forms**: React Hook Form + Zod validation
@@ -138,12 +146,26 @@ Add to `.claude/settings.json` on each machine:
   - **Phase 2 (Buy Now + Payments) — DONE + E2E verified (test mode):** `createCheckoutSession` + `stripeWebhook` Cloud Functions deployed; orders/counters rules deployed; storefront Buy Now → Stripe Checkout + `/checkout/success` + `/checkout/cancel` pages built (NOT yet deployed to hosting). Test purchase verified: order `MLH-1001` written, idempotency + inventory decrement confirmed. Secrets per env: `STRIPE_SECRET_KEY` (test key, v2) + `STRIPE_WEBHOOK_SECRET` (v3) in Secret Manager. Live keys + Shopify/BuyButton removal come in Phase 5 cutover.
 
 ## Next Steps
-- [ ] **HOLD — storefront deploy:** waits for Phase 5 live-key cutover; Joel to run the Stripe live-account switch with Jesse first. Until then prod keeps the Shopify Buy Button.
-- [ ] **Phase 4 — Tracking + emails:** blocked on **Resend account** (Jesse) + sending-domain DNS verification. Then: confirmation email on paid, shipped email on tracking entry, storefront `/track-order` + `trackOrder` function. Test order `MLH-1001` is reset to `paid` with empty fulfillment, ready for email testing.
-- [ ] **Phase 5 — Cutover:** live Stripe keys, delete BuyButton.jsx + SDK workarounds, Privacy/Terms updates (currently mention Shopify — must add Stripe), live smoke purchase + refund, decommission Shopify
-- [ ] **Maintenance:** functions runtime Node 20 deprecated (decommission 2026-10-30) — bump to 22; portal has 16 pre-existing lint errors (useAuth/useTheme fast-refresh, useCollection set-state-in-effect, unused vars in old pages)
-- [ ] **Add www.mylivinghope.org.nz** — CNAME added in Cloudflare but also needs adding as custom domain in Firebase Hosting console
-- [ ] **Jesse: activate FormSubmit.co** — first contact form submission triggers verification email to prayerprompts@outlook.com, must click to confirm
+
+### 🔴 With Jesse (next session) — commerce go-live blockers
+- [ ] **Stripe live account** — Jesse completes business verification + connects a bank account in the Stripe dashboard → generate **live** `STRIPE_SECRET_KEY` + `STRIPE_WEBHOOK_SECRET`, store in Secret Manager. This is the gate for Phase 5.
+- [ ] **Resend account (Phase 4)** — Jesse creates a Resend account + verifies the sending-domain DNS, so confirmation/shipped emails can send.
+- [ ] **Jesse: activate FormSubmit.co** — first contact-form submission triggers a verification email to prayerprompts@outlook.com; must click to confirm.
+
+### Phase 4 — Tracking + emails (after Resend)
+- [ ] Confirmation email on paid, shipped email on tracking entry, storefront `/track-order` + `trackOrder` function. Test order `MLH-1001` is reset to `paid` with empty fulfillment, ready for email testing.
+
+### Phase 5 — Cutover to live (after live Stripe keys)
+- [ ] Swap in live Stripe keys; **deploy storefront checkout pages** (currently HELD so prod keeps the Buy Button)
+- [ ] Delete `BuyButton.jsx` + the SDK z-index/stopPropagation workarounds
+- [ ] Privacy/Terms updates — currently mention Shopify, must add Stripe
+- [ ] Live smoke purchase + a test refund, then decommission Shopify
+
+### Maintenance / misc
+- [ ] **Push local `main` to origin** — currently ~55 commits ahead, unpushed
+- [ ] Functions runtime Node 20 deprecated (decommission 2026-10-30) — bump to 22
+- [ ] Portal has 16 pre-existing lint errors (useAuth/useTheme fast-refresh, useCollection set-state-in-effect, unused vars in old pages)
+- [ ] **Add www.mylivinghope.org.nz** — CNAME in Cloudflare, also needs adding as a custom domain in the Firebase Hosting console
 - [ ] Wire MCP server into Joel's `.claude/settings.json` for native Firestore tools
 - [ ] Help Jesse get Claude Code set up on his machine
 - [ ] Joel to review portal Claude page live and fix any issues
