@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
+import { useCart } from '../stores/cart'
 
 export default function CheckoutSuccess() {
   const [searchParams] = useSearchParams()
@@ -7,6 +8,8 @@ export default function CheckoutSuccess() {
 
   useEffect(() => {
     document.title = 'Order Confirmed — My Living Hope'
+    // Payment succeeded — empty the cart so it doesn't persist into the next visit.
+    useCart.getState().clear()
   }, [])
 
   return (

@@ -1,8 +1,9 @@
 import { httpsCallable } from 'firebase/functions'
 import { functions } from './firebase'
 
-export async function startCheckout(product, qty = 1) {
+// items: [{ productId, qty }] — the Cloud Function re-prices each line server-side.
+export async function startCheckout(items) {
   const createCheckoutSession = httpsCallable(functions, 'createCheckoutSession')
-  const result = await createCheckoutSession({ items: [{ productId: product.id, qty }] })
+  const result = await createCheckoutSession({ items })
   window.location.href = result.data.url
 }
