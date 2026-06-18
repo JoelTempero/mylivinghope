@@ -1,6 +1,25 @@
 import { Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, ShoppingBag } from 'lucide-react'
+import { useCart, selectCount } from '../../stores/cart'
+
+function CartLink({ className = '' }) {
+  const count = useCart(selectCount)
+  return (
+    <Link
+      to="/cart"
+      className={`relative text-white/90 hover:text-white transition-colors ${className}`}
+      aria-label={count ? `Cart, ${count} item${count > 1 ? 's' : ''}` : 'Cart'}
+    >
+      <ShoppingBag className="w-6 h-6" />
+      {count > 0 && (
+        <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-soft-blush text-forest-green text-[11px] font-bold flex items-center justify-center">
+          {count}
+        </span>
+      )}
+    </Link>
+  )
+}
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -57,9 +76,11 @@ export default function Header() {
           >
             Contact
           </a>
+          <CartLink />
         </div>
 
         <div className="md:hidden flex items-center gap-1">
+          <CartLink className="p-2" />
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
             className="text-white p-3"
