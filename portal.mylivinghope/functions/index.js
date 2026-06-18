@@ -28,6 +28,7 @@ exports.createCheckoutSession = onCall({ secrets: [STRIPE_SECRET_KEY], cors: tru
     if (p.status !== 'published') throw new HttpsError('failed-precondition', `${p.title} is unavailable`)
     const qty = Math.max(1, parseInt(line.qty, 10) || 1)
     if (p.inventory != null && p.inventory < qty) throw new HttpsError('failed-precondition', `Not enough stock for ${p.title}`)
+    if (!Number.isInteger(p.priceNZD) || p.priceNZD <= 0) throw new HttpsError('failed-precondition', `${p.title} is not available for purchase right now`)
     line_items.push({
       quantity: qty,
       adjustable_quantity: { enabled: true, minimum: 1 },
@@ -67,32 +68,47 @@ exports.stripeWebhook = onRequest({ secrets: [STRIPE_SECRET_KEY, STRIPE_WEBHOOK_
     console.error('Webhook signature verification failed:', err.message)
     return res.status(400).send(`Webhook Error: ${err.message}`)
   }
-  if (event.type === 'checkout.session.completed') {
+  // Fulfill on the completed event (synchronous card payments) and on
+  // async_payment_succeeded (delayed methods that only confirm later). Both carry
+  // the full session object; handleCompletedCheckout re-checks payment_status.
+  if (event.type === 'checkout.session.completed' ||
+      event.type === 'checkout.session.async_payment_succeeded') {
     try {
       await handleCompletedCheckout(stripe, event.data.object)
     } catch (err) {
       console.error('Order write failed:', err)
       return res.status(500).send('Order processing failed') // Stripe retries
     }
+  } else if (event.type === 'checkout.session.async_payment_failed') {
+    console.warn(`Async payment failed for session ${event.data.object.id}`)
   }
   return res.status(200).json({ received: true })
 })
 
 async function handleCompletedCheckout(stripe, session) {
-  // Idempotency: skip if an order already exists for this session
-  const existing = await db.collection('orders').where('stripeSessionId', '==', session.id).limit(1).get()
-  if (!existing.empty) return
+  // Only fulfill once payment is actually captured. checkout.session.completed
+  // also fires for async / zero-amount methods where no money has moved — never
+  // write a 'paid' order without a confirmed payment.
+  if (session.payment_status !== 'paid') {
+    console.log(`Session ${session.id} completed but payment_status=${session.payment_status} — not fulfilling`)
+    return
+  }
 
   const lineItems = await stripe.checkout.sessions.listLineItems(session.id, { limit: 100 })
   const items = lineItems.data.map((li) => ({ title: li.description, qty: li.quantity, unitPriceNZD: li.price?.unit_amount ?? 0 }))
 
+  // Deterministic doc id = Stripe session id, so a retried or duplicated webhook
+  // delivery can never create a second order. Dedup is enforced inside the txn.
+  const orderRef = db.collection('orders').doc(session.id)
+
   await db.runTransaction(async (tx) => {
+    const existing = await tx.get(orderRef)
+    if (existing.exists) return
     const counterRef = db.collection('counters').doc('orderNumber')
     const counterSnap = await tx.get(counterRef)
     const last = counterSnap.exists ? (counterSnap.data().last || 1000) : 1000
     const next = last + 1
     const addr = session.shipping_details?.address || session.customer_details?.address || {}
-    const orderRef = db.collection('orders').doc()
     tx.set(orderRef, {
       orderNumber: `MLH-${next}`,
       stripeSessionId: session.id,
