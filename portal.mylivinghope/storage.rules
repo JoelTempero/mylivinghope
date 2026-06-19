@@ -35,5 +35,11 @@ service firebase.storage {
       allow read: if isAuthenticated();
       allow write: if isAuthenticated() && request.auth.uid == userId;
     }
+
+    // Store product images — shown on the public storefront, uploaded from the portal
+    match /storeProducts/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
   }
 }
