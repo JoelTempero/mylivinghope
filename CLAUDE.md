@@ -3,18 +3,18 @@
 ## Overview
 - **Client**: My Living Hope (greeting card business, Jesse Major founder)
 - **Type**: Headless storefront (React/Vite) + Firebase Admin Portal — migrating commerce off Shopify to Stripe
-- **Status**: Portal functional; storefront live at mylivinghope.org.nz (Firebase Hosting, DNS via Cloudflare). **Prod still checks out via the Shopify Buy Button**; the new Stripe Checkout path is built + E2E-verified in test mode, awaiting live-key cutover with Jesse.
+- **Status**: Portal functional; storefront LIVE at mylivinghope.org.nz on **Stripe Checkout** (Firebase Hosting, DNS via Cloudflare). **Phase 5 cutover done 2026-06-19** — Shopify Buy Button removed, live Stripe keys + webhook active, client made a successful live purchase. Phase 4 (transactional emails) still pending Jesse's Resend account.
 
 ## ⚠️ Where We Are (read this first)
-- **Home branch: `main`.** All real dev lives here. `sidequest-backup` is an auto-backup branch that sits *behind* main with no unique commits — **do not develop on it.** (Lost a session to this confusion on 2026-06-19 — Stripe work looked "missing" because we were on the backup branch.)
-- **Local `main` is ~55 commits ahead of `origin/main`** — commerce work is committed but not pushed.
-- **Active work: commerce migration (off Shopify → Stripe).** Phases 1–3 done & deployed; Phases 4–5 are blocked on Jesse.
-- **Next session is with Jesse** — two unblock items: (1) activate the **live Stripe account** (business verification + bank) → live keys for the Phase 5 cutover; (2) create a **Resend account** + verify sending-domain DNS for Phase 4 emails. See `## Next Steps`.
+- **Home branch: `main`.** All real dev lives here. `sidequest-backup` is an auto-backup branch *behind* main — **do not develop on it.**
+- **Local `main` is ~60 commits ahead of `origin/main`** — committed but NOT pushed. Pushing is the main housekeeping debt.
+- **Commerce migration (off Shopify → Stripe) is LIVE.** Phases 1–3 + **Phase 5 cutover done & deployed** — storefront checks out via live Stripe; client made a real purchase. **Phase 4 (transactional emails) is the remaining build**, blocked on Jesse's Resend account.
+- **Two Jesse to-dos:** (1) **enable Stripe payouts** — the live account has `charges_enabled=true` but `payouts_enabled=false`, so money sits in the Stripe balance until he finishes bank verification; (2) create a **Resend account** + verify sending-domain DNS for Phase 4 emails.
 
 ## Project Structure
 - `mylivinghope/` — legacy Shopify theme (Liquid templates) — being decommissioned at cutover
 - `portal.mylivinghope/` — React admin portal (Vite + Firebase); also hosts the Cloud Functions (`functions/`)
-- `storefront.mylivinghope/` — React + Vite storefront (Stripe Checkout built; Buy Button still live in prod until cutover)
+- `storefront.mylivinghope/` — React + Vite storefront (LIVE on Stripe Checkout; Shopify Buy Button removed at the 2026-06-19 cutover)
 
 ## Playbooks In Use
 Read from Brain at session start. Do not copy into this project.
@@ -144,25 +144,26 @@ Add to `.claude/settings.json` on each machine:
   - Decisions: Stripe **Checkout Sessions** (hosted), Firestore = catalog source of truth / Stripe = money, guest checkout + email tracking, **Resend** for email, flat-rate shipping (provisional), launch flagship product (data-driven for more)
   - **Phase 1 (Catalog CMS) — DONE + verified live by Joel:** `storeProducts` collection + rules + composite index (status+sortOrder) deployed; portal "Store" CMS page (`StoreProducts.jsx`) with image upload/draft-publish; storefront reads flagship from Firestore (`useProducts.js`, `InteractiveCards.jsx`) with fallback to static markup; Buy Button left intact. Storefront gained read-only Firebase client. Joel confirmed: created/published a product in the portal, text rendered on the storefront.
   - **Phase 2 (Buy Now + Payments) — DONE + E2E verified (test mode):** `createCheckoutSession` + `stripeWebhook` Cloud Functions deployed; orders/counters rules deployed; storefront Buy Now → Stripe Checkout + `/checkout/success` + `/checkout/cancel` pages built (NOT yet deployed to hosting). Test purchase verified: order `MLH-1001` written, idempotency + inventory decrement confirmed. Secrets per env: `STRIPE_SECRET_KEY` (test key, v2) + `STRIPE_WEBHOOK_SECRET` (v3) in Secret Manager. Live keys + Shopify/BuyButton removal come in Phase 5 cutover.
+  - **Phase 5 (Cutover to LIVE) — DONE + verified (2026-06-19):** live Stripe keys in Secret Manager (`STRIPE_SECRET_KEY` v3, `STRIPE_WEBHOOK_SECRET` v4); **live** webhook endpoint `we_1Tjt63JVPadVHiFfO05FmDOK` registered (3 checkout events) → functions redeployed + bound. Storefront deployed to prod: `BuyButton.jsx` deleted, Hero/CTA/About moved off Shopify `addToCart` to a `goToShop()` helper (`lib/shop.js`), Privacy/Terms rewritten Shopify→Stripe. **Client made a successful live purchase.** Live account `acct_1TgG3NJVPadVHiFf` (NZ), `charges_enabled` ✓ but `payouts_enabled=false` (Jesse to finish bank verification).
+  - **Product image management (2026-06-19):** storefront `ProductPage` now shows a full gallery (main + clickable thumbnails) instead of only `images[0]`; portal `StoreProducts` got a "Set main" button on non-primary thumbnails (promotes to `images[0]`, the primary used everywhere). Also fixed a Storage-rules gap: added a `storeProducts/` rule (public read, auth write) — uploads were 403ing because no match block existed.
+  - **Free Christchurch pickup (2026-06-19):** `createCheckoutSession` offers two shipping options — Standard NZ ($7) + Pickup in Christchurch (free, $0). Order webhook records whatever shipping is returned, so pickup = `shippingNZD:0` with no other change. Cart notes pickup is available at checkout.
 
 ## Next Steps
 
-### 🔴 With Jesse (next session) — commerce go-live blockers
-- [ ] **Stripe live account** — Jesse completes business verification + connects a bank account in the Stripe dashboard → generate **live** `STRIPE_SECRET_KEY` + `STRIPE_WEBHOOK_SECRET`, store in Secret Manager. This is the gate for Phase 5.
+### 🔴 With Jesse — remaining go-live items
+- [ ] **Enable Stripe payouts** — live account has `charges_enabled=true` but `payouts_enabled=false`. Jesse must finish bank verification in the Stripe dashboard or payments accumulate in the Stripe balance (won't reach his bank).
 - [ ] **Resend account (Phase 4)** — Jesse creates a Resend account + verifies the sending-domain DNS, so confirmation/shipped emails can send.
 - [ ] **Jesse: activate FormSubmit.co** — first contact-form submission triggers a verification email to prayerprompts@outlook.com; must click to confirm.
+- [ ] **Decommission Shopify** — storefront no longer references it; cancel the Shopify store / Buy Button product once Jesse confirms.
 
 ### Phase 4 — Tracking + emails (after Resend)
-- [ ] Confirmation email on paid, shipped email on tracking entry, storefront `/track-order` + `trackOrder` function. Test order `MLH-1001` is reset to `paid` with empty fulfillment, ready for email testing.
+- [ ] Confirmation email on paid, shipped email on tracking entry, storefront `/track-order` + `trackOrder` function.
 
-### Phase 5 — Cutover to live (after live Stripe keys)
-- [ ] Swap in live Stripe keys; **deploy storefront checkout pages** (currently HELD so prod keeps the Buy Button)
-- [ ] Delete `BuyButton.jsx` + the SDK z-index/stopPropagation workarounds
-- [ ] Privacy/Terms updates — currently mention Shopify, must add Stripe
-- [ ] Live smoke purchase + a test refund, then decommission Shopify
+### Down the track
+- [ ] **Bulk buy** — quantity-tier / wholesale pricing (client asked 2026-06-19; explore later).
 
 ### Maintenance / misc
-- [ ] **Push local `main` to origin** — currently ~55 commits ahead, unpushed
+- [ ] **Push local `main` to origin** — currently ~60 commits ahead, unpushed
 - [ ] Functions runtime Node 20 deprecated (decommission 2026-10-30) — bump to 22
 - [ ] Portal has 16 pre-existing lint errors (useAuth/useTheme fast-refresh, useCollection set-state-in-effect, unused vars in old pages)
 - [ ] **Add www.mylivinghope.org.nz** — CNAME in Cloudflare, also needs adding as a custom domain in the Firebase Hosting console
@@ -171,7 +172,15 @@ Add to `.claude/settings.json` on each machine:
 - [ ] Joel to review portal Claude page live and fix any issues
 
 ## Session Log
-### 2026-06-19 — Branch consolidation, checkout security hardening, product page + cart
+### 2026-06-19 (PM) — Phase 5 LIVE cutover + image management + pickup option
+- **Went live on Stripe.** Jesse activated the live account; loaded live `STRIPE_SECRET_KEY` (v3, no-newline file trick), registered the **live** webhook endpoint `we_1Tjt63JVPadVHiFfO05FmDOK` via Stripe API (3 checkout events), captured signing secret → `STRIPE_WEBHOOK_SECRET` (v4), redeployed functions. Verified: live account `acct_1TgG3NJVPadVHiFf` (NZ) `charges_enabled` ✓, single enabled live endpoint, secrets bound.
+- **Storefront cutover deployed to prod** (the irreversible flip). Found the cutover half-wired: `BuyButton.jsx` (Shopify) was unused as a component but Hero/CTA/About still imported its `addToCart` (which only scroll-to-shop'd since the SDK never loaded — About's was a dead no-op). Replaced with a shared `goToShop()` helper (`lib/shop.js`); Home scrolls to `#shop` on hash so About's cross-page CTA lands. Deleted `BuyButton.jsx` + dead CSS. Privacy/Terms rewritten Shopify→Stripe (+ dropped GST claim, cart = local storage). Build + lint clean, all routes 200. **Client then made a successful live purchase.**
+- **Storage rules fix:** product image uploads were 403ing (`storage/unauthorized`) — no `storeProducts/` match block existed (deny-by-default). Added public-read / auth-write rule, deployed. Joel uploaded 7 images to the flagship after.
+- **Image management:** storefront `ProductPage` now a gallery (main + thumbnails, was `images[0]` only); portal `StoreProducts` got a "Set main" button on non-primary thumbnails. Both apps redeployed.
+- **Free Christchurch pickup:** `createCheckoutSession` now offers Standard NZ ($7) + Pickup (free) shipping options; cart notes it. Function redeployed.
+- **Payouts gap flagged:** `payouts_enabled=false` — Jesse to finish bank verification. Commits `ea8416f`, `10f6e65`, `348e442`, `4287d82` on main (unpushed).
+
+### 2026-06-19 (AM) — Branch consolidation, checkout security hardening, product page + cart
 - **Branch confusion resolved:** session opened on `sidequest-backup` (auto-backup branch *behind* main) which lacked all the commerce/Stripe work → it looked "missing". Switched to `main` (home), refreshed this file + added auto-memory so it can't recur.
 - **Checkout security review + hardening** (`portal.mylivinghope/functions/index.js`, commit `1a0c54d`, deployed): only fulfil when `payment_status === 'paid'` (guards async/$0 methods e.g. Klarna); handle `async_payment_succeeded/failed`; reject non-positive prices; deterministic order doc id = Stripe session id + in-transaction dedup (kills duplicate-order race). Verified live — real test purchases wrote MLH-1002/1003, doc id == session id, correct totals, all `paid`. (App Check on the callable still TODO — needs console reCAPTCHA reg.)
 - **Product page + cart shipped** (commerce phase 2.5, merged to main): spec `docs/superpowers/specs/2026-06-19-product-page-cart-design.md`, plan `docs/superpowers/plans/2026-06-19-product-page-cart.md`. Cart-only flow (no express buy): Home "View product" → `/shop/:slug` (qty, inventory-aware, image fallback) → Zustand+localStorage cart (`src/stores/cart.js`) → `/cart` (qty/remove, Subtotal/Shipping/Total) → Checkout → Stripe → success clears cart. Header cart badge. `createCheckoutSession` unchanged (already accepts a line-item array). Built generically so the booklet drops in by publishing it in the portal.
@@ -212,37 +221,19 @@ Add to `.claude/settings.json` on each machine:
 - **Phase 2 planned + scoped:** wrote the Phase 2 plan, then trimmed it from a full cart to a **direct Buy Now → Stripe Checkout** (single-product). Build paused pending Jesse's Stripe account.
 - Commits: `21b407c` (docs), `b64cc8f` (rules+utils), `9853a9f` (CMS page), `a003e35` (storefront), `2aa3a64` (index), `c3257e9` (docs), `03b4960`+`14164a5` (phase 2 plan). All on `feature/commerce-migration`.
 
-### 2026-05-05 — Custom Domain Fix, Instagram Feed & Image Responsive Fixes
-- **Custom domain fixed**: mylivinghope.org.nz was showing "Site Not Found" despite DOMAIN_ACTIVE status in Firebase API. DNS moved to Cloudflare (grey cloud). Fresh deploy resolved stale CDN state.
-- **Instagram feed**: Built `InstagramFeed.jsx` — 4 embedded posts in a single row (1600px wide container), added to Home (above CTA) and About (above footer). Uses Instagram embed.js with curated post URLs, no API keys.
-- **Hero image**: Rewrote JS positioning formula — image starts shifting right at 2190px viewport width (was 1600px), preventing text overlap on mid-size screens.
-- **CTA mobile image**: Removed `h-[630px] object-cover scale(1.3)` crop — image now displays at full natural size.
-- Firebase account: deploys use `leojfx@gmail.com` (project owner); `joel@tempero.nz` lacks Hosting API permissions.
-- 3 deploys to mylivinghope.org.nz, build clean (2.12s)
-- Files changed: InstagramFeed.jsx (new), Home.jsx, About.jsx, Hero.jsx, CTA.jsx
-
-### 2026-05-03 — Mobile Polish, Image Compression & DNS Investigation
-- **Sticky parallax disabled on mobile**: Wrapped sticky-stack CSS in `@media (min-width: 768px)` — sections scroll normally on mobile, desktop unchanged
-- **Mobile card interaction rebuilt**: Removed drag-to-snap, built single-element expand+flip using CSS `transform: translate() scale()`. Tap card → transforms to viewport center while flipping. No portals, no `position: fixed` (breaks inside transform ancestors like ScrollReveal). ScrollReveal removed from mobile cards.
-- **Image compression**: All images resized via sharp — hero 4234→1400px, Jesse 1208→600px, twocards 2024→800px, logo/icon 3840→200/100px, cards to 2x retina. 3 PNGs→WebP. Total: 6MB → 420KB (93%).
-- **DNS investigation**: mylivinghope.org.nz nameservers point to Google Cloud DNS (ns-cloud-b1–b4), not Shopify. TXT verification record exists in Shopify but isn't served. WHOIS shows Google Domains (now Squarespace) as registrar. Jesse confirms he only used Shopify. Cloud DNS API not enabled on Firebase project — zone likely in Google-managed infra.
-- **Domain decision**: Proposed decoupling domain from Shopify entirely. Shopify manages products only, DNS managed separately (Cloudflare or Squarespace Domains).
-- 2 deploys to mylivinghope.web.app, build clean (1.85s)
-- Files changed: InteractiveCards.jsx, index.css, Header.jsx, Footer.jsx, About.jsx, plus 11 optimized images
-
-### 2026-05-02 and earlier — Storefront polish/deploy, mobile fixes, creative overhaul
-- Trimmed for brevity — see git history. Highlights: FormSubmit contact form, Privacy/Terms pages, favicon/SEO, first Firebase Hosting deploy, cart button z-index fix, creative council overhaul (animation system, narrative restructure).
+_(Older sessions — May 2026 storefront polish, Instagram feed, image compression, custom-domain/DNS-to-Cloudflare fix, mobile card rebuild — trimmed; see git history.)_
 
 ## Key Decisions
 - **Going fully off Shopify** → own catalog CMS (Firestore) + Stripe Checkout (hosted) + own order system. Full spec: `docs/superpowers/specs/2026-06-09-commerce-migration-design.md`. Firestore = catalog source of truth; Stripe webhook = order source of truth; prices stored as integer cents.
 - **Stripe Checkout Sessions (hosted), not Payment Element** — least PCI surface, handles wallets/shipping/dynamic methods; inline `price_data` from Firestore (no Stripe product sync).
-- **Single product → direct "Buy Now" (no cart)** — cart/drawer is YAGNI for one product; the checkout function already takes multiple line items, so a cart is a clean add when the catalog grows.
+- **Cart-based checkout** (built Phase 2.5) — `/shop/:slug` → Zustand+localStorage cart (`stores/cart.js`) → `/cart` → `createCheckoutSession` (takes a line-item array) → Stripe hosted. (Superseded the original single-product "Buy Now, no cart" plan.)
+- **Primary product image = `images[0]`** everywhere (product-page gallery default, home cards, cart). Portal "Set main" reorders the array; storefront `ProductPage` renders the full array as a gallery.
 - **Guest checkout + email order tracking** (no customer accounts); **Resend** for transactional email (Phase 4).
 - **No GST v1** — MLH not GST-registered; no GST line on receipts. Revisit if/when registered.
-- **$7 flat NZ shipping** — confirmed 2026-06-11 (`SHIPPING_FLAT_CENTS` in functions/index.js).
+- **$7 flat NZ shipping + free Christchurch pickup** — two Stripe Checkout shipping options (pickup added 2026-06-19). Server is source of truth (`SHIPPING_FLAT_CENTS` in functions/index.js); cart shows $7 as a display-only estimate.
 - **Portal order edits are field-restricted by rules** — editors may update only `status`/`fulfillment`/`notes`/`updatedAt` (`diff().affectedKeys().hasOnly()`); money/items/customer fields can only be written by Cloud Functions.
 - Both portal and storefront use JSX (not TypeScript) — consistent stack
-- Zustand for portal state management; storefront has no state management (Buy Button handles cart)
+- Zustand for state management in both apps — portal stores + storefront cart (`stores/cart.js`, localStorage-persisted)
 - Single Firebase project (`my-living-hope`) for everything — portal + live storefront as separate web apps
 - Priority: portal functionality → storefront
 - All users (Joel, Jesse, Annabelle) can access Claude Context page
@@ -258,9 +249,10 @@ Add to `.claude/settings.json` on each machine:
 - **Instagram posts via embed.js** — curated post URLs with Instagram's official embed script, no API keys or third-party services. Posts are manually updated in `InstagramFeed.jsx` POSTS array.
 
 ## Known Issues
-- **Stripe success/cancel pages blank on PROD** — the storefront isn't deployed yet (Phase 5), so prod (old Buy Button build) has no `/checkout/*` or `/shop/:slug` or `/cart` routes. After a test purchase Stripe redirects to prod and you get header/footer only. The pages have full content in code (verified on local dev). Deploying the storefront fixes it.
-- **`success_url`/`cancel_url` hardcoded to prod** in `functions/index.js` (`STOREFRONT_URL`) — local test purchases don't exercise the success/cancel pages or the cart-clear-on-success. Switch to env-based URLs at the Phase 5 cutover.
-- **Shopify SDK overlay blocks clicks** — the Buy Button SDK injects invisible fixed overlays. Any custom buttons that need to sit above it require `z-[99999]` + `stopPropagation` on mouseDown/touchStart/click. See Header.jsx cart buttons for the pattern.
+- **Stripe payouts disabled** — live account `charges_enabled=true` but `payouts_enabled=false`. Payments are taken but stay in the Stripe balance until Jesse finishes bank verification.
+- **Pickup orders still collect a shipping address** — Stripe Checkout's `shipping_address_collection` applies to the whole session; it can't be dropped per shipping option. So "Pickup in Christchurch" orders still have an address attached. Harmless; cleaner fix later if it matters.
+- **`success_url`/`cancel_url` hardcoded to prod** in `functions/index.js` (`STOREFRONT_URL`) — now correct for prod, but local checkout testing won't exercise the success/cancel pages or cart-clear. Switch to env-based URLs if testing checkout locally.
+- **Dead Shopify defensive code in Header.jsx** — the `z-[99999]` + `stopPropagation` cart-button workarounds for the (now-removed) Shopify SDK overlay are harmless but no longer needed; clean up opportunistically.
 - MCP server not yet wired into Joel's `.claude/settings.json`
 - PWA manifest icon missing (`pwa-192x192.png` — console warning on Claude page)
 - **www subdomain** — CNAME added in Cloudflare but not yet registered as custom domain in Firebase Hosting. Visiting www.mylivinghope.org.nz will fail until added.
