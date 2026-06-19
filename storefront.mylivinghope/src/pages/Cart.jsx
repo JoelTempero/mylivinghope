@@ -4,6 +4,10 @@ import { useCart, selectSubtotal } from '../stores/cart'
 import { centsToDollars } from '../hooks/useProducts'
 import { startCheckout } from '../lib/checkout'
 
+// Display-only — the Cloud Function (functions/index.js SHIPPING_FLAT_CENTS) is the
+// source of truth. Will expand to NZ + international rates later.
+const SHIPPING_FLAT_CENTS = 700
+
 export default function Cart() {
   const items = useCart((s) => s.items)
   const setQty = useCart((s) => s.setQty)
@@ -69,11 +73,18 @@ export default function Cart() {
         </ul>
 
         <div className="mt-8 border-t border-gray-200 pt-6">
-          <div className="flex justify-between text-lg font-semibold mb-1">
+          <div className="flex justify-between text-text-secondary mb-2">
             <span>Subtotal</span>
-            <span>${centsToDollars(subtotal)} NZD</span>
+            <span>${centsToDollars(subtotal)}</span>
           </div>
-          <p className="text-sm text-text-muted mb-6">$7 flat NZ shipping added at checkout.</p>
+          <div className="flex justify-between text-text-secondary mb-3">
+            <span>Shipping <span className="text-text-muted">(NZ flat rate)</span></span>
+            <span>${centsToDollars(SHIPPING_FLAT_CENTS)}</span>
+          </div>
+          <div className="flex justify-between text-lg font-semibold border-t border-gray-200 pt-3 mb-6">
+            <span>Total</span>
+            <span>${centsToDollars(subtotal + SHIPPING_FLAT_CENTS)} NZD</span>
+          </div>
           <button
             onClick={handleCheckout}
             disabled={busy}
