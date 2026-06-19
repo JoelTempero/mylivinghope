@@ -9,6 +9,7 @@ export default function ProductPage() {
   const { product, loading } = useProduct(slug)
   const add = useCart((s) => s.add)
   const [qty, setQty] = useState(1)
+  const [activeImage, setActiveImage] = useState(0)
 
   if (loading) {
     return (
@@ -27,7 +28,8 @@ export default function ProductPage() {
     )
   }
 
-  const image = product.images?.[0]
+  const images = product.images || []
+  const mainImage = images[activeImage] ?? images[0]
   const maxQty = product.inventory ?? 99
   const outOfStock = product.inventory != null && product.inventory <= 0
 
@@ -39,12 +41,32 @@ export default function ProductPage() {
   return (
     <div id="main-content" className="mt-[80px] md:mt-[90px]">
       <div className="max-w-5xl mx-auto px-[5%] py-12 md:py-20 grid md:grid-cols-2 gap-10 md:gap-16">
-        {/* Image */}
-        <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-gradient-to-br from-soft-blush to-blush-light flex items-center justify-center">
-          {image ? (
-            <img src={image} alt={product.title} className="w-full h-full object-cover" />
-          ) : (
-            <span className="text-text-muted text-sm px-6 text-center">Product photo coming soon</span>
+        {/* Images */}
+        <div>
+          <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-gradient-to-br from-soft-blush to-blush-light flex items-center justify-center">
+            {mainImage ? (
+              <img src={mainImage} alt={product.title} className="w-full h-full object-cover" />
+            ) : (
+              <span className="text-text-muted text-sm px-6 text-center">Product photo coming soon</span>
+            )}
+          </div>
+          {images.length > 1 && (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {images.map((img, i) => (
+                <button
+                  key={img}
+                  type="button"
+                  onClick={() => setActiveImage(i)}
+                  aria-label={`View image ${i + 1}`}
+                  aria-current={i === activeImage}
+                  className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-colors ${
+                    i === activeImage ? 'border-forest-green' : 'border-transparent hover:border-gray-300'
+                  }`}
+                >
+                  <img src={img} alt={`${product.title} thumbnail ${i + 1}`} className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
           )}
         </div>
 

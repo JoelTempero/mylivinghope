@@ -217,6 +217,15 @@ export default function StoreProducts() {
     }))
   }
 
+  // Promote an image to primary (index 0) — the storefront uses images[0] as the
+  // main image everywhere (product page, cards, cart).
+  const handleSetPrimary = (url) => {
+    setFormData((prev) => ({
+      ...prev,
+      images: [url, ...prev.images.filter((u) => u !== url)],
+    }))
+  }
+
   // Delete product (with image cleanup)
   const handleDelete = async () => {
     if (!deleteTarget) return
@@ -495,10 +504,18 @@ export default function StoreProducts() {
                       alt={`Product image ${idx + 1}`}
                       className="w-20 h-20 rounded object-cover border border-gray-200 dark:border-dark-border"
                     />
-                    {idx === 0 && (
+                    {idx === 0 ? (
                       <span className="absolute bottom-0 left-0 right-0 text-center text-[10px] font-semibold bg-black/60 text-white rounded-b py-0.5">
                         Primary
                       </span>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => handleSetPrimary(url)}
+                        className="absolute bottom-0 left-0 right-0 text-center text-[10px] font-semibold bg-black/60 hover:bg-green-700 text-white rounded-b py-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        Set main
+                      </button>
                     )}
                     <button
                       type="button"
