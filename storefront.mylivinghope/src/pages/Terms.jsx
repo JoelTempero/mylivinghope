@@ -15,7 +15,7 @@ export default function Terms() {
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3">
             Terms & Conditions
           </h1>
-          <p className="text-white/70 text-sm">Last updated: May 2026</p>
+          <p className="text-white/70 text-sm">Last updated: June 2026</p>
         </div>
       </div>
 
@@ -34,9 +34,8 @@ export default function Terms() {
 
         <h2 className="text-2xl font-bold mb-4 mt-10">Orders & payment</h2>
         <p className="text-text-secondary leading-relaxed mb-6">
-          All orders are processed through Shopify's secure checkout. Prices are
-          listed in New Zealand Dollars (NZD) and include GST where applicable.
-          We'll confirm your order by email once it's placed.
+          Payments are processed securely by Stripe. Prices are listed in New
+          Zealand Dollars (NZD). We'll confirm your order by email once it's placed.
         </p>
 
         <h2 className="text-2xl font-bold mb-4 mt-10">Shipping</h2>

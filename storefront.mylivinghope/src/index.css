@@ -354,13 +354,6 @@ html {
   pointer-events: none;
 }
 
-/* Shopify SDK container */
-.shopify-sdk-container {
-  position: relative;
-  width: 0;
-  height: 0;
-}
-
 /* Image placeholder shimmer */
 @keyframes shimmer {
   0% { background-position: -200% 0; }

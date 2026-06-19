@@ -15,7 +15,7 @@ export default function Privacy() {
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3">
             Privacy Policy
           </h1>
-          <p className="text-white/70 text-sm">Last updated: May 2026</p>
+          <p className="text-white/70 text-sm">Last updated: June 2026</p>
         </div>
       </div>
 
@@ -31,9 +31,10 @@ export default function Privacy() {
         </p>
         <ul className="list-disc pl-6 space-y-2 text-text-secondary mb-6">
           <li><strong>Contact form:</strong> Your name, email address, and message.</li>
-          <li><strong>Orders:</strong> When you purchase through our Shopify checkout, Shopify
-            collects your name, email, shipping address, and payment details. We receive
-            order and shipping information but never see your full payment details.</li>
+          <li><strong>Orders:</strong> When you check out, payment is handled on Stripe's
+            secure hosted checkout page. Stripe collects your name, email, shipping
+            address, and card details. We receive your order and shipping information but
+            never see or store your full card details.</li>
         </ul>
 
         <h2 className="text-2xl font-bold mb-4 mt-10">How we use it</h2>
@@ -48,7 +49,8 @@ export default function Privacy() {
           We only share your information with services that help us run the business:
         </p>
         <ul className="list-disc pl-6 space-y-2 text-text-secondary mb-6">
-          <li><strong>Shopify:</strong> Processes payments and manages orders.</li>
+          <li><strong>Stripe:</strong> Securely processes card payments at checkout.</li>
+          <li><strong>Google Firebase:</strong> Hosts our website and stores order records.</li>
           <li><strong>FormSubmit.co:</strong> Delivers contact form messages to our inbox.</li>
         </ul>
         <p className="text-text-secondary leading-relaxed mb-6">
@@ -57,9 +59,10 @@ export default function Privacy() {
 
         <h2 className="text-2xl font-bold mb-4 mt-10">Cookies</h2>
         <p className="text-text-secondary leading-relaxed mb-6">
-          This website uses cookies only through the Shopify Buy Button, which needs
-          them to manage your shopping cart. We don't use analytics cookies or
-          tracking tools.
+          This website stores your shopping cart in your browser's local storage so
+          your selections aren't lost. We don't use analytics or tracking cookies.
+          When you check out, payment is handled on Stripe's secure hosted page, which
+          may set its own cookies to process your payment.
         </p>
 
         <h2 className="text-2xl font-bold mb-4 mt-10">Your rights</h2>

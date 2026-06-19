@@ -1,7 +1,8 @@
 import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import ScrollReveal from '../components/ScrollReveal'
 import CardTilt from '../components/CardTilt'
-import { addToCart } from '../components/BuyButton'
+import { goToShop } from '../lib/shop'
 import InstagramFeed from '../components/sections/InstagramFeed'
 
 const audiences = [
@@ -48,6 +49,8 @@ const audiences = [
 ]
 
 export default function About() {
+  const navigate = useNavigate()
+
   useEffect(() => {
     document.title = 'About — My Living Hope'
   }, [])
@@ -168,7 +171,7 @@ export default function About() {
               Scripture, and start talking to God. That's it.
             </p>
             <button
-              onClick={addToCart}
+              onClick={() => goToShop(navigate)}
               className="btn-interactive inline-flex items-center gap-2 bg-forest-green hover:bg-green-dark text-white font-semibold px-10 py-4 rounded-full text-base group"
             >
               Buy a Set

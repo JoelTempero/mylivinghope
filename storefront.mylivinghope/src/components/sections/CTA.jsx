@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import ScrollReveal from '../ScrollReveal'
-import { addToCart } from '../BuyButton'
+import { goToShop } from '../../lib/shop'
 
 export default function CTA() {
   const sectionRef = useRef(null)
@@ -68,7 +68,7 @@ export default function CTA() {
             <ScrollReveal variant="fade-up" delay={0.3}>
               <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
                 <button
-                  onClick={addToCart}
+                  onClick={() => goToShop()}
                   className="btn-interactive inline-flex items-center gap-2 bg-forest-green hover:bg-green-dark text-white font-semibold px-10 py-4 rounded-full text-base group"
                 >
                   Get Your Cards

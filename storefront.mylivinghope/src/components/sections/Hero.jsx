@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { addToCart } from '../BuyButton'
+import { goToShop } from '../../lib/shop'
 
 export default function Hero() {
   const imageRef = useRef(null)
@@ -73,7 +73,7 @@ export default function Hero() {
 
             <div className="hero-reveal hero-reveal-5 flex flex-wrap gap-4 justify-center lg:justify-start mt-8">
               <button
-                onClick={addToCart}
+                onClick={() => goToShop()}
                 className="btn-interactive inline-flex items-center gap-2 bg-forest-green hover:bg-green-dark text-white font-semibold px-8 py-3.5 rounded-full text-sm group"
               >
                 Get the Cards
