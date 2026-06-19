@@ -171,6 +171,14 @@ Add to `.claude/settings.json` on each machine:
 - [ ] Joel to review portal Claude page live and fix any issues
 
 ## Session Log
+### 2026-06-19 — Branch consolidation, checkout security hardening, product page + cart
+- **Branch confusion resolved:** session opened on `sidequest-backup` (auto-backup branch *behind* main) which lacked all the commerce/Stripe work → it looked "missing". Switched to `main` (home), refreshed this file + added auto-memory so it can't recur.
+- **Checkout security review + hardening** (`portal.mylivinghope/functions/index.js`, commit `1a0c54d`, deployed): only fulfil when `payment_status === 'paid'` (guards async/$0 methods e.g. Klarna); handle `async_payment_succeeded/failed`; reject non-positive prices; deterministic order doc id = Stripe session id + in-transaction dedup (kills duplicate-order race). Verified live — real test purchases wrote MLH-1002/1003, doc id == session id, correct totals, all `paid`. (App Check on the callable still TODO — needs console reCAPTCHA reg.)
+- **Product page + cart shipped** (commerce phase 2.5, merged to main): spec `docs/superpowers/specs/2026-06-19-product-page-cart-design.md`, plan `docs/superpowers/plans/2026-06-19-product-page-cart.md`. Cart-only flow (no express buy): Home "View product" → `/shop/:slug` (qty, inventory-aware, image fallback) → Zustand+localStorage cart (`src/stores/cart.js`) → `/cart` (qty/remove, Subtotal/Shipping/Total) → Checkout → Stripe → success clears cart. Header cart badge. `createCheckoutSession` unchanged (already accepts a line-item array). Built generically so the booklet drops in by publishing it in the portal.
+- **Feedback applied:** shipping is an itemised line + Total in cart (was a note; display-only `SHIPPING_FLAT_CENTS`, server is source of truth); `/checkout/cancel` redirects to `/cart` (Stripe back button / abandon).
+- **Jesse on-site** actioning go-live tasks: activate live Stripe account (→ live keys), create Resend account (+ sending-domain DNS), FormSubmit verify.
+- Verified via local dev (:3854) + headless browser. Build + lint clean. 7 commits merged to main (still unpushed). New storefront dep: `zustand`.
+
 ### 2026-06-11 — Phase 3: Order Management (same session as Phase 2)
 - **Business decisions:** no GST at this stage (not registered — no GST line on receipts v1); storefront deploy HELD until live-key cutover with Jesse; still waiting on Resend for Phase 4.
 - **Phase 2 merged to main** (fast-forward, branch deleted). Local main ahead of origin — not pushed.
@@ -250,6 +258,8 @@ Add to `.claude/settings.json` on each machine:
 - **Instagram posts via embed.js** — curated post URLs with Instagram's official embed script, no API keys or third-party services. Posts are manually updated in `InstagramFeed.jsx` POSTS array.
 
 ## Known Issues
+- **Stripe success/cancel pages blank on PROD** — the storefront isn't deployed yet (Phase 5), so prod (old Buy Button build) has no `/checkout/*` or `/shop/:slug` or `/cart` routes. After a test purchase Stripe redirects to prod and you get header/footer only. The pages have full content in code (verified on local dev). Deploying the storefront fixes it.
+- **`success_url`/`cancel_url` hardcoded to prod** in `functions/index.js` (`STOREFRONT_URL`) — local test purchases don't exercise the success/cancel pages or the cart-clear-on-success. Switch to env-based URLs at the Phase 5 cutover.
 - **Shopify SDK overlay blocks clicks** — the Buy Button SDK injects invisible fixed overlays. Any custom buttons that need to sit above it require `z-[99999]` + `stopPropagation` on mouseDown/touchStart/click. See Header.jsx cart buttons for the pattern.
 - MCP server not yet wired into Joel's `.claude/settings.json`
 - PWA manifest icon missing (`pwa-192x192.png` — console warning on Claude page)
