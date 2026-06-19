@@ -77,10 +77,11 @@ export default function Cart() {
             <span>Subtotal</span>
             <span>${centsToDollars(subtotal)}</span>
           </div>
-          <div className="flex justify-between text-text-secondary mb-3">
+          <div className="flex justify-between text-text-secondary mb-1">
             <span>Shipping <span className="text-text-muted">(NZ flat rate)</span></span>
             <span>${centsToDollars(SHIPPING_FLAT_CENTS)}</span>
           </div>
+          <p className="text-xs text-text-muted mb-3">Or choose free pickup in Christchurch at checkout.</p>
           <div className="flex justify-between text-lg font-semibold border-t border-gray-200 pt-3 mb-6">
             <span>Total</span>
             <span>${centsToDollars(subtotal + SHIPPING_FLAT_CENTS)} NZD</span>

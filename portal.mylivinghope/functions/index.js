@@ -44,13 +44,22 @@ exports.createCheckoutSession = onCall({ secrets: [STRIPE_SECRET_KEY], cors: tru
     mode: 'payment',
     line_items,
     shipping_address_collection: { allowed_countries: ['NZ'] },
-    shipping_options: [{
-      shipping_rate_data: {
-        type: 'fixed_amount',
-        fixed_amount: { amount: SHIPPING_FLAT_CENTS, currency: 'nzd' },
-        display_name: 'Standard NZ shipping',
+    shipping_options: [
+      {
+        shipping_rate_data: {
+          type: 'fixed_amount',
+          fixed_amount: { amount: SHIPPING_FLAT_CENTS, currency: 'nzd' },
+          display_name: 'Standard NZ shipping',
+        },
       },
-    }],
+      {
+        shipping_rate_data: {
+          type: 'fixed_amount',
+          fixed_amount: { amount: 0, currency: 'nzd' },
+          display_name: 'Pickup in Christchurch (free)',
+        },
+      },
+    ],
     phone_number_collection: { enabled: true },
     success_url: `${STOREFRONT_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${STOREFRONT_URL}/checkout/cancel`,
