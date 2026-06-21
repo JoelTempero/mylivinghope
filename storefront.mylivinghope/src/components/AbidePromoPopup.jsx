@@ -18,11 +18,15 @@ export default function AbidePromoPopup() {
   const onBookletPage = pathname === `/shop/${ABIDE_SLUG}`
   const bookletLive = products.some((p) => p.slug === ABIDE_SLUG)
 
-  let alreadySeen = true
-  try {
-    alreadySeen = localStorage.getItem(SEEN_KEY) === '1'
-  } catch {
-    alreadySeen = false
+  // In DEV always show (so the feature is easy to preview on each reload). In
+  // production it's once per visitor via localStorage.
+  let alreadySeen = false
+  if (!import.meta.env.DEV) {
+    try {
+      alreadySeen = localStorage.getItem(SEEN_KEY) === '1'
+    } catch {
+      alreadySeen = false
+    }
   }
 
   const shouldShow = !alreadySeen && !onBookletPage && bookletLive
