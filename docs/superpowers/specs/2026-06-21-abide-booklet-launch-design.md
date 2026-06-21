@@ -43,28 +43,28 @@ the rest of the site stays MLH-styled.
 Production values to set in the portal / Firestore (autopilot can't write to the live DB, so these
 are documented here and seeded into a DEV-only preview — see piece 3):
 
-- **description** (plain text, `whitespace-pre-line`; no HTML entities):
+- **description** (plain text, `whitespace-pre-line`; no HTML entities; stop-slop'd):
 
-  > Spiritual practices for day-to-day life — by Annabelle McLennan.
+  > Spiritual practices for day-to-day life, by Annabelle McLennan.
   >
-  > Abide is a guided booklet for anyone who's ever felt a gap between their faith and their everyday
-  > life. It walks you through twelve spiritual practices — the everyday rhythms we see Jesus living
-  > out in the gospels — as simple, doable invitations rather than boxes to tick.
+  > Abide is a guided booklet for anyone who has felt a gap between their faith and their ordinary
+  > week. It walks you through twelve spiritual practices, the everyday rhythms Jesus lived out in the
+  > gospels. Each one is small enough to start this week.
   >
-  > Each practice comes with the why behind it, scripture to sit with, a simple way to begin, and
-  > honest reflection questions to make it your own:
+  > Every practice gives you the why behind it, scripture to sit with, a simple way to begin, and
+  > honest questions to make it your own:
   >
   > Solitude · Rest · Reading the Bible · Prayer · Service · Generosity · Fasting · Community ·
   > Witness · Simplicity · Worship · Stewardship
   >
-  > Come as you are. You can't make God love you any more or any less than He already does — but you
-  > can deepen the relationship. Abide is a gentle, practical way in, whether for personal devotion,
-  > a youth group, or ministry.
+  > Come as you are. You can't make God love you any more than He already does, but you can grow
+  > closer to Him. Abide gives you a gentle place to start, on your own, in a youth group, or across a
+  > whole ministry.
   >
   > Part of Beyond Experience Kindred, a ministry of Scripture Union New Zealand.
 
 - **seo.title:** `Abide — Spiritual Practices Booklet | My Living Hope`
-- **seo.description:** `A guided booklet of 12 spiritual practices for everyday faith — solitude, prayer, rest, generosity and more. Simple, doable ways to walk with God.`
+- **seo.description:** `A guided booklet of 12 spiritual practices for everyday faith: solitude, prayer, rest, generosity and more. Simple ways to walk with God day to day.`
 - **theme:** `abide`  (new optional field; drives the themed product page — see piece 4)
 
 ### 2. Sell it

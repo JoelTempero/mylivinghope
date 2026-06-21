@@ -6,9 +6,10 @@ import { useProducts } from '../hooks/useProducts'
 const ABIDE_SLUG = 'abide-spiritual-practices-booklet'
 const SEEN_KEY = 'mlh_abide_promo_seen_v1'
 
-// First-visit "whisper" — a small, soft card that slides up bottom-left ~2.5s after
-// landing. Shows once per visitor (localStorage), never on the booklet page itself,
-// and only if the booklet is actually live.
+// First-visit "whisper" — a big centered card that fades in ~2.5s after landing,
+// introducing Obi and the booklet. Shows once per visitor in production
+// (localStorage), always in DEV, never on the booklet page, and only if the
+// booklet is live.
 export default function AbidePromoPopup() {
   const { pathname } = useLocation()
   const { products } = useProducts()
@@ -18,8 +19,7 @@ export default function AbidePromoPopup() {
   const onBookletPage = pathname === `/shop/${ABIDE_SLUG}`
   const bookletLive = products.some((p) => p.slug === ABIDE_SLUG)
 
-  // In DEV always show (so the feature is easy to preview on each reload). In
-  // production it's once per visitor via localStorage.
+  // In DEV always show (easy to preview on each reload). In prod, once per visitor.
   let alreadySeen = false
   if (!import.meta.env.DEV) {
     try {
@@ -31,7 +31,6 @@ export default function AbidePromoPopup() {
 
   const shouldShow = !alreadySeen && !onBookletPage && bookletLive
 
-  // Mount, then trigger the slide-in on the next frame.
   useEffect(() => {
     if (!shouldShow) return
     const t = setTimeout(() => {
@@ -51,7 +50,6 @@ export default function AbidePromoPopup() {
     setTimeout(() => setMounted(false), 350)
   }
 
-  // Esc to close.
   useEffect(() => {
     if (!mounted) return
     const onKey = (e) => {
@@ -65,43 +63,60 @@ export default function AbidePromoPopup() {
 
   return (
     <div
-      role="dialog"
-      aria-label="New product from My Living Hope"
-      className="fixed bottom-4 left-4 z-50 w-[calc(100vw-2rem)] max-w-xs motion-safe:transition-all motion-safe:duration-300 ease-out"
-      style={{
-        transform: visible ? 'translateY(0)' : 'translateY(1rem)',
-        opacity: visible ? 1 : 0,
-      }}
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 motion-safe:transition-opacity motion-safe:duration-300"
+      style={{ opacity: visible ? 1 : 0 }}
     >
-      <div className="relative rounded-2xl shadow-[0_12px_40px_rgba(15,25,124,0.25)] bg-abide-chiara border border-abide-navy/10 overflow-hidden">
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-abide-navy/40 backdrop-blur-sm"
+        onClick={dismiss}
+        aria-hidden="true"
+      />
+
+      {/* Card */}
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="New product from My Living Hope"
+        className="relative w-full max-w-lg rounded-3xl bg-abide-chiara border border-abide-navy/10 shadow-[0_24px_70px_rgba(15,25,124,0.35)] p-7 sm:p-9 motion-safe:transition-transform motion-safe:duration-300 ease-out"
+        style={{ transform: visible ? 'scale(1)' : 'scale(0.94)' }}
+      >
         <button
           onClick={dismiss}
           aria-label="Dismiss"
-          className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full flex items-center justify-center text-abide-navy/60 hover:text-abide-navy hover:bg-abide-navy/10 transition-colors"
+          className="absolute top-3.5 right-3.5 w-9 h-9 rounded-full flex items-center justify-center text-abide-navy/60 hover:text-abide-navy hover:bg-abide-navy/10 transition-colors"
         >
-          <X className="w-4 h-4" />
+          <X className="w-5 h-5" />
         </button>
 
-        <div className="p-5 pr-10">
-          <p className="font-abide-body text-xs font-semibold uppercase tracking-wider text-abide-navy/60 mb-1">
-            Psst — something new
-          </p>
-          <h2 className="font-abide-heading text-2xl leading-tight text-abide-navy mb-2">
-            Meet Abide
-          </h2>
-          <p className="font-abide-body text-sm text-abide-navy/80 leading-relaxed mb-4">
-            Our new booklet of spiritual practices for everyday faith. Simple, doable ways to walk with God.
-          </p>
-          <Link
-            to={`/shop/${ABIDE_SLUG}`}
-            onClick={dismiss}
-            className="btn-interactive inline-flex items-center gap-2 bg-abide-navy hover:bg-[#0a1156] text-white font-abide-body font-semibold text-sm px-5 py-2.5 rounded-full"
-          >
-            Explore the booklet
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
-          </Link>
+        <div className="flex flex-col sm:flex-row items-center gap-5 sm:gap-7">
+          <img
+            src="/images/abide/obi.png"
+            alt="Obi, the Abide mascot"
+            className="w-28 sm:w-36 h-auto shrink-0 drop-shadow-sm"
+          />
+
+          <div className="text-center sm:text-left">
+            <p className="font-abide-body text-xs font-semibold uppercase tracking-[0.15em] text-abide-navy/60 mb-2">
+              Something new
+            </p>
+            <h2 className="font-abide-heading text-4xl sm:text-5xl leading-[0.95] text-abide-navy mb-3">
+              Meet Abide
+            </h2>
+            <p className="font-abide-body text-abide-navy/80 leading-relaxed mb-5">
+              Our new booklet of spiritual practices for everyday faith. Simple ways to walk with God, day to day.
+            </p>
+            <Link
+              to={`/shop/${ABIDE_SLUG}`}
+              onClick={dismiss}
+              className="btn-interactive inline-flex items-center gap-2 bg-abide-navy hover:bg-[#0a1156] text-white font-abide-body font-semibold px-6 py-3 rounded-full"
+            >
+              Explore the booklet
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </Link>
+          </div>
         </div>
       </div>
     </div>

@@ -16,28 +16,28 @@ export default function LatestProduct() {
 
   return (
     <section className="relative z-10 bg-abide-navy text-white">
-      <div className="max-w-[1200px] mx-auto px-[5%] py-8 md:py-10">
-        <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8">
+      <div className="max-w-[1280px] mx-auto px-[5%] py-14 md:py-20">
+        <div className="flex flex-col md:flex-row items-center gap-8 md:gap-14">
           {/* Image */}
           {image && (
             <ScrollReveal variant="scale-up" className="shrink-0">
               <img
                 src={image}
                 alt={booklet.title}
-                className="w-28 h-28 md:w-24 md:h-24 rounded-xl object-cover shadow-lg"
+                className="w-56 h-56 md:w-64 md:h-64 rounded-2xl object-cover shadow-2xl"
               />
             </ScrollReveal>
           )}
 
           {/* Text */}
           <ScrollReveal variant="fade-up" className="flex-1 text-center md:text-left">
-            <p className="font-abide-body text-xs font-semibold uppercase tracking-wider text-abide-malibu mb-1">
+            <p className="font-abide-body text-sm md:text-base font-semibold uppercase tracking-[0.15em] text-abide-malibu mb-2">
               Our latest product
             </p>
-            <h2 className="font-abide-heading text-2xl md:text-3xl leading-tight text-white mb-1">
+            <h2 className="font-abide-heading text-4xl md:text-6xl leading-[0.95] text-white mb-3">
               {booklet.title.replace(/^Abide\s*-\s*/i, 'Abide — ')}
             </h2>
-            <p className="font-abide-body text-white/70 text-sm">
+            <p className="font-abide-body text-white/75 text-lg md:text-2xl">
               {booklet.subtitle} · ${centsToDollars(booklet.priceNZD)} NZD
             </p>
           </ScrollReveal>
@@ -46,10 +46,10 @@ export default function LatestProduct() {
           <ScrollReveal variant="fade-up" delay={0.1} className="shrink-0">
             <Link
               to={`/shop/${booklet.slug}`}
-              className="btn-interactive inline-flex items-center gap-2 bg-white hover:bg-abide-chiara text-abide-navy font-abide-body font-semibold px-7 py-3 rounded-full text-sm"
+              className="btn-interactive inline-flex items-center gap-2 bg-white hover:bg-abide-chiara text-abide-navy font-abide-body font-semibold px-9 py-4 rounded-full text-base md:text-lg"
             >
               View product
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
             </Link>
