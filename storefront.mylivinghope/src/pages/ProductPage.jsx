@@ -109,17 +109,11 @@ export default function ProductPage() {
 
           {/* Obi — Abide mascot, shown under the gallery on the booklet page */}
           {isAbide && (
-            <div className="mt-8 flex items-end gap-4 rounded-2xl bg-abide-lilac/50 p-5">
-              <img
-                src="/images/abide/obi.png"
-                alt="Obi, the Abide mascot"
-                className="w-20 sm:w-24 h-auto shrink-0"
-              />
-              <p className="font-abide-body text-sm text-abide-navy/80 leading-relaxed pb-1">
-                <span className="font-abide-heading text-xl text-abide-navy block leading-none mb-1">Meet Obi</span>
-                The simple ways to live a simple faith.
-              </p>
-            </div>
+            <img
+              src="/images/abide/obi.png"
+              alt="Obi, the Abide mascot"
+              className="mt-8 w-32 sm:w-40 h-auto"
+            />
           )}
         </div>
 
