@@ -3,13 +3,13 @@
 ## Overview
 - **Client**: My Living Hope (greeting card business, Jesse Major founder)
 - **Type**: Headless storefront (React/Vite) + Firebase Admin Portal — migrating commerce off Shopify to Stripe
-- **Status**: Portal functional; storefront LIVE at mylivinghope.org.nz on **Stripe Checkout** (Firebase Hosting, DNS via Cloudflare). **Phase 5 cutover done 2026-06-19** — Shopify Buy Button removed, live Stripe keys + webhook active, client made a successful live purchase. Phase 4 (transactional emails) still pending Jesse's Resend account.
+- **Status**: Portal functional; storefront LIVE at mylivinghope.org.nz on **Stripe Checkout** (Firebase Hosting, DNS via Cloudflare). **Phase 5 cutover done 2026-06-19**. **2nd product (Abide booklet) launched live 2026-06-21** — published, themed, advertised (popup + band + /shop). **Resend is now ready** → Phase 4 (transactional emails) is the next build.
 
 ## ⚠️ Where We Are (read this first)
-- **NEW (2026-06-21): 2nd product — Abide booklet — built & on localhost for review.** A full launch (copy/SEO, /shop index page, Abide-themed product page, first-visit "whisper" popup, bottom-of-home "latest product" band) was built this session via autopilot. **It is NOT live** — the booklet is still a Firestore draft; localhost uses a DEV-only preview seed. See the "Abide booklet launch" go-live checklist in Next Steps. Dev server runs at `http://localhost:3854/`. Spec: `docs/superpowers/specs/2026-06-21-abide-booklet-launch-design.md`.
-- **Resend is now READY (Joel, 2026-06-21).** Phase 4 (transactional emails) is unblocked — deprioritised behind the booklet launch this session.
+- **DONE (2026-06-21): 2nd product — Abide booklet — LIVE in production.** Published to Firestore (copy/SEO/theme:abide), Abide-themed product page, /shop index, first-visit "Meet Obi" popup, bottom-of-home "latest product" band, real BorisBlackBloxx font + Obi mascot. Deployed; checkout verified. Spec: `docs/superpowers/specs/2026-06-21-abide-booklet-launch-design.md`.
+- **Resend is now READY (Joel, 2026-06-21).** Phase 4 (transactional emails) is unblocked — **the headline next task.**
 - **Home branch: `main`.** All real dev lives here. `sidequest-backup` is an auto-backup branch *behind* main — **do not develop on it.**
-- **Local `main` is ~60 commits ahead of `origin/main`** — committed but NOT pushed. Pushing is the main housekeeping debt.
+- **`main` is pushed to `origin` (2026-06-21).** The ~86-commit backlog is cleared — origin/main is current.
 - **Commerce migration (off Shopify → Stripe) is LIVE.** Phases 1–3 + **Phase 5 cutover done & deployed** — storefront checks out via live Stripe; client made a real purchase. **Phase 4 (transactional emails) is the remaining build**, blocked on Jesse's Resend account.
 - **Two Jesse to-dos:** (1) **enable Stripe payouts** — the live account has `charges_enabled=true` but `payouts_enabled=false`, so money sits in the Stripe balance until he finishes bank verification; (2) create a **Resend account** + verify sending-domain DNS for Phase 4 emails.
 
@@ -163,18 +163,20 @@ Built + deployed live to `mylivinghope.web.app` / `.org.nz`. Booklet published, 
 
 ### 🔴 With Jesse — remaining go-live items
 - [ ] **Enable Stripe payouts** — live account has `charges_enabled=true` but `payouts_enabled=false`. Jesse must finish bank verification in the Stripe dashboard or payments accumulate in the Stripe balance (won't reach his bank).
-- [ ] **Resend account (Phase 4)** — Jesse creates a Resend account + verifies the sending-domain DNS, so confirmation/shipped emails can send.
+- [x] **Resend account READY** (2026-06-21) — unblocks Phase 4 below.
 - [ ] **Jesse: activate FormSubmit.co** — first contact-form submission triggers a verification email to prayerprompts@outlook.com; must click to confirm.
 - [ ] **Decommission Shopify** — storefront no longer references it; cancel the Shopify store / Buy Button product once Jesse confirms.
 
-### Phase 4 — Tracking + emails (after Resend)
-- [ ] Confirmation email on paid, shipped email on tracking entry, storefront `/track-order` + `trackOrder` function.
+### Phase 4 — Tracking + emails (Resend ready — NEXT UP)
+- [ ] Confirmation email on paid, shipped email on tracking entry, storefront `/track-order` + `trackOrder` function. Resend account is ready; needs sending-domain DNS verified + the Resend API key in Secret Manager.
 
 ### Down the track
 - [ ] **Bulk buy** — quantity-tier / wholesale pricing (client asked 2026-06-19; explore later).
 
 ### Maintenance / misc
-- [ ] **Push local `main` to origin** — currently ~60 commits ahead, unpushed
+- [x] **Push `main` to origin** — done 2026-06-21 (86 commits). origin/main current.
+- [ ] **Convert `BorisBlackBloxx.ttf` → woff2** — currently shipping the ~52KB ttf; woff2 would be smaller. Update the `@font-face` `src` after converting.
+- [ ] **`.firebase/hosting.*.cache` files keep showing as modified** — deploy artifacts that are git-tracked; consider gitignoring them.
 - [ ] Functions runtime Node 20 deprecated (decommission 2026-10-30) — bump to 22
 - [ ] Portal has 16 pre-existing lint errors (useAuth/useTheme fast-refresh, useCollection set-state-in-effect, unused vars in old pages)
 - [ ] **Add www.mylivinghope.org.nz** — CNAME in Cloudflare, also needs adding as a custom domain in the Firebase Hosting console
@@ -195,7 +197,13 @@ Built + deployed live to `mylivinghope.web.app` / `.org.nz`. Booklet published, 
   - **First-visit "whisper" popup** (`AbidePromoPopup.jsx`, mounted in `App`) — small Abide card slides up bottom-left ~2.5s, once-per-visitor in prod (localStorage), always shows in DEV, Esc/X dismiss, never on the booklet page, only if booklet is live → links to booklet page.
   - **"Our latest product" band** (`LatestProduct.jsx`) — thin navy Abide band, last section of home; renders nothing if booklet absent (prod-safe pre-publish).
 - **Self-critique fix:** popup now always shows in DEV (was once-per-visitor → would look broken when previewing).
-- **Needs Joel:** review on localhost, then the go-live checklist (set fields + publish in portal, add the real BorisBlackBoxx font, optional Obi asset, deploy). See Next Steps "🟡 Abide booklet launch".
+- **Then (same session, Joel back + directing):**
+  - **Feedback iteration:** popup → big centered modal w/ Obi (white bg, "Meet Obi" big + "and our latest My Living Hope resource!" smaller subline, "Learn More" button). Band doubled in size. Obi added standalone under product-page gallery. **stop-slop** pass on the booklet description (cut em dashes, the "rather than" contrast, adverbs). Added Obi asset `public/images/abide/obi.png`.
+  - **Published booklet to Firestore** (via Firebase MCP) — description/seo/`theme:abide`/`status:published`. Checkout failed first with "unavailable" → root cause = `functions/index.js:28` rejects non-published (working as designed); publishing fixed it. Real Firestore doc now supersedes the DEV seed (no dupe).
+  - **Real font:** Joel dropped `BorisBlackBloxx.ttf` (real font is "Bloxx", not "Boxx"); fixed `@font-face` to point at the actual `.ttf` (was `.woff2`).
+  - **Deployed storefront to prod** (leojfx@gmail.com) — all routes/assets 200. Full launch LIVE.
+  - **Prayer Cards SEO** added + removed a stray literal `&nbsp;` from its description (both data-only, live immediately).
+  - **Pushed `main`** (86 commits) to origin — backlog cleared.
 
 ### 2026-06-19 (PM) — Phase 5 LIVE cutover + image management + pickup option
 - **Went live on Stripe.** Jesse activated the live account; loaded live `STRIPE_SECRET_KEY` (v3, no-newline file trick), registered the **live** webhook endpoint `we_1Tjt63JVPadVHiFfO05FmDOK` via Stripe API (3 checkout events), captured signing secret → `STRIPE_WEBHOOK_SECRET` (v4), redeployed functions. Verified: live account `acct_1TgG3NJVPadVHiFf` (NZ) `charges_enabled` ✓, single enabled live endpoint, secrets bound.
@@ -249,6 +257,8 @@ Built + deployed live to `mylivinghope.web.app` / `.org.nz`. Booklet published, 
 _(Older sessions — May 2026 storefront polish, Instagram feed, image compression, custom-domain/DNS-to-Cloudflare fix, mobile card rebuild — trimmed; see git history.)_
 
 ## Key Decisions
+- **Per-product theming is data-driven** — a `theme` field on the product doc (`theme: "abide"`, fallback: `abide-*` slug) drives an Abide skin on `ProductPage` (navy/Malibu/pastel, BorisBlackBoxx/Archivo Black, Obi). Default products are unchanged. Future branded products opt in by setting one field. SEO is also data-driven: `ProductPage`/`Shop` read `product.seo` via `usePageMeta` (client-side title + meta description; no per-product OG without prerender).
+- **Abide is a brand-within-the-brand** — distinct identity (Malibu `#61BFE3` + Bad Boy Blue `#0F197C` cores, 5 pastels, BorisBlackBoxx, Obi mascot) used only on the booklet's promo surfaces (popup, home band) + its product page. Rest of the site stays MLH (forest-green/blush). Palette lives in `index.css @theme`.
 - **Going fully off Shopify** → own catalog CMS (Firestore) + Stripe Checkout (hosted) + own order system. Full spec: `docs/superpowers/specs/2026-06-09-commerce-migration-design.md`. Firestore = catalog source of truth; Stripe webhook = order source of truth; prices stored as integer cents.
 - **Stripe Checkout Sessions (hosted), not Payment Element** — least PCI surface, handles wallets/shipping/dynamic methods; inline `price_data` from Firestore (no Stripe product sync).
 - **Cart-based checkout** (built Phase 2.5) — `/shop/:slug` → Zustand+localStorage cart (`stores/cart.js`) → `/cart` → `createCheckoutSession` (takes a line-item array) → Stripe hosted. (Superseded the original single-product "Buy Now, no cart" plan.)
