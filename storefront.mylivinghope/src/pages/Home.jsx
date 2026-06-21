@@ -5,6 +5,7 @@ import ScriptureInterlude from '../components/sections/ScriptureInterlude'
 import Testimonials from '../components/sections/Testimonials'
 import InstagramFeed from '../components/sections/InstagramFeed'
 import CTA from '../components/sections/CTA'
+import LatestProduct from '../components/sections/LatestProduct'
 export default function Home() {
   // Arriving from another page with #shop (e.g. About's "Buy a Set") — scroll to
   // the product showcase once it's rendered.
@@ -25,6 +26,7 @@ export default function Home() {
       <Testimonials />
       <InstagramFeed />
       <CTA />
+      <LatestProduct />
     </div>
   )
 }
