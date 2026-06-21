@@ -154,9 +154,8 @@ Add to `.claude/settings.json` on each machine:
 
 ### 🟡 Abide booklet launch — go-live (Joel review + publish)
 Built 2026-06-21 (autopilot), running on localhost `:3854`, **not yet live**. To ship:
-- [ ] **Review on localhost** — `cd storefront.mylivinghope && npm run dev` → check `/shop`, the Abide-themed `/shop/abide-spiritual-practices-booklet`, the first-visit popup (always shows in DEV), and the navy "latest product" band at the bottom of home.
-- [ ] **Set the booklet fields in the portal/Firestore** (exact values in the spec): `description`, `seo.title`, `seo.description`, and a new `theme: "abide"` field.
-- [ ] **Publish the booklet** (`status: draft → published`) — makes it buyable + visible on the live site (the DEV preview seed is inert in prod).
+- [x] **Review on localhost** — `cd storefront.mylivinghope && npm run dev` → check `/shop`, the Abide-themed `/shop/abide-spiritual-practices-booklet`, the first-visit popup (always shows in DEV), and the navy "latest product" band at the bottom of home.
+- [x] **Set the booklet fields + publish** (done 2026-06-21 via Firestore MCP): `description` (stop-slop'd), `seo.title`, `seo.description`, `theme: "abide"`, `status: published`. ⚠️ Booklet is now **buyable by direct URL on production** (`/shop/abide-spiritual-practices-booklet`) but undiscoverable until the new storefront is deployed (old prod bundle has no /shop index, popup, or band).
 - [ ] **Drop `BorisBlackBoxx.woff2`** into `storefront.mylivinghope/public/fonts/` (falls back to Archivo Black until then) — see the README there.
 - [ ] (Optional) Export **Obi** mascot asset(s) to wire into the popup/band/product page.
 - [ ] **Deploy storefront** once happy.
