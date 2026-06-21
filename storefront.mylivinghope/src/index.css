@@ -24,6 +24,28 @@
 
   --font-heading: "Libre Baskerville", "Goudy Old Style", Georgia, serif;
   --font-body: "Montserrat", "Proxima Nova", system-ui, sans-serif;
+
+  /* Abide brand kit (Abide-StyleGuide-26.pdf) — used by the booklet's promo
+     surfaces and its themed product page. Distinct from the MLH palette. */
+  --color-abide-malibu: #61BFE3;   /* core */
+  --color-abide-navy: #0F197C;     /* core (Bad Boy Blue) */
+  --color-abide-romantic: #FFD5B3; /* pastel */
+  --color-abide-chiara: #FFF4B1;   /* pastel */
+  --color-abide-lilac: #D3D3FF;    /* pastel */
+  --color-abide-andrea: #CEEAF8;   /* pastel */
+  --color-abide-lavender: #EAD6FF; /* pastel */
+
+  --font-abide-heading: "BorisBlackBoxx", "Archivo Black", system-ui, sans-serif;
+  --font-abide-body: "Inter", system-ui, sans-serif;
+}
+
+/* Real BorisBlackBoxx web font — drop the file into public/fonts/ to activate.
+   Until then the stack falls back to Archivo Black (loaded from Google Fonts). */
+@font-face {
+  font-family: "BorisBlackBoxx";
+  src: url("/fonts/BorisBlackBoxx.woff2") format("woff2");
+  font-weight: 400 900;
+  font-display: swap;
 }
 
 html {
