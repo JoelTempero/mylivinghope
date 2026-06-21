@@ -57,12 +57,12 @@ export default function Header() {
         </Link>
 
         <div className="hidden md:flex items-center gap-8">
-          <a
-            href="/#shop"
+          <Link
+            to="/shop"
             className="text-sm font-medium text-white/90 hover:text-white transition-colors tracking-wide uppercase"
           >
             Shop
-          </a>
+          </Link>
           <Link
             to="/about"
             className="text-sm font-medium text-white/90 hover:text-white transition-colors tracking-wide uppercase"
@@ -99,7 +99,7 @@ export default function Header() {
       >
         <div className="space-y-1">
           {[
-            { href: '/#cards', label: 'Shop', isLink: false },
+            { to: '/shop', label: 'Shop', isLink: true },
             { to: '/about', label: 'About', isLink: true },
             { href: '#contact', label: 'Contact', isLink: false, scrollToFooter: true },
           ].map((item, i) => {
