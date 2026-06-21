@@ -152,13 +152,13 @@ Add to `.claude/settings.json` on each machine:
 
 ## Next Steps
 
-### 🟡 Abide booklet launch — go-live (Joel review + publish)
-Built 2026-06-21 (autopilot), running on localhost `:3854`, **not yet live**. To ship:
+### ✅ Abide booklet launch — SHIPPED 2026-06-21
+Built + deployed live to `mylivinghope.web.app` / `.org.nz`. Booklet published, checkout verified working, real BorisBlackBloxx font + Obi mascot live. History below:
 - [x] **Review on localhost** — `cd storefront.mylivinghope && npm run dev` → check `/shop`, the Abide-themed `/shop/abide-spiritual-practices-booklet`, the first-visit popup (always shows in DEV), and the navy "latest product" band at the bottom of home.
 - [x] **Set the booklet fields + publish** (done 2026-06-21 via Firestore MCP): `description` (stop-slop'd), `seo.title`, `seo.description`, `theme: "abide"`, `status: published`. ⚠️ Booklet is now **buyable by direct URL on production** (`/shop/abide-spiritual-practices-booklet`) but undiscoverable until the new storefront is deployed (old prod bundle has no /shop index, popup, or band).
-- [ ] **Drop `BorisBlackBoxx.woff2`** into `storefront.mylivinghope/public/fonts/` (falls back to Archivo Black until then) — see the README there.
-- [ ] (Optional) Export **Obi** mascot asset(s) to wire into the popup/band/product page.
-- [ ] **Deploy storefront** once happy.
+- [x] **Real font wired** — `BorisBlackBloxx.ttf` in `public/fonts/` (note: file is "Bloxx"; `@font-face` family stays "BorisBlackBoxx"). Falls back to Archivo Black if removed.
+- [x] **Obi mascot** wired into popup + product page (asset at `public/images/abide/obi.png`).
+- [x] **Storefront deployed** 2026-06-21 (leojfx@gmail.com) — all routes/assets 200 on prod.
 - [ ] Later (portal): add a `theme` selector + SEO fields to the Store CMS so this isn't set by hand in Firestore.
 
 ### 🔴 With Jesse — remaining go-live items
