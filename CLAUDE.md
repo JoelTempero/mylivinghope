@@ -6,6 +6,8 @@
 - **Status**: Portal functional; storefront LIVE at mylivinghope.org.nz on **Stripe Checkout** (Firebase Hosting, DNS via Cloudflare). **Phase 5 cutover done 2026-06-19** — Shopify Buy Button removed, live Stripe keys + webhook active, client made a successful live purchase. Phase 4 (transactional emails) still pending Jesse's Resend account.
 
 ## ⚠️ Where We Are (read this first)
+- **NEW (2026-06-21): 2nd product — Abide booklet — built & on localhost for review.** A full launch (copy/SEO, /shop index page, Abide-themed product page, first-visit "whisper" popup, bottom-of-home "latest product" band) was built this session via autopilot. **It is NOT live** — the booklet is still a Firestore draft; localhost uses a DEV-only preview seed. See the "Abide booklet launch" go-live checklist in Next Steps. Dev server runs at `http://localhost:3854/`. Spec: `docs/superpowers/specs/2026-06-21-abide-booklet-launch-design.md`.
+- **Resend is now READY (Joel, 2026-06-21).** Phase 4 (transactional emails) is unblocked — deprioritised behind the booklet launch this session.
 - **Home branch: `main`.** All real dev lives here. `sidequest-backup` is an auto-backup branch *behind* main — **do not develop on it.**
 - **Local `main` is ~60 commits ahead of `origin/main`** — committed but NOT pushed. Pushing is the main housekeeping debt.
 - **Commerce migration (off Shopify → Stripe) is LIVE.** Phases 1–3 + **Phase 5 cutover done & deployed** — storefront checks out via live Stripe; client made a real purchase. **Phase 4 (transactional emails) is the remaining build**, blocked on Jesse's Resend account.
@@ -150,6 +152,16 @@ Add to `.claude/settings.json` on each machine:
 
 ## Next Steps
 
+### 🟡 Abide booklet launch — go-live (Joel review + publish)
+Built 2026-06-21 (autopilot), running on localhost `:3854`, **not yet live**. To ship:
+- [ ] **Review on localhost** — `cd storefront.mylivinghope && npm run dev` → check `/shop`, the Abide-themed `/shop/abide-spiritual-practices-booklet`, the first-visit popup (always shows in DEV), and the navy "latest product" band at the bottom of home.
+- [ ] **Set the booklet fields in the portal/Firestore** (exact values in the spec): `description`, `seo.title`, `seo.description`, and a new `theme: "abide"` field.
+- [ ] **Publish the booklet** (`status: draft → published`) — makes it buyable + visible on the live site (the DEV preview seed is inert in prod).
+- [ ] **Drop `BorisBlackBoxx.woff2`** into `storefront.mylivinghope/public/fonts/` (falls back to Archivo Black until then) — see the README there.
+- [ ] (Optional) Export **Obi** mascot asset(s) to wire into the popup/band/product page.
+- [ ] **Deploy storefront** once happy.
+- [ ] Later (portal): add a `theme` selector + SEO fields to the Store CMS so this isn't set by hand in Firestore.
+
 ### 🔴 With Jesse — remaining go-live items
 - [ ] **Enable Stripe payouts** — live account has `charges_enabled=true` but `payouts_enabled=false`. Jesse must finish bank verification in the Stripe dashboard or payments accumulate in the Stripe balance (won't reach his bank).
 - [ ] **Resend account (Phase 4)** — Jesse creates a Resend account + verifies the sending-domain DNS, so confirmation/shipped emails can send.
@@ -172,6 +184,20 @@ Add to `.claude/settings.json` on each machine:
 - [ ] Joel to review portal Claude page live and fix any issues
 
 ## Session Log
+### 2026-06-21 — Autopilot: Abide booklet (2nd product) launch build
+- **Goal:** add the 2nd product (Abide – Spiritual Practices Booklet, by Annabelle McLennan, $20) — both sellable and *advertised* on the single-flagship storefront. Brainstormed + scoped with Joel, then built autonomously (autopilot) for him to review on localhost.
+- **Spec:** `docs/superpowers/specs/2026-06-21-abide-booklet-launch-design.md`. **9/9 tasks done. Build + lint clean** (1 pre-existing warning in ScriptureInterlude). All commits local on `main` (unpushed). Dev server live `:3854`, routes 200.
+- **Constraint:** autopilot can't write to the live DB, so the booklet stays a Firestore draft. Built a **DEV-only preview seed** (`src/lib/previewProducts.js` merged into `useProducts` under `import.meta.env.DEV`) so localhost shows everything without touching prod. Inert in production builds.
+- **Built:**
+  - **Copy/SEO** for the booklet (description + SEO title/description) — written from the raw booklet text; documented in the spec + seeded for preview.
+  - **Abide brand foundation** — palette (Malibu/Bad Boy Blue + 5 pastels) + fonts (Inter, Archivo Black as BorisBlackBoxx fallback w/ `@font-face` pointing at `public/fonts/BorisBlackBoxx.woff2`) added to `index.css`/`index.html`. README in `public/fonts/`.
+  - **/shop index page** (`Shop.jsx`, route + nav desktop/mobile→`/shop`) — uniform MLH-styled grid of all published products, loading/empty states.
+  - **Per-product theming + SEO on `ProductPage`** — `theme: 'abide'` (or `abide-*` slug) → Abide skin (navy/malibu/pastel, chunky display font, navy CTA); default products unchanged. `usePageMeta` (`lib/seo.js`) sets `document.title` + meta description from the product's `seo` fields (previously dead).
+  - **First-visit "whisper" popup** (`AbidePromoPopup.jsx`, mounted in `App`) — small Abide card slides up bottom-left ~2.5s, once-per-visitor in prod (localStorage), always shows in DEV, Esc/X dismiss, never on the booklet page, only if booklet is live → links to booklet page.
+  - **"Our latest product" band** (`LatestProduct.jsx`) — thin navy Abide band, last section of home; renders nothing if booklet absent (prod-safe pre-publish).
+- **Self-critique fix:** popup now always shows in DEV (was once-per-visitor → would look broken when previewing).
+- **Needs Joel:** review on localhost, then the go-live checklist (set fields + publish in portal, add the real BorisBlackBoxx font, optional Obi asset, deploy). See Next Steps "🟡 Abide booklet launch".
+
 ### 2026-06-19 (PM) — Phase 5 LIVE cutover + image management + pickup option
 - **Went live on Stripe.** Jesse activated the live account; loaded live `STRIPE_SECRET_KEY` (v3, no-newline file trick), registered the **live** webhook endpoint `we_1Tjt63JVPadVHiFfO05FmDOK` via Stripe API (3 checkout events), captured signing secret → `STRIPE_WEBHOOK_SECRET` (v4), redeployed functions. Verified: live account `acct_1TgG3NJVPadVHiFf` (NZ) `charges_enabled` ✓, single enabled live endpoint, secrets bound.
 - **Storefront cutover deployed to prod** (the irreversible flip). Found the cutover half-wired: `BuyButton.jsx` (Shopify) was unused as a component but Hero/CTA/About still imported its `addToCart` (which only scroll-to-shop'd since the SDK never loaded — About's was a dead no-op). Replaced with a shared `goToShop()` helper (`lib/shop.js`); Home scrolls to `#shop` on hash so About's cross-page CTA lands. Deleted `BuyButton.jsx` + dead CSS. Privacy/Terms rewritten Shopify→Stripe (+ dropped GST claim, cart = local storage). Build + lint clean, all routes 200. **Client then made a successful live purchase.**
