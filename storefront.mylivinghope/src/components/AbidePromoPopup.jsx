@@ -78,7 +78,7 @@ export default function AbidePromoPopup() {
         role="dialog"
         aria-modal="true"
         aria-label="New product from My Living Hope"
-        className="relative w-full max-w-lg rounded-3xl bg-abide-chiara border border-abide-navy/10 shadow-[0_24px_70px_rgba(15,25,124,0.35)] p-7 sm:p-9 motion-safe:transition-transform motion-safe:duration-300 ease-out"
+        className="relative w-full max-w-lg rounded-3xl bg-white border border-abide-navy/10 shadow-[0_24px_70px_rgba(15,25,124,0.35)] p-7 sm:p-9 motion-safe:transition-transform motion-safe:duration-300 ease-out"
         style={{ transform: visible ? 'scale(1)' : 'scale(0.94)' }}
       >
         <button
@@ -100,8 +100,8 @@ export default function AbidePromoPopup() {
             <p className="font-abide-body text-xs font-semibold uppercase tracking-[0.15em] text-abide-navy/60 mb-2">
               Something new
             </p>
-            <h2 className="font-abide-heading text-4xl sm:text-5xl leading-[0.95] text-abide-navy mb-3">
-              Meet Abide
+            <h2 className="font-abide-heading text-3xl sm:text-4xl leading-tight text-abide-navy mb-3">
+              Meet Obi and our latest My Living Hope resource!
             </h2>
             <p className="font-abide-body text-abide-navy/80 leading-relaxed mb-5">
               Our new booklet of spiritual practices for everyday faith. Simple ways to walk with God, day to day.
@@ -111,7 +111,7 @@ export default function AbidePromoPopup() {
               onClick={dismiss}
               className="btn-interactive inline-flex items-center gap-2 bg-abide-navy hover:bg-[#0a1156] text-white font-abide-body font-semibold px-6 py-3 rounded-full"
             >
-              Explore the booklet
+              Learn More
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
