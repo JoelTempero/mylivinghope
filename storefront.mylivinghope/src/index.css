@@ -43,7 +43,7 @@
    Until then the stack falls back to Archivo Black (loaded from Google Fonts). */
 @font-face {
   font-family: "BorisBlackBoxx";
-  src: url("/fonts/BorisBlackBoxx.woff2") format("woff2");
+  src: url("/fonts/BorisBlackBloxx.ttf") format("truetype");
   font-weight: 400 900;
   font-display: swap;
 }
