@@ -100,8 +100,9 @@ export default function AbidePromoPopup() {
             <p className="font-abide-body text-xs font-semibold uppercase tracking-[0.15em] text-abide-navy/60 mb-2">
               Something new
             </p>
-            <h2 className="font-abide-heading text-3xl sm:text-4xl leading-tight text-abide-navy mb-3">
-              Meet Obi and our latest My Living Hope resource!
+            <h2 className="font-abide-heading text-abide-navy mb-3 leading-tight">
+              <span className="block text-4xl sm:text-5xl">Meet Obi</span>
+              <span className="block text-xl sm:text-2xl">and our latest My Living Hope resource!</span>
             </h2>
             <p className="font-abide-body text-abide-navy/80 leading-relaxed mb-5">
               Our new booklet of spiritual practices for everyday faith. Simple ways to walk with God, day to day.
